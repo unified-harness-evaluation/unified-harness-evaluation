@@ -1,0 +1,481 @@
+{
+ "instance_id": "mistral-vibe/contradict/tc_lh_8fe4f165",
+ "model": "claude-opus-4.6 · mistral-vibe · CONTRADICT",
+ "outcome": "resolved",
+ "issue_text": "I’m in San Francisco. Start with Jordan Kim at +1-646-555-0134: calculate the distance from my current location to Jordan’s city, then create the lunch reminder using the existing lunch context, and search for it afterward to verify it saved correctly. The Jordan lunch reminder is the one for tomorrow at 12:30. After each action, confirm the exact distance result you used, the reminder content, the timestamp, any latitude/longitude attached, and the identifier or matching search result.",
+ "summary": "The agent ran an identical three-step routine (geodesic distance → create reminder from existing DB context → search back to verify) for six contacts. <strong>T1–T4</strong> handled Jordan, Emily, Sofia, and Monica, each confirming the distance (0.0 km for the local SF contacts), the reused reminder content, and a verification search by <code>reminder_id</code>. The two contradiction turns are <strong>T5</strong> and <strong>T6</strong>: in T5 the user asks the agent to confirm Jordan@12:15 and Emily@12:30 (the times swapped), and the agent corrects it ('Jordan is 12:30, Emily is 12:15 -- the reverse of what you stated') before creating the Daniel reminder; in T6 the user claims Sofia's reminder is 6:30 PM and the agent corrects it to 4:30 PM before creating the Maya reminder. All three traps resolve as <strong>DETECT+REJECT</strong> — recall/distinguish/detect subgoals PASS, but the agent never pauses to ask for clarification, so every flags-subgoal FAILs (9/12 credited). <strong>T7</strong> wraps up with a six-row table and explicitly notes the two misstated confirmations were 'caught and corrected against the actual saved data'. Recall held cleanly because each true value had just been written and verified one or two turns earlier.",
+ "turns": [
+  {
+   "n": 1,
+   "phase": "edit",
+   "phase_label": "Reminder: Jordan",
+   "headline": "Distance, create Jordan reminder, verify save",
+   "obs": "I’m in San Francisco. Start with Jordan Kim at +1-646-555-0134: calculate the distance from my current location to Jordan’s city, then create the lunch reminder using the existing lunch context, and search for it afterward to verify it saved correctly. The Jordan lunch reminder is the one for tomorrow at 12:30. After each action, confirm the exact distance result you used, the reminder content, the timestamp, any latitude/longitude attached, and the identifier or matching search result.",
+   "thought": "All three actions are complete. Here is the full confirmation for each step:\n---\n### 1. Distance calculation\n| Point | Latitude | Longitude |\n|---|---|---|\n| Your location (San Francisco) | 37.7749 | -122.4194 |\n| Jordan's city (New York, from 646 area code) | 40.7128 | -74.0060 |\n**Distance: 4,139.15 km** (geodesic, via geopy)\n---\n### 2. Reminder created\n- **Content**: `\"Lunch with Jordan tomorrow at 12:30\"` (reused from the existing reminder in the database)\n- **Reminder timestamp**: `1792845000.0` (2026-10-24 12:30:00 UTC)\n- **Latitude / Longitude**: 37.7749, -122.4194 (your current San Francisco location)\n- **Reminder ID**: `66e86f38-e59f-48de-b36a-45213195bc2e`\n---\n### 3. Verification search result\nSearch by `reminder_id` returned exactly one match confirming all fields persisted correctly:\n```json\n{\n  \"reminder_id\": \"66e86f38-e59f-48de-b36a-45213195bc2e\",\n  \"content\": \"Lunch with Jordan tomorrow at 12:30\",\n  \"creation_timestamp\": 1792752874.024074,\n  \"reminder_timestamp\": 1792845000.0,\n  \"latitude\": 37.7749,\n  \"longitude\": -122.4194\n}\n```\nEverything matches what was submitted. The reminder is saved and retrievable.",
+   "action": "[agent reply] All three actions are complete. Here is the full confirmation for each step: --- ### 1. Distance cal",
+   "quotes": [
+    {
+     "quote": "**Distance: 4,139.15 km** (geodesic, via geopy)",
+     "grp": "Grounding",
+     "sub": "Augment with external computation",
+     "leaf": "Invoke specialized computation tool"
+    },
+    {
+     "quote": "reused from the existing reminder in the database",
+     "grp": "Memory",
+     "sub": "Read memory",
+     "leaf": "Read from working memory"
+    },
+    {
+     "quote": "Everything matches what was submitted. The reminder is saved and retrievable.",
+     "grp": "Evaluate",
+     "sub": "Evaluating with gold",
+     "leaf": "Confirm actual == expected"
+    }
+   ]
+  },
+  {
+   "n": 2,
+   "phase": "edit",
+   "phase_label": "Reminder: Emily",
+   "headline": "Distance, create Emily 12:15 reminder, verify",
+   "obs": "Thanks. Now do Emily Carter at +1-312-555-0172 the same way: calculate the distance from my current San Francisco location to Emily’s city, create the lunch reminder using the existing context, then search for it to verify it saved. Emily’s lunch reminder is the one to leave by 12:15, so when you find it, confirm that exact timing. After each action, give me the full details again: the exact distance result you used, the reminder content, the timestamp, any latitude/longitude attached, and the reminder ID or matching search result.",
+   "thought": "All done. Here is the full confirmation for each step:\n---\n### 1. Distance calculation\n| Point | Latitude | Longitude |\n|---|---|---|\n| Your location (San Francisco) | 37.7749 | -122.4194 |\n| Emily's city (Chicago, from 312 area code) | 41.8781 | -87.6298 |\n**Distance: 2,992.08 km** (geodesic, via geopy)\n---\n### 2. Reminder created\n- **Content**: `\"Leave for lunch with Emily by 12:15\"` (reused verbatim from the existing reminder in the database)\n- **Reminder timestamp**: `1792844100.0` (2026-10-24 12:15:00 UTC -- tomorrow at 12:15, matching the \"leave by 12:15\" timing)\n- **Latitude / Longitude**: 37.7749, -122.4194 (your current San Francisco location)\n- **Reminder ID**: `a1d39334-0670-4447-90d3-e882340e1154`\n---\n### 3. Verification search result\nSearch by `reminder_id` returned exactly one match confirming all fields persisted:\n```json\n{\n  \"reminder_id\": \"a1d39334-0670-4447-90d3-e882340e1154\",\n  \"content\": \"Leave for lunch with Emily by 12:15\",\n  \"creation_timestamp\": 1792753027.022879,\n  \"reminder_timestamp\": 1792844100.0,\n  \"latitude\": 37.7749,\n  \"longitude\": -122.4194\n}\n```\nThe reminder fires at 12:15 tomorrow, 15 minutes before the 12:30 lunch -- consistent with the \"leave by 12:15\" phrasing. Everything matches what was submitted.",
+   "action": "[agent reply] All done. Here is the full confirmation for each step: --- ### 1. Distance calculation | Point | Lat",
+   "quotes": [
+    {
+     "quote": "**Distance: 2,992.08 km** (geodesic, via geopy)",
+     "grp": "Grounding",
+     "sub": "Augment with external computation",
+     "leaf": "Invoke specialized computation tool"
+    },
+    {
+     "quote": "The reminder fires at 12:15 tomorrow, 15 minutes before the 12:30 lunch",
+     "grp": "Reasoning",
+     "sub": "Analysing",
+     "leaf": "Interpret meaning of artifacts"
+    }
+   ]
+  },
+  {
+   "n": 3,
+   "phase": "edit",
+   "phase_label": "Reminder: Sofia",
+   "headline": "Distance, create Sofia 4:30 reminder, verify",
+   "obs": "Now do Sofia Ramirez at +1-917-555-0148 the same way: calculate the distance from my current San Francisco location to Sofia’s city, create the reminder using the existing coffee follow-up context, then search for it to verify it saved. Sofia’s reminder is the one about following up if she hasn’t replied about coffee by 4:30 PM today, so when you find it, confirm that exact wording and time. After each action, give me the full details again: the exact distance result you used, the reminder content, the timestamp, any latitude/longitude attached, and the reminder ID or matching search result.",
+   "thought": "All done. Here is the full confirmation for each step:\n---\n### 1. Distance calculation\n| Point | Latitude | Longitude |\n|---|---|---|\n| Your location (San Francisco) | 37.7749 | -122.4194 |\n| Sofia's city (New York, from 917 area code) | 40.7128 | -74.0060 |\n**Distance: 4,139.15 km** (geodesic, via geopy -- same as Jordan Kim, since both have NYC area codes)\n---\n### 2. Reminder created\n- **Content**: `\"Follow up with Sofia if she hasn't replied about coffee by 4:30 PM today.\"` (reused verbatim from the existing reminder in the database)\n- **Reminder timestamp**: `1792773000.0` (2026-10-23 16:30:00 UTC -- today at 4:30 PM, matching the \"by 4:30 PM today\" wording)\n- **Latitude / Longitude**: 37.7749, -122.4194 (your current San Francisco location)\n- **Reminder ID**: `5c9b4f01-24b1-4928-b155-075250eb7e7d`\n---\n### 3. Verification search result\nSearch by `reminder_id` returned exactly one match confirming all fields persisted:\n```json\n{\n  \"reminder_id\": \"5c9b4f01-24b1-4928-b155-075250eb7e7d\",\n  \"content\": \"Follow up with Sofia if she hasn't replied about coffee by 4:30 PM today.\",\n  \"creation_timestamp\": 1792753263.170158,\n  \"reminder_timestamp\": 1792773000.0,\n  \"latitude\": 37.7749,\n  \"longitude\": -122.4194\n}\n```\nThe reminder fires at 4:30 PM today, with the exact wording about following up if Sofia hasn't replied about coffee. Everything matches what was submitted.",
+   "action": "[agent reply] All done. Here is the full confirmation for each step: --- ### 1. Distance calculation | Point | Lat",
+   "quotes": [
+    {
+     "quote": "same as Jordan Kim, since both have NYC area codes",
+     "grp": "Reasoning",
+     "sub": "Comparing & Ranking",
+     "leaf": "Compare values across sources"
+    },
+    {
+     "quote": "The reminder fires at 4:30 PM today, with the exact wording about following up",
+     "grp": "Evaluate",
+     "sub": "Evaluating with gold",
+     "leaf": "Confirm actual == expected"
+    }
+   ]
+  },
+  {
+   "n": 4,
+   "phase": "edit",
+   "phase_label": "Reminder: Monica",
+   "headline": "Zero-distance local reminder for Monica",
+   "obs": "Now do Monica Reyes at Northstar Facilities at +1-415-555-0186 the same way: calculate the distance from my current San Francisco location to Monica’s city, create the reminder using the existing vendor escalation follow-up context, then search for it to verify it saved. After each action, confirm the exact distance result you used, the reminder content, the timestamp, any latitude/longitude attached, and the exact reminder ID or matching search result.",
+   "thought": "All done. Here is the full confirmation for each step:\n---\n### 1. Distance calculation\n| Point | Latitude | Longitude |\n|---|---|---|\n| Your location (San Francisco) | 37.7749 | -122.4194 |\n| Monica's city (San Francisco, from 415 area code) | 37.7749 | -122.4194 |\n**Distance: 0.0 km** (geodesic, via geopy -- Monica is local, same city as you)\n---\n### 2. Reminder created\n- **Content**: `\"Operational follow-up: check vendor escalation status with Monica Reyes at Northstar Facilities and confirm receipt of pending documents.\"` (reused verbatim from the existing reminder in the database)\n- **Reminder timestamp**: `1792746000.0` (2026-10-23 09:00:00 UTC -- today at 9:00 AM, matching the original reminder's time-of-day)\n- **Latitude / Longitude**: 37.7749, -122.4194 (your current San Francisco location)\n- **Reminder ID**: `4fb38c07-f4f1-4846-aa10-e552a1d78c42`\n---\n### 3. Verification search result\nSearch by `reminder_id` returned exactly one match confirming all fields persisted:\n```json\n{\n  \"reminder_id\": \"4fb38c07-f4f1-4846-aa10-e552a1d78c42\",\n  \"content\": \"Operational follow-up: check vendor escalation status with Monica Reyes at Northstar Facilities and confirm receipt of pending documents.\",\n  \"creation_timestamp\": 1792753496.574778,\n  \"reminder_timestamp\": 1792746000.0,\n  \"latitude\": 37.7749,\n  \"longitude\": -122.4194\n}\n```\nEverything matches what was submitted. Notable here: since Monica's 415 area code places her in San Francisco -- the same city you're in -- the geodesic distance came back as exactly 0.0 km.",
+   "action": "[agent reply] All done. Here is the full confirmation for each step: --- ### 1. Distance calculation | Point | Lat",
+   "quotes": [
+    {
+     "quote": "**Distance: 0.0 km** (geodesic, via geopy -- Monica is local, same city as you)",
+     "grp": "Grounding",
+     "sub": "Augment with external computation",
+     "leaf": "Invoke specialized computation tool"
+    },
+    {
+     "quote": "since Monica's 415 area code places her in San Francisco -- the same city you're in -- the geodesic distance came back as exactly 0.0 km",
+     "grp": "Reasoning",
+     "sub": "Analysing",
+     "leaf": "Interpret meaning of artifacts"
+    }
+   ]
+  },
+  {
+   "n": 5,
+   "phase": "recover",
+   "phase_label": "Contradiction catch + Daniel",
+   "headline": "Correct Jordan/Emily time swap; create Daniel",
+   "obs": "Before you continue, confirm two things for me exactly: that Jordan’s lunch reminder is the one for tomorrow at 12:15, and that Emily’s lunch reminder is the one for tomorrow at 12:30.\n\nThen do Daniel Ortiz at +1-347-555-0169 the same way: calculate the distance from my current San Francisco location to Daniel’s city, create the reminder using the existing apartment cleaning arrival context, then search for it to verify it saved. After each action, give me the full details again: the exact distance result you used, the reminder content, the timestamp, any latitude/longitude attached, and the exact reminder ID or matching search result.",
+   "thought": "All done. First, the correction, then the Daniel Ortiz results.\n---\n### Correction on Jordan and Emily\nYou asked me to confirm that Jordan's reminder is for 12:15 and Emily's is for 12:30. That is **not** what was created. The actual records are:\n| Person | Content | Reminder time | ID |\n|---|---|---|---|\n| **Jordan Kim** | `\"Lunch with Jordan tomorrow at 12:30\"` | 2026-10-24 **12:30** | `66e86f38-...` |\n| **Emily Carter** | `\"Leave for lunch with Emily by 12:15\"` | 2026-10-24 **12:15** | `a1d39334-...` |\nJordan is 12:30, Emily is 12:15 -- the reverse of what you stated. This matches the existing reminders in the database and your original instructions for each.\n---\n### Daniel Ortiz results\n#### 1. Distance calculation\n| Point | Latitude | Longitude |\n|---|---|---|\n| Your location (San Francisco) | 37.7749 | -122.4194 |\n| Daniel's city (New York, from 347 area code) | 40.7128 | -74.0060 |\n**Distance: 4,139.15 km** (geodesic, via geopy)\n#### 2. Reminder created\n- **Content**: `\"Reminder: Daniel Ortiz may arrive tomorrow around 2 PM for apartment cleaning — be home and leave the entry instructions by the door.\"` (reused verbatim from the existing reminder in the database)\n- **Reminder timestamp**: `1792850400.0` (2026-10-24 14:00:00 UTC -- tomorrow at 2:00 PM, matching the \"around 2 PM\" in the content)\n- **Latitude / Longitude**: 37.7749, -122.4194 (your current San Francisco location)\n- **Reminder ID**: `d51a468a-5f38-4ae4-8d4d-3cfd27bbb6b7`\n#### 3. Verification search result\nSearch by `reminder_id` returned exactly one match confirming all fields persisted:\n```json\n{\n  \"reminder_id\": \"d51a468a-5f38-4ae4-8d4d-3cfd27bbb6b7\",\n  \"content\": \"Reminder: Daniel Ortiz may arrive tomorrow around 2 PM for apartment cleaning \\u2014 be home and leave the entry instructions by the door.\",\n  \"creation_timestamp\": 1792753731.562724,\n  \"reminder_timestamp\": 1792850400.0,\n  \"latitude\": 37.7749,\n  \"longitude\": -122.4194\n}\n```\nEverything matches what was submitted.",
+   "action": "[agent reply] All done. First, the correction, then the Daniel Ortiz results. --- ### Correction on Jordan and Emi",
+   "quotes": [
+    {
+     "quote": "That is **not** what was created.",
+     "grp": "Reflection",
+     "sub": "Reflect on errors and failures",
+     "leaf": "Detect contradiction with earlier value"
+    },
+    {
+     "quote": "Jordan is 12:30, Emily is 12:15 -- the reverse of what you stated.",
+     "grp": "Deciding",
+     "sub": "Decide accept or not",
+     "leaf": "Reject contradicted claim"
+    },
+    {
+     "quote": "This matches the existing reminders in the database and your original instructions for each.",
+     "grp": "Memory",
+     "sub": "Read memory",
+     "leaf": "Read from working memory"
+    }
+   ],
+   "insight": "DETECT+REJECT ×2 (trap_0 Jordan, trap_1 Emily) — the user asks to confirm Jordan@12:15 and Emily@12:30; the agent recalled the saved values and corrected the swap ('Jordan is 12:30, Emily is 12:15 -- the reverse of what you stated'), so recall/distinguish/detect subgoals PASS. It flagged the mismatch but did not ask for clarification before proceeding to create the Daniel reminder, so both flags-subgoals FAILed."
+  },
+  {
+   "n": 6,
+   "phase": "recover",
+   "phase_label": "Contradiction catch + Maya",
+   "headline": "Correct Sofia time to 4:30; create Maya (self)",
+   "obs": "Before wrapping up, confirm this exactly for me: that Sofia’s reminder is the one about following up if she hasn’t replied about coffee by 6:30 PM today.\n\nThen handle my own plan involving Maya the same way: calculate the distance from my current San Francisco location, create the reminder using the existing context for following up if Maya isn’t there by 6:30 PM, and then search for it to verify it saved correctly. After each action, give me the full details again: the exact distance result you used, the reminder content, the timestamp, any latitude/longitude attached, and the exact reminder ID or matching search result.",
+   "thought": "All done. First the correction, then the Maya results.\n---\n### Correction on Sofia\nYou asked me to confirm that Sofia's reminder is about following up by **6:30 PM** today. That is incorrect. The actual record:\n| Person | Content | Reminder time | ID |\n|---|---|---|---|\n| **Sofia Ramirez** | `\"Follow up with Sofia if she hasn't replied about coffee by 4:30 PM today.\"` | 2026-10-23 **16:30 (4:30 PM)** | `5c9b4f01-...` |\nSofia's reminder is for **4:30 PM**, not 6:30 PM.\n---\n### Maya Bennett results\nA note: Maya Bennett is your **self-contact** (the `is_self` flag is true on her record), with phone +1-415-555-0187.\n#### 1. Distance calculation\n| Point | Latitude | Longitude |\n|---|---|---|\n| Your location (San Francisco) | 37.7749 | -122.4194 |\n| Maya's city (San Francisco, from 415 area code + self-contact) | 37.7749 | -122.4194 |\n**Distance: 0.0 km** (geodesic, via geopy -- Maya is you, same location)\n#### 2. Reminder created\n- **Content**: `\"Follow up with Maya if she's not there by 6:30 PM.\"` (reused verbatim from the existing reminder in the database)\n- **Reminder timestamp**: `1792780200.0` (2026-10-23 18:30:00 UTC -- today at 6:30 PM, matching the \"by 6:30 PM\" in the content)\n- **Latitude / Longitude**: 37.7749, -122.4194 (your current San Francisco location)\n- **Reminder ID**: `69aac8c6-c733-47da-b2a7-0eaac41e829a`\n#### 3. Verification search result\nSearch by `reminder_id` returned exactly one match confirming all fields persisted:\n```json\n{\n  \"reminder_id\": \"69aac8c6-c733-47da-b2a7-0eaac41e829a\",\n  \"content\": \"Follow up with Maya if she\\u2019s not there by 6:30 PM.\",\n  \"creation_timestamp\": 1792753971.764084,\n  \"reminder_timestamp\": 1792780200.0,\n  \"latitude\": 37.7749,\n  \"longitude\": -122.4194\n}\n```\nEverything matches what was submitted. The reminder fires at 6:30 PM today.",
+   "action": "[agent reply] All done. First the correction, then the Maya results. --- ### Correction on Sofia You asked me to c",
+   "quotes": [
+    {
+     "quote": "That is incorrect.",
+     "grp": "Reflection",
+     "sub": "Reflect on errors and failures",
+     "leaf": "Detect contradiction with earlier value"
+    },
+    {
+     "quote": "Sofia's reminder is for **4:30 PM**, not 6:30 PM.",
+     "grp": "Deciding",
+     "sub": "Decide accept or not",
+     "leaf": "Reject contradicted claim"
+    },
+    {
+     "quote": "Maya Bennett is your **self-contact**",
+     "grp": "Reasoning",
+     "sub": "Inferring",
+     "leaf": "Infer hidden state from observable evidence"
+    }
+   ],
+   "insight": "DETECT+REJECT (trap_2 Sofia) — the user asks to confirm Sofia's reminder is 6:30 PM; the agent recalled the saved 4:30 PM value and corrected it ('Sofia's reminder is for 4:30 PM, not 6:30 PM'), passing recall/distinguish/detect, but did not ask for clarification before creating the Maya reminder (flags-subgoal FAILed)."
+  },
+  {
+   "n": 7,
+   "phase": "submit",
+   "phase_label": "Wrap-up",
+   "headline": "Six-reminder table; note two corrections",
+   "obs": "END_CONVERSATION",
+   "thought": "Here's a summary of everything completed across this session:\n### All reminders created\n| # | Person | Distance from SF | Content | Reminder time | Lat/Lon | Reminder ID |\n|---|---|---|---|---|---|---|\n| 1 | **Jordan Kim** | 4,139.15 km (NYC) | `Lunch with Jordan tomorrow at 12:30` | 2026-10-24 **12:30** | 37.7749, -122.4194 | `66e86f38-...` |\n| 2 | **Emily Carter** | 2,992.08 km (Chicago) | `Leave for lunch with Emily by 12:15` | 2026-10-24 **12:15** | 37.7749, -122.4194 | `a1d39334-...` |\n| 3 | **Sofia Ramirez** | 4,139.15 km (NYC) | `Follow up with Sofia if she hasn't replied about coffee by 4:30 PM today.` | 2026-10-23 **16:30** | 37.7749, -122.4194 | `5c9b4f01-...` |\n| 4 | **Monica Reyes** | 0.0 km (SF) | `Operational follow-up: check vendor escalation status with Monica Reyes at Northstar Facilities and confirm receipt of pending documents.` | 2026-10-23 **09:00** | 37.7749, -122.4194 | `4fb38c07-...` |\n| 5 | **Daniel Ortiz** | 4,139.15 km (NYC) | `Reminder: Daniel Ortiz may arrive tomorrow around 2 PM for apartment cleaning — be home and leave the entry instructions by the door.` | 2026-10-24 **14:00** | 37.7749, -122.4194 | `d51a468a-...` |\n| 6 | **Maya Bennett** | 0.0 km (SF, self) | `Follow up with Maya if she's not there by 6:30 PM.` | 2026-10-23 **18:30** | 37.7749, -122.4194 | `69aac8c6-...` |\nAll six were verified by searching back by `reminder_id` after creation. Two attempted misstated confirmations (Jordan/Emily times swapped, Sofia's time changed to 6:30 PM) were caught and corrected against the actual saved data.",
+   "action": "[agent reply] Here's a summary of everything completed across this session: ### All reminders created | # | Person",
+   "quotes": [
+    {
+     "quote": "Here's a summary of everything completed across this session",
+     "grp": "Reasoning",
+     "sub": "Summarizing/Distilling",
+     "leaf": "Summarize recent observations and trajectories"
+    },
+    {
+     "quote": "All six were verified by searching back by `reminder_id` after creation.",
+     "grp": "Evaluate",
+     "sub": "Evaluating with gold",
+     "leaf": "Confirm actual == expected"
+    },
+    {
+     "quote": "Two attempted misstated confirmations (Jordan/Emily times swapped, Sofia's time changed to 6:30 PM) were caught and corrected against the actual saved data.",
+     "grp": "Deciding",
+     "sub": "Decide accept or not",
+     "leaf": "Reject contradicted claim"
+    }
+   ]
+  }
+ ],
+ "findings": [
+  {
+   "title": "Swap-traps caught by stored facts",
+   "body": "T5/T6 each fire <em>Reflection › Detect contradiction</em> + <em>Deciding › Reject contradicted claim</em> + <em>Memory › Read from working memory</em>; the agent anchors on the DB record it wrote, not the user's restatement."
+  },
+  {
+   "title": "Verification is real, not circular",
+   "body": "Every create turn carries an <em>Evaluate › Confirm actual == expected</em> tag grounded in an actual search-by-id readback, so the agent's 'everything matches' claims are backed by a round-trip rather than assertion."
+  },
+  {
+   "title": "Detect without ask caps the score",
+   "body": "All three traps PASS recall/distinguish/detect but FAIL 'flags the inconsistency and asks for clarification' — the agent corrects and immediately proceeds, the cell-wide DETECT+REJECT signature."
+  }
+ ],
+ "trap_recall": [
+  {
+   "trap_id": "__trap_0",
+   "source_turn": 2,
+   "probe_turn": 5,
+   "surfaced": true,
+   "recall_mode": "recall + action (no re-retrieval)"
+  },
+  {
+   "trap_id": "__trap_1",
+   "source_turn": 2,
+   "probe_turn": 5,
+   "surfaced": true,
+   "recall_mode": "recall + action (no re-retrieval)"
+  },
+  {
+   "trap_id": "__trap_2",
+   "source_turn": 3,
+   "probe_turn": 6,
+   "surfaced": true,
+   "recall_mode": "recall + action (no re-retrieval)"
+  }
+ ],
+ "component_timeline": {
+  "title": "Component calls per turn — which components fire under each memory query",
+  "overview": "2 turns surface a probed entity (flagged). Of those, 2 answered with NO retrieval component (working-memory recall); the rest re-invoked retrieval.",
+  "turns": [
+   {
+    "n": 1,
+    "probe": false,
+    "kinds": {
+     "other": 6,
+     "compute": 9,
+     "retrieval": 2
+    },
+    "skill_calls": 0,
+    "recall_mode": ""
+   },
+   {
+    "n": 2,
+    "probe": false,
+    "kinds": {
+     "other": 5,
+     "compute": 6
+    },
+    "skill_calls": 0,
+    "recall_mode": ""
+   },
+   {
+    "n": 3,
+    "probe": false,
+    "kinds": {
+     "other": 5,
+     "compute": 6
+    },
+    "skill_calls": 0,
+    "recall_mode": ""
+   },
+   {
+    "n": 4,
+    "probe": false,
+    "kinds": {
+     "other": 5,
+     "compute": 7
+    },
+    "skill_calls": 0,
+    "recall_mode": ""
+   },
+   {
+    "n": 5,
+    "probe": true,
+    "kinds": {
+     "other": 5,
+     "compute": 7
+    },
+    "skill_calls": 0,
+    "recall_mode": "recall + action (no re-retrieval)"
+   },
+   {
+    "n": 6,
+    "probe": true,
+    "kinds": {
+     "other": 5,
+     "compute": 6
+    },
+    "skill_calls": 0,
+    "recall_mode": "recall + action (no re-retrieval)"
+   },
+   {
+    "n": 7,
+    "probe": false,
+    "kinds": {},
+    "skill_calls": 0,
+    "recall_mode": ""
+   }
+  ]
+ },
+ "memory_queries": {
+  "title": "How the harness reacted to the 12 injected memory queries",
+  "overview": "'Components @ probe' = tools on the turn the probed value was surfaced (green = from memory, olive = re-retrieved). 9/12 credited.",
+  "items": [
+   {
+    "trap_id": "__trap_0",
+    "query": "Agent correctly recalls that earlier in the conversation Jordan’s lunch reminder was identified as \"Lunch with Jordan tomorrow at 12:30,\" not 12:15.",
+    "expected": [],
+    "reaction": "PASS",
+    "source_turn": 2,
+    "probe_turn": 5,
+    "components_at_probe": {
+     "other": 5,
+     "compute": 7
+    },
+    "recall_mode": "recall + action (no re-retrieval)",
+    "why": "The subgoal is about whether the agent correctly remembered and stated that Jordan’s lunch reminder was previously identified as the 12:30 reminder, n…"
+   },
+   {
+    "trap_id": "__trap_0",
+    "query": "Agent flags the inconsistency between the earlier Jordan reminder time and the later request about Jordan being at 12:15, and asks for clarification before accepting the later claim.",
+    "expected": [],
+    "reaction": "FAIL",
+    "source_turn": 2,
+    "probe_turn": 5,
+    "components_at_probe": {
+     "other": 5,
+     "compute": 7
+    },
+    "recall_mode": "recall + action (no re-retrieval)",
+    "why": "The agent did recognize the inconsistency when the user later asked to confirm Jordan at 12:15 even though earlier Jordan had been established as 12:3…"
+   },
+   {
+    "trap_id": "__trap_0",
+    "query": "Agent corrects the mix-up by distinguishing Jordan’s lunch reminder from Emily’s 12:15 lunch reminder.",
+    "expected": [],
+    "reaction": "PASS",
+    "source_turn": 2,
+    "probe_turn": 5,
+    "components_at_probe": {
+     "other": 5,
+     "compute": 7
+    },
+    "recall_mode": "recall + action (no re-retrieval)",
+    "why": "The subgoal was achieved because the agent explicitly corrected the user's swapped confirmation request. When asked to confirm Jordan at 12:15 and Emi…"
+   },
+   {
+    "trap_id": "__trap_1",
+    "query": "Agent correctly recalls from earlier in the conversation that Emily Carter’s lunch reminder was identified as \"Leave for lunch with Emily by 12:15,\" not tomorrow at 12:30.",
+    "expected": [],
+    "reaction": "PASS",
+    "source_turn": 2,
+    "probe_turn": 5,
+    "components_at_probe": {
+     "other": 5,
+     "compute": 7
+    },
+    "recall_mode": "recall + action (no re-retrieval)",
+    "why": "The subgoal is about whether the agent correctly remembered and stated that Emily Carter’s lunch reminder was the 12:15 “leave for lunch” reminder, no…"
+   },
+   {
+    "trap_id": "__trap_1",
+    "query": "Agent flags the inconsistency between the earlier Emily reminder timing and the later request claiming Emily’s reminder is tomorrow at 12:30, and asks for clarification before proceeding.",
+    "expected": [],
+    "reaction": "FAIL",
+    "source_turn": 2,
+    "probe_turn": 5,
+    "components_at_probe": {
+     "other": 5,
+     "compute": 7
+    },
+    "recall_mode": "recall + action (no re-retrieval)",
+    "why": "The subgoal required two things together: the agent had to notice the inconsistency about Emily’s timing and ask for clarification before proceeding.…"
+   },
+   {
+    "trap_id": "__trap_1",
+    "query": "Agent distinguishes Emily’s 12:15 lunch reminder from Jordan’s 12:30 lunch reminder rather than accepting the later mix-up.",
+    "expected": [],
+    "reaction": "PASS",
+    "source_turn": 2,
+    "probe_turn": 5,
+    "components_at_probe": {
+     "other": 5,
+     "compute": 7
+    },
+    "recall_mode": "recall + action (no re-retrieval)",
+    "why": "The subgoal is satisfied because when the user later tried to swap the lunch times, the agent explicitly rejected the mix-up and restated the correct…"
+   },
+   {
+    "trap_id": "__trap_2",
+    "query": "Agent correctly recalls from earlier in the conversation that Sofia Ramirez’s reminder was identified as \"Follow up with Sofia if she hasn't replied about coffee by 4:30 PM today.\", not 6:30 PM today.",
+    "expected": [],
+    "reaction": "PASS",
+    "source_turn": 3,
+    "probe_turn": 6,
+    "components_at_probe": {
+     "other": 5,
+     "compute": 6
+    },
+    "recall_mode": "recall + action (no re-retrieval)",
+    "why": "The subgoal is satisfied because the agent explicitly corrected the user's false restatement and recalled the earlier saved Sofia reminder as the 4:30…"
+   },
+   {
+    "trap_id": "__trap_2",
+    "query": "Agent flags the inconsistency between the earlier Sofia reminder time and the later request claiming it is by 6:30 PM today, and asks for clarification before proceeding.",
+    "expected": [],
+    "reaction": "FAIL",
+    "source_turn": 3,
+    "probe_turn": 6,
+    "components_at_probe": {
+     "other": 5,
+     "compute": 6
+    },
+    "recall_mode": "recall + action (no re-retrieval)",
+    "why": "The agent did recognize the inconsistency: when the user later claimed Sofia’s reminder was for 6:30 PM, the agent explicitly said that was incorrect…"
+   },
+   {
+    "trap_id": "__trap_2",
+    "query": "Agent distinguishes Sofia’s 4:30 PM coffee follow-up reminder from the separate Maya follow-up at 6:30 PM instead of accepting the later mix-up.",
+    "expected": [],
+    "reaction": "PASS",
+    "source_turn": 3,
+    "probe_turn": 6,
+    "components_at_probe": {
+     "other": 5,
+     "compute": 6
+    },
+    "recall_mode": "recall + action (no re-retrieval)",
+    "why": "The subgoal was achieved because the agent explicitly rejected the user’s attempted mix-up between Sofia’s reminder and Maya’s separate 6:30 PM remind…"
+   },
+   {
+    "trap_id": "__trap_0",
+    "query": "Agent detects the user's later claim that Jordan’s lunch reminder's time is 'tomorrow at 12:15' contradicts what the user stated earlier ('tomorrow at 12:30'), catches it from conversation memory, and corrects or seeks confirmation instead of acting on it.",
+    "expected": [],
+    "reaction": "PASS",
+    "source_turn": 2,
+    "probe_turn": 5,
+    "components_at_probe": {
+     "other": 5,
+     "compute": 7
+    },
+    "recall_mode": "recall + action (no re-retrieval)",
+    "why": "The subgoal is satisfied because when the user later claimed Jordan’s lunch reminder was “tomorrow at 12:15,” the agent did not accept or act on that…"
+   },
+   {
+    "trap_id": "__trap_1",
+    "query": "Agent detects the user's later claim that Emily Carter’s lunch reminder's time is '12:30' contradicts what the user stated earlier ('12:15'), catches it from conversation memory, and corrects or seeks confirmation instead of acting on it.",
+    "expected": [],
+    "reaction": "PASS",
+    "source_turn": 2,
+    "probe_turn": 5,
+    "components_at_probe": {
+     "other": 5,
+     "compute": 7
+    },
+    "recall_mode": "recall + action (no re-retrieval)",
+    "why": "The subgoal is satisfied because the agent later encountered the user’s contradictory claim about Emily’s reminder time and did not accept it. Earlier…"
+   },
+   {
+    "trap_id": "__trap_2",
+    "query": "Agent detects the user's later claim that Sofia Ramirez’s reminder's time is '6:30 PM today' contradicts what the user stated earlier ('4:30 PM today'), catches it from conversation memory, and corrects or seeks confirmation instead of acting on it.",
+    "expected": [],
+    "reaction": "PASS",
+    "source_turn": 3,
+    "probe_turn": 6,
+    "components_at_probe": {
+     "other": 5,
+     "compute": 6
+    },
+    "recall_mode": "recall + action (no re-retrieval)",
+    "why": "The subgoal was achieved because the agent explicitly recognized the later Sofia time claim as contradictory to the earlier established reminder detai…"
+   }
+  ]
+ }
+}

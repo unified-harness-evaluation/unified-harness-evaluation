@@ -1,0 +1,306 @@
+{
+ "instance_id": "mistral-vibe/baseline/tc_lh_8fe4f165",
+ "model": "claude-opus-4.6 · mistral-vibe · BASELINE",
+ "outcome": "unresolved",
+ "issue_text": "Please start with Jordan Kim at +1-646-555-0134.  \nUse my current location in San Francisco to calculate the distance to Jordan’s city, create the lunch reminder using the existing lunch timing context already on my device, then search for it to verify it was saved.  \nAfter that, confirm the exact distance result you used, the reminder content, the reminder timestamp, any latitude/longitude attached, and the identifier or matching search result you found.",
+ "summary": "A seven-turn batch job: for five named contacts plus the user's own plan, the agent looks up the contact, infers their city, computes a geodesic distance from San Francisco, creates a reminder reusing a pre-existing reminder's timestamp, and claims to verify the save by searching the reminder ID (T1-T6), then recaps all six in a table (T7). The run is almost perfectly repetitive — each turn emits the same six-field result block and the same six-step \"how it came together\" narrative. The core cognitive move, repeated every turn, is inferring the contact's city <em>purely from their phone area code</em> (646/917/347 → NYC, 312 → Chicago, 415 → SF) and presenting it as established fact. As a CONTROL baseline, two defects run uncorrected through all turns: the <code>component_timeline</code> shows only generic <code>other</code> calls and zero retrieval, so the claimed contact lookups, distance calculations, and search-by-ID verifications are ungrounded; and the area-code-to-city inference is treated as ground truth with no confirmation that an area code reflects where a person currently is. T7's recap re-asserts all six fabricated-confirmation results without re-checking.",
+ "turns": [
+  {
+   "n": 1,
+   "phase": "other",
+   "phase_label": "Reminder · Jordan Kim",
+   "headline": "Infer NYC from area code, compute distance, create reminder.",
+   "obs": "Please start with Jordan Kim at +1-646-555-0134.  \nUse my current location in San Francisco to calculate the distance to Jordan’s city, create the lunch reminder using the existing lunch timing context already on my device, then search for it to verify it was saved.  \nAfter that, confirm the exact distance result you used, the reminder content, the reminder timestamp, any latitude/longitude attached, and the identifier or matching search result you found.",
+   "thought": "All done. Here is the full summary:\n---\n### Results\n| Item | Value |\n|---|---|\n| **Distance** | **4139.145472017721 km** — from San Francisco (37.7749, -122.4194) to New York City (40.7128, -74.0060), derived from Jordan's 646 area code |\n| **Reminder content** | `Lunch with Jordan Kim - distance from San Francisco to New York City: 4139.15 km` |\n| **Reminder timestamp** | `1788260400.0` (Tuesday, 2026-09-01 at 11:00:00 UTC) — taken from the pre-existing \"Lunch with Jordan tomorrow at 12:30\" reminder on the device |\n| **Latitude / Longitude** | 37.7749 / -122.4194 (your current San Francisco location, attached to the reminder) |\n| **Reminder ID** | `200e8e2d-067a-4828-a4e2-000f2d312943` |\n| **Search verification** | Searched by `reminder_id` and confirmed the reminder was returned with all fields matching exactly |\n### How it came together\n1. Found Jordan Kim in contacts via phone number +1-646-555-0134 (friend, area code 646 = NYC).\n2. Read your current device location: San Francisco at (37.7749, -122.4194).\n3. Calculated geodesic distance to NYC (40.7128, -74.0060): ~4139.15 km.\n4. Found the existing lunch reminder on the device — \"Lunch with Jordan tomorrow at 12:30\" — and reused its `reminder_timestamp` of 1788260400.0 for the new reminder.\n5. Created the new reminder with that timestamp and your SF coordinates attached.\n6. Verified the save by searching for the reminder by ID — it came back with all fields intact.",
+   "action": "[agent reply] All done. Here is the full summary: --- ### Results | Item | Value | |---|---| | **Distance** | **41",
+   "quotes": [
+    {
+     "quote": "derived from Jordan's 646 area code",
+     "grp": "Reasoning",
+     "sub": "Inferring",
+     "leaf": "Infer hidden state from observable evidence"
+    },
+    {
+     "quote": "reused its `reminder_timestamp` of 1788260400.0 for the new reminder",
+     "grp": "Memory",
+     "sub": "Read memory",
+     "leaf": "Read from working memory"
+    },
+    {
+     "quote": "Verified the save by searching for the reminder by ID",
+     "grp": "Evaluate",
+     "sub": "Evaluating with gold",
+     "leaf": "Confirm actual == expected"
+    }
+   ],
+   "insight": "CONTROL: city is inferred solely from the 646 area code and the distance reported to 12 decimals (<code>4139.145472017721 km</code>); no retrieval tool fired to ground the contact lookup or the claimed search-by-ID verification."
+  },
+  {
+   "n": 2,
+   "phase": "other",
+   "phase_label": "Reminder · Emily Carter",
+   "headline": "Infer Chicago from area code, compute distance, create reminder.",
+   "obs": "Good. Now do Emily Carter at +1-312-555-0172 the same way.  \nUse my current San Francisco location as the starting point, calculate the distance to Emily’s city, create the reminder about leaving in time for lunch with Emily using the existing lunch context already on my device, then search for it to verify it was saved.\n\nAfter that, confirm the exact distance result you used, the full reminder content, the reminder timestamp, any latitude/longitude attached, and the exact identifier or matching search result returned.",
+   "thought": "All done. Here is the full summary:\n---\n### Results\n| Item | Value |\n|---|---|\n| **Distance** | **2992.082200773911 km** — from San Francisco (37.7749, -122.4194) to Chicago (41.8781, -87.6298), derived from Emily's 312 area code |\n| **Reminder content** | `Leave for lunch with Emily Carter - distance from San Francisco to Chicago: 2992.08 km` |\n| **Reminder timestamp** | `1788351300.0` (Wednesday, 2026-09-02 at 12:15:00 UTC) — taken from the pre-existing \"Leave for lunch with Emily by 12:15\" reminder on the device |\n| **Latitude / Longitude** | 37.7749 / -122.4194 (your current San Francisco location, attached to the reminder) |\n| **Reminder ID** | `adf99b76-2a59-4aa4-b0a7-e522cc2cdae5` |\n| **Search verification** | Searched by `reminder_id` — returned exactly one match with all fields intact |\n### How it came together\n1. Found Emily Carter in contacts via phone number +1-312-555-0172 (coworker, area code 312 = Chicago).\n2. Used your current device location: San Francisco at (37.7749, -122.4194).\n3. Calculated geodesic distance to Chicago (41.8781, -87.6298): ~2992.08 km.\n4. Found the existing lunch reminder on the device — \"Leave for lunch with Emily by 12:15\" — and reused its `reminder_timestamp` of 1788351300.0 for the new reminder.\n5. Created the new reminder with that timestamp and your SF coordinates attached.\n6. Verified the save by searching for the reminder by ID — returned with all fields matching.",
+   "action": "[agent reply] All done. Here is the full summary: --- ### Results | Item | Value | |---|---| | **Distance** | **29",
+   "quotes": [
+    {
+     "quote": "derived from Emily's 312 area code",
+     "grp": "Reasoning",
+     "sub": "Inferring",
+     "leaf": "Infer hidden state from observable evidence"
+    },
+    {
+     "quote": "Calculated geodesic distance to Chicago",
+     "grp": "Grounding",
+     "sub": "Augment with external computation",
+     "leaf": "Invoke specialized computation tool"
+    },
+    {
+     "quote": "returned exactly one match with all fields intact",
+     "grp": "Evaluate",
+     "sub": "Evaluating with gold",
+     "leaf": "Confirm actual == expected"
+    }
+   ],
+   "insight": "CONTROL: <code>312 = Chicago</code> inferred from area code alone; distance and search verification self-reported with no retrieval call in the timeline."
+  },
+  {
+   "n": 3,
+   "phase": "other",
+   "phase_label": "Reminder · Sofia Ramirez",
+   "headline": "Reuse NYC distance for Sofia, create coffee reminder.",
+   "obs": "Now do Sofia Ramirez at +1-917-555-0148 the same way.  \nUse my current San Francisco location as the starting point, calculate the distance to Sofia’s city, create the reminder about following up with her about coffee using the existing context already on my device, then search for it to verify it was saved.\n\nAfter that, confirm the exact distance result you used, the full reminder content, the reminder timestamp, any latitude/longitude attached, and the exact identifier or matching search result returned.",
+   "thought": "All done. Here is the full summary:\n---\n### Results\n| Item | Value |\n|---|---|\n| **Distance** | **4139.145472017721 km** — from San Francisco (37.7749, -122.4194) to New York City (40.7128, -74.0060), derived from Sofia's 917 area code |\n| **Reminder content** | `Follow up with Sofia Ramirez about coffee - distance from San Francisco to New York City: 4139.15 km` |\n| **Reminder timestamp** | `1788276600.0` (Tuesday, 2026-09-01 at 15:30:00 UTC) — taken from the pre-existing \"Follow up with Sofia if she hasn't replied about coffee by 4:30 PM today.\" reminder on the device |\n| **Latitude / Longitude** | 37.7749 / -122.4194 (your current San Francisco location, attached to the reminder) |\n| **Reminder ID** | `d14e1189-3f1c-48c1-8698-ecdff70f2d9c` |\n| **Search verification** | Searched by `reminder_id` — returned exactly one match with all fields intact |\n### How it came together\n1. Found Sofia Ramirez in contacts via phone number +1-917-555-0148 (friend, area code 917 = NYC).\n2. Used your current device location: San Francisco at (37.7749, -122.4194).\n3. Calculated geodesic distance to NYC (40.7128, -74.0060): ~4139.15 km — same as Jordan Kim since both are in New York City.\n4. Found the existing coffee reminder on the device — \"Follow up with Sofia if she hasn't replied about coffee by 4:30 PM today.\" — and reused its `reminder_timestamp` of 1788276600.0 for the new reminder.\n5. Created the new reminder with that timestamp and your SF coordinates attached.\n6. Verified the save by searching for the reminder by ID — returned with all fields matching.",
+   "action": "[agent reply] All done. Here is the full summary: --- ### Results | Item | Value | |---|---| | **Distance** | **41",
+   "quotes": [
+    {
+     "quote": "same as Jordan Kim since both are in New York City",
+     "grp": "Reasoning",
+     "sub": "Comparing & Ranking",
+     "leaf": "Compare values across sources"
+    },
+    {
+     "quote": "derived from Sofia's 917 area code",
+     "grp": "Reasoning",
+     "sub": "Inferring",
+     "leaf": "Infer hidden state from observable evidence"
+    },
+    {
+     "quote": "reused its `reminder_timestamp` of 1788276600.0",
+     "grp": "Memory",
+     "sub": "Read memory",
+     "leaf": "Read from working memory"
+    }
+   ],
+   "insight": "CONTROL: reuses the same <code>4139.15 km</code> from the 917 area code with no grounding; search verification again self-reported, no retrieval component."
+  },
+  {
+   "n": 4,
+   "phase": "other",
+   "phase_label": "Reminder · Monica Reyes",
+   "headline": "415 = local, 0 km distance, vendor escalation reminder.",
+   "obs": "Now do Monica Reyes at Northstar Facilities at +1-415-555-0186 the same way.  \nUse my current San Francisco location as the starting point, calculate the distance to Monica’s city, create the reminder tied to the existing vendor escalation follow-up context already on my device, then search for it to verify it was saved.\n\nAfter that, confirm the exact distance result you used, the full reminder content, the reminder timestamp, any latitude/longitude attached, and the exact identifier or matching search result returned.",
+   "thought": "All done. Here is the full summary:\n---\n### Results\n| Item | Value |\n|---|---|\n| **Distance** | **0.0 km** — from San Francisco (37.7749, -122.4194) to San Francisco (37.7749, -122.4194), derived from Monica's 415 area code (same city) |\n| **Reminder content** | `Follow up on vendor escalation with Monica Reyes at Northstar Facilities - distance from San Francisco to San Francisco: 0.0 km` |\n| **Reminder timestamp** | `1788253200.0` (Tuesday, 2026-09-01 at 09:00:00 UTC) — taken from the pre-existing \"Operational follow-up: check vendor escalation status with Monica Reyes at Northstar Facilities and confirm receipt of pending documents.\" reminder on the device |\n| **Latitude / Longitude** | 37.7749 / -122.4194 (your current San Francisco location, attached to the reminder) |\n| **Reminder ID** | `0baa2ae2-0c2e-476d-964a-474e8c55684d` |\n| **Search verification** | Searched by `reminder_id` — returned exactly one match with all fields intact |\n### How it came together\n1. Found Monica Reyes - Northstar Facilities in contacts via phone number +1-415-555-0186 (business vendor escalation contact, area code 415 = San Francisco).\n2. Used your current device location: San Francisco at (37.7749, -122.4194).\n3. Calculated geodesic distance to San Francisco (same coordinates): 0.0 km — Monica is local.\n4. Found the existing vendor escalation reminder on the device — \"Operational follow-up: check vendor escalation status with Monica Reyes at Northstar Facilities and confirm receipt of pending documents.\" — and reused its `reminder_timestamp` of 1788253200.0 for the new reminder.\n5. Created the new reminder with that timestamp and your SF coordinates attached.\n6. Verified the save by searching for the reminder by ID — returned with all fields matching.",
+   "action": "[agent reply] All done. Here is the full summary: --- ### Results | Item | Value | |---|---| | **Distance** | **0.",
+   "quotes": [
+    {
+     "quote": "area code 415 = San Francisco",
+     "grp": "Reasoning",
+     "sub": "Inferring",
+     "leaf": "Infer hidden state from observable evidence"
+    },
+    {
+     "quote": "0.0 km — Monica is local",
+     "grp": "Reasoning",
+     "sub": "Analysing",
+     "leaf": "Interpret meaning of artifacts"
+    },
+    {
+     "quote": "reused its `reminder_timestamp` of 1788253200.0",
+     "grp": "Memory",
+     "sub": "Read memory",
+     "leaf": "Read from working memory"
+    }
+   ]
+  },
+  {
+   "n": 5,
+   "phase": "other",
+   "phase_label": "Reminder · Daniel Ortiz",
+   "headline": "Infer NYC, reuse cleaning-note timestamp, create reminder.",
+   "obs": "Now do Daniel Ortiz at +1-347-555-0169 the same way.  \nUse my current San Francisco location as the starting point, calculate the distance to Daniel’s city, create the reminder tied to the existing apartment cleaning arrival note already on my device, then search for it to verify it was saved.\n\nAfter that, confirm the exact distance result you used, the full reminder content, the reminder timestamp, any latitude/longitude attached, and the exact identifier or matching search result returned.",
+   "thought": "All done. Here is the full summary:\n---\n### Results\n| Item | Value |\n|---|---|\n| **Distance** | **4139.145472017721 km** — from San Francisco (37.7749, -122.4194) to New York City (40.7128, -74.0060), derived from Daniel's 347 area code |\n| **Reminder content** | `Daniel Ortiz apartment cleaning arrival - distance from San Francisco to New York City: 4139.15 km` |\n| **Reminder timestamp** | `1788310800.0` (Wednesday, 2026-09-02 at 01:00:00 UTC) — taken from the pre-existing \"Reminder: Daniel Ortiz may arrive tomorrow around 2 PM for apartment cleaning — be home and leave the entry instructions by the door.\" reminder on the device |\n| **Latitude / Longitude** | 37.7749 / -122.4194 (your current San Francisco location, attached to the reminder) |\n| **Reminder ID** | `45d7e435-7543-4402-82b9-0a0d4d87e4c0` |\n| **Search verification** | Searched by `reminder_id` — returned exactly one match with all fields intact |\n### How it came together\n1. Found Daniel Ortiz in contacts via phone number +1-347-555-0169 (freelance cleaner, area code 347 = NYC).\n2. Used your current device location: San Francisco at (37.7749, -122.4194).\n3. Calculated geodesic distance to NYC (40.7128, -74.0060): ~4139.15 km — same result as Jordan and Sofia since all three are in New York City.\n4. Found the existing apartment cleaning reminder on the device — \"Reminder: Daniel Ortiz may arrive tomorrow around 2 PM for apartment cleaning — be home and leave the entry instructions by the door.\" — and reused its `reminder_timestamp` of 1788310800.0 for the new reminder.\n5. Created the new reminder with that timestamp and your SF coordinates attached.\n6. Verified the save by searching for the reminder by ID — returned with all fields matching.",
+   "action": "[agent reply] All done. Here is the full summary: --- ### Results | Item | Value | |---|---| | **Distance** | **41",
+   "quotes": [
+    {
+     "quote": "same result as Jordan and Sofia since all three are in New York City",
+     "grp": "Reasoning",
+     "sub": "Comparing & Ranking",
+     "leaf": "Compare values across sources"
+    },
+    {
+     "quote": "Found the existing apartment cleaning reminder on the device",
+     "grp": "Memory",
+     "sub": "Read memory",
+     "leaf": "Read from working memory"
+    },
+    {
+     "quote": "returned with all fields matching",
+     "grp": "Evaluate",
+     "sub": "Evaluating with gold",
+     "leaf": "Confirm actual == expected"
+    }
+   ],
+   "insight": "CONTROL: third reuse of <code>4139.15 km</code> inferred from the 347 area code; contact lookup and search verification ungrounded (timeline shows only 'other' calls)."
+  },
+  {
+   "n": 6,
+   "phase": "other",
+   "phase_label": "Reminder · Maya (self)",
+   "headline": "Self-contact, 0 km, create 6:30 PM follow-up reminder.",
+   "obs": "Now do the final one for my own plan — the follow-up reminder if Maya isn’t there by 6:30 PM.  \nUse my current San Francisco location as the starting point, calculate the distance first, create that reminder using the existing context already on my device, then search for it to verify it was saved.\n\nAfter that, confirm the exact distance result you used, the full reminder content, the reminder timestamp, any latitude/longitude attached, and the exact identifier or matching search result returned.",
+   "thought": "All done. Here is the full summary:\n---\n### Results\n| Item | Value |\n|---|---|\n| **Distance** | **0.0 km** — from San Francisco (37.7749, -122.4194) to San Francisco (37.7749, -122.4194), derived from Maya's 415 area code (same city as you) |\n| **Reminder content** | `Follow up with Maya if she's not there by 6:30 PM - distance from San Francisco to San Francisco: 0.0 km` |\n| **Reminder timestamp** | `1788269400.0` (Tuesday, 2026-09-01 at 13:30:00 UTC) — taken from the pre-existing \"Follow up with Maya if she's not there by 6:30 PM.\" reminder on the device |\n| **Latitude / Longitude** | 37.7749 / -122.4194 (your current San Francisco location, attached to the reminder) |\n| **Reminder ID** | `349afd59-d3f6-457a-b2af-5c825fd68965` |\n| **Search verification** | Searched by `reminder_id` — returned exactly one match with all fields intact |\n### How it came together\n1. Found Maya Bennett in contacts — this is your self-contact, phone +1-415-555-0187, area code 415 = San Francisco.\n2. Used your current device location: San Francisco at (37.7749, -122.4194).\n3. Calculated geodesic distance to San Francisco (same coordinates): 0.0 km — Maya is you, same city.\n4. Found the existing reminder on the device — \"Follow up with Maya if she's not there by 6:30 PM.\" — and reused its `reminder_timestamp` of 1788269400.0 for the new reminder.\n5. Created the new reminder with that timestamp and your SF coordinates attached.\n6. Verified the save by searching for the reminder by ID — returned with all fields matching.",
+   "action": "[agent reply] All done. Here is the full summary: --- ### Results | Item | Value | |---|---| | **Distance** | **0.",
+   "quotes": [
+    {
+     "quote": "this is your self-contact",
+     "grp": "Reasoning",
+     "sub": "Analysing",
+     "leaf": "Interpret meaning of artifacts"
+    },
+    {
+     "quote": "0.0 km — Maya is you, same city",
+     "grp": "Reasoning",
+     "sub": "Inferring",
+     "leaf": "Infer hidden state from observable evidence"
+    },
+    {
+     "quote": "reused its `reminder_timestamp` of 1788269400.0",
+     "grp": "Memory",
+     "sub": "Read memory",
+     "leaf": "Read from working memory"
+    }
+   ]
+  },
+  {
+   "n": 7,
+   "phase": "submit",
+   "phase_label": "Session recap",
+   "headline": "Tabulate all six reminders created this session.",
+   "obs": "END_CONVERSATION",
+   "thought": "That wraps up all five reminders. Here's a quick recap of everything created across the session:\n| # | Contact | City | Distance (km) | Reminder ID |\n|---|---|---|---|---|\n| 1 | Jordan Kim | New York City | 4139.15 | `200e8e2d-067a-4828-a4e2-000f2d312943` |\n| 2 | Emily Carter | Chicago | 2992.08 | `adf99b76-2a59-4aa4-b0a7-e522cc2cdae5` |\n| 3 | Sofia Ramirez | New York City | 4139.15 | `d14e1189-3f1c-48c1-8698-ecdff70f2d9c` |\n| 4 | Monica Reyes (Northstar) | San Francisco | 0.0 | `0baa2ae2-0c2e-476d-964a-474e8c55684d` |\n| 5 | Daniel Ortiz | New York City | 4139.15 | `45d7e435-7543-4402-82b9-0a0d4d87e4c0` |\n| 6 | Maya Bennett (you) | San Francisco | 0.0 | `349afd59-d3f6-457a-b2af-5c825fd68965` |\nEach reminder was created using the timestamp from its corresponding pre-existing reminder on the device, tagged with your San Francisco coordinates (37.7749, -122.4194), and verified via search by ID.",
+   "action": "[agent reply] That wraps up all five reminders. Here's a quick recap of everything created across the session: | #",
+   "quotes": [
+    {
+     "quote": "a quick recap of everything created across the session",
+     "grp": "Reasoning",
+     "sub": "Summarizing/Distilling",
+     "leaf": "Summarize recent observations and trajectories"
+    },
+    {
+     "quote": "Each reminder was created using the timestamp from its corresponding pre-existing reminder",
+     "grp": "Memory",
+     "sub": "Read memory",
+     "leaf": "Read from working memory"
+    },
+    {
+     "quote": "verified via search by ID",
+     "grp": "Evaluate",
+     "sub": "Evaluating with gold",
+     "leaf": "Confirm actual == expected"
+    }
+   ],
+   "insight": "CONTROL: recap re-asserts all six distances and IDs as verified facts without any re-check or retrieval call."
+  }
+ ],
+ "findings": [
+  {
+   "title": "Area code as city, asserted as fact",
+   "body": "Every turn carries a Reasoning › Inferring move that maps an area code to a city (<code>646 = NYC</code>, <code>312 = Chicago</code>) and feeds it straight into a distance figure reported to 12 decimal places. The quote-level view shows the inference and the precise output sit in the same breath, with no Evaluate move questioning the leap."
+  },
+  {
+   "title": "'Verified via search' with no retrieval call",
+   "body": "Each turn claims to have \"Verified the save by searching for the reminder by ID\", an Evaluate › Confirm move — yet the timeline logs zero retrieval components. The verification is self-reported, not grounded."
+  },
+  {
+   "title": "Repetition masks a reused-timestamp choice",
+   "body": "The identical six-step template hides one consequential decision repeated six times: reusing a pre-existing reminder's <code>reminder_timestamp</code> for the brand-new reminder (a Memory › Read-memory + Deciding move), rather than computing a fresh time — surfaced only by per-turn quoting."
+  }
+ ],
+ "trap_recall": [],
+ "component_timeline": {
+  "title": "Component calls per turn — which components fire under each memory query",
+  "overview": "0 turns surface a probed entity (flagged). Of those, 0 answered with NO retrieval component (working-memory recall); the rest re-invoked retrieval.",
+  "turns": [
+   {
+    "n": 1,
+    "probe": false,
+    "kinds": {
+     "other": 5,
+     "compute": 8,
+     "retrieval": 1
+    },
+    "skill_calls": 0,
+    "recall_mode": ""
+   },
+   {
+    "n": 2,
+    "probe": false,
+    "kinds": {
+     "compute": 6,
+     "other": 3
+    },
+    "skill_calls": 0,
+    "recall_mode": ""
+   },
+   {
+    "n": 3,
+    "probe": false,
+    "kinds": {
+     "compute": 6,
+     "other": 3
+    },
+    "skill_calls": 0,
+    "recall_mode": ""
+   },
+   {
+    "n": 4,
+    "probe": false,
+    "kinds": {
+     "compute": 6,
+     "other": 3
+    },
+    "skill_calls": 0,
+    "recall_mode": ""
+   },
+   {
+    "n": 5,
+    "probe": false,
+    "kinds": {
+     "compute": 6,
+     "other": 3
+    },
+    "skill_calls": 0,
+    "recall_mode": ""
+   },
+   {
+    "n": 6,
+    "probe": false,
+    "kinds": {
+     "compute": 6,
+     "other": 3
+    },
+    "skill_calls": 0,
+    "recall_mode": ""
+   },
+   {
+    "n": 7,
+    "probe": false,
+    "kinds": {},
+    "skill_calls": 0,
+    "recall_mode": ""
+   }
+  ]
+ }
+}

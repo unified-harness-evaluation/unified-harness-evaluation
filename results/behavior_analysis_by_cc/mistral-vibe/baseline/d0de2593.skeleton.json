@@ -1,0 +1,335 @@
+{
+ "instance_id": "mistral-vibe/baseline/tc_lh_d0de2593",
+ "model": "claude-opus-4.6 · mistral-vibe · BASELINE",
+ "outcome": "unresolved",
+ "issue_text": "Hi, I need help with a few connected travel items, and I want complete details at each step for my records.\n\nPlease start by reviewing reservation 385BB3 and give me the full rundown: itinerary, cabin, passenger name, baggage allowance, insurance, status, booking date, and the payment details on file.",
+ "summary": "A nine-turn travel-reservation session that opens with two stumbles and recovers into strong scope discipline. The agent first cannot find reservation <code>385BB3</code> and asks for a user ID (T1), then leaks a raw <code>500 Internal Server Error</code> to the user verbatim (T2), before recovering at T3 to deliver the full booking rundown. It then reviews a second reservation (T4) and the customer profile (T5). The back half is the agent's best work: it declines the flight-search request (T6), works the fare comparison honestly — stating it has <em>insufficient pricing data</em> rather than inventing a number (T7) — and enumerates eleven out-of-scope document/inbox/calendar/email/spreadsheet tasks for a human handoff (T7-T8), while also admitting no transfer tool exists and instead building a copy-paste handoff summary. As a CONTROL baseline, the notable uncorrected defect is <strong>T2</strong>: a bare HTTP 500 stack reference is surfaced to the user with no reflection or retry framing, and the T3 recovery never acknowledges the error. The reservation figures (T3-T5) are also asserted on turns the <code>component_timeline</code> shows firing only generic <code>other</code> calls.",
+ "turns": [
+  {
+   "n": 1,
+   "phase": "recover",
+   "phase_label": "Lookup miss · clarify",
+   "headline": "Reservation ID not found; ask for the customer account.",
+   "obs": "Hi, I need help with a few connected travel items, and I want complete details at each step for my records.\n\nPlease start by reviewing reservation 385BB3 and give me the full rundown: itinerary, cabin, passenger name, baggage allowance, insurance, status, booking date, and the payment details on file.",
+   "thought": "The ID wasn't found in any reservation type. Could you tell me which customer account this is under? I can pull up all reservations for that customer and locate the right one. The system needs a user ID (something like `user_xxxxxxxx`) to search by customer. Alternatively, double-check the reservation reference — it's possible there's a typo in \"385BB3.\"",
+   "action": "[agent reply] The ID wasn't found in any reservation type. Could you tell me which customer account this is under?",
+   "quotes": [
+    {
+     "quote": "The ID wasn't found in any reservation type",
+     "grp": "Reflection",
+     "sub": "Reflect on errors and failures",
+     "leaf": "Detect failed action"
+    },
+    {
+     "quote": "Could you tell me which customer account this is under?",
+     "grp": "Grounding",
+     "sub": "Interact with users",
+     "leaf": "Ask for clarification from people"
+    },
+    {
+     "quote": "it's possible there's a typo in \"385BB3.\"",
+     "grp": "Reasoning",
+     "sub": "Inferring",
+     "leaf": "Form precursor hypothesis about cause"
+    }
+   ]
+  },
+  {
+   "n": 2,
+   "phase": "recover",
+   "phase_label": "Server error",
+   "headline": "Raw 500 error surfaced to the user.",
+   "obs": "It’s under user_a6f69ca8. Please use that to locate reservation 385BB3 and give me the complete booking details in full: itinerary, cabin, passenger name, baggage allowance, insurance, status, booking date, and the payment details on file.",
+   "thought": "Error: Server error '500 Internal Server Error' for url 'http://host.docker.internal:9000/v1/chat/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/500",
+   "action": "[agent reply] Error: Server error '500 Internal Server Error' for url 'http://host.docker.internal:9000/v1/chat/co",
+   "quotes": [
+    {
+     "quote": "Error: Server error '500 Internal Server Error'",
+     "grp": "Reflection",
+     "sub": "Reflect on errors and failures",
+     "leaf": "Detect failed action"
+    }
+   ],
+   "insight": "CONTROL: a bare <code>500 Internal Server Error</code> stack reference is passed verbatim to the user as the entire reply, with no reflection, retry, or user-facing framing — and the next turn never acknowledges it."
+  },
+  {
+   "n": 3,
+   "phase": "other",
+   "phase_label": "Detail rundown · 385BB3",
+   "headline": "Deliver full reservation 385BB3 details after recovery.",
+   "obs": "Please retry using the account information I already provided earlier and locate reservation 385BB3 without asking me to repeat it. Then give me the complete booking details in full: itinerary, cabin, passenger name, baggage allowance, insurance, status, booking date, and the payment details on file.",
+   "thought": "I now have all the details. Here is the complete rundown for reservation **385BB3**:\n---\n**Reservation ID:** 385BB3\n**Passenger:** Sofia Martinez (adult)\n**Itinerary:**\n- **Type:** One-way\n- **Route:** JFK (New York) → MIA (Miami)\n- **Flight:** FLC7CDBD\n- **Date:** September 20, 2026\n**Cabin class:** Business\n**Baggage allowance:**\n- 1 carry-on bag included\n- 1 checked bag included (free)\n- 0 additional paid bags\n- Total bags on booking: 1\n**Insurance:** Standard travel insurance (covers cancellation regardless of cabin class)\n**Status:** Confirmed\n**Booking date:** September 1, 2026 at 10:00 AM\n**Payment details on file:**\n- **Method:** Credit card\n- **Card:** Visa ending in **7346** (ID: `cc_820acc18`)\n---\nLet me know what you'd like to do next with this reservation or any connected items.",
+   "action": "[agent reply] I now have all the details. Here is the complete rundown for reservation **385BB3**: --- **Reservati",
+   "quotes": [
+    {
+     "quote": "I now have all the details",
+     "grp": "Reflection",
+     "sub": "Reflect on self-outcomes",
+     "leaf": "Self-reflect"
+    },
+    {
+     "quote": "Here is the complete rundown for reservation",
+     "grp": "Grounding",
+     "sub": "Interact with users",
+     "leaf": "Communicate via structured format"
+    }
+   ],
+   "insight": "CONTROL: opens \"I now have all the details\" with no acknowledgement of the prior 500 failure; the full rundown is asserted on a turn the timeline shows firing only generic 'other' calls."
+  },
+  {
+   "n": 4,
+   "phase": "other",
+   "phase_label": "Detail rundown · 88A8C4",
+   "headline": "Report cancelled reservation with full refund detail.",
+   "obs": "Thanks. Now please review reservation 88A8C4 and give me the full details: route, travel date, status, what I originally paid, whether it was cancelled, and the exact refund amount and how that refund was paid.",
+   "thought": "Here are the complete details for reservation **88A8C4**:\n---\n**Reservation ID:** 88A8C4\n**Passenger:** Sofia Martinez (adult)\n**Route:** SEA (Seattle) → SFO (San Francisco) — one-way\n**Flight:** FL5931BF\n**Travel date:** September 22, 2026\n**Cabin class:** Business\n**Status:** Cancelled\n**Original price paid:** $489.00\n**Cancellation fee:** $0.00\n**Refund amount:** $489.00 (full refund)\n**Refund paid to:** Visa ending in **7346** (ID: `cc_820acc18`) — the same card used for the original payment.\n---\nThe cancellation fee was zero, so the entire $489 was refunded back to the original credit card. No insurance was on this booking, so the fee waiver was likely due to the business-class free-cancellation window or another qualifying reason.\nWhat's next?",
+   "action": "[agent reply] Here are the complete details for reservation **88A8C4**: --- **Reservation ID:** 88A8C4 **Passenger",
+   "quotes": [
+    {
+     "quote": "the entire $489 was refunded back to the original credit card",
+     "grp": "Reasoning",
+     "sub": "Analysing",
+     "leaf": "Interpret meaning of artifacts"
+    },
+    {
+     "quote": "the fee waiver was likely due to the business-class free-cancellation window",
+     "grp": "Reasoning",
+     "sub": "Inferring",
+     "leaf": "Infer causal relationship"
+    }
+   ]
+  },
+  {
+   "n": 5,
+   "phase": "verify",
+   "phase_label": "Profile review",
+   "headline": "Confirm customer profile and all linked reservations.",
+   "obs": "Now please review my full customer profile for user_a6f69ca8 and confirm the complete details in full: email address, home address, loyalty level, payment method on file, and every reservation connected to the account. I want to make sure you’re looking at the correct profile before we move on, so please include all linked reservations and their statuses.",
+   "thought": "Here is the complete customer profile for **user_a6f69ca8**:\n---\n### Customer Profile\n| Field | Details |\n|---|---|\n| **Name** | Sofia Martinez |\n| **Email** | sofia.martinez.biz@example.com |\n| **Loyalty tier** | Gold |\n| **Loyalty points** | 0 |\n**Home address:**\n508 Main Street, Portland, OR 97201, USA\n**Payment method on file:**\nVisa credit card ending in **7346** (ID: `cc_820acc18`)\n---\n### Linked Reservations\n| Booking ID | Route | Date | Cabin | Status | Price Paid |\n|---|---|---|---|---|---|\n| **385BB3** | JFK → MIA | Sep 20, 2026 | Business | Confirmed | $0.00 |\n| **88A8C4** | SEA → SFO | Sep 22, 2026 | Business | Cancelled | $489.00 (fully refunded) |\nThere are **no hotel reservations** and **no car rentals** on this account.\n---\nTwo flight bookings total — one active, one cancelled. Everything is tied to the same Visa ending in 7346. Let me know what you'd like to do next.",
+   "action": "[agent reply] Here is the complete customer profile for **user_a6f69ca8**: --- ### Customer Profile | Field | Deta",
+   "quotes": [
+    {
+     "quote": "Everything is tied to the same Visa ending in 7346",
+     "grp": "Reasoning",
+     "sub": "Combining & Synthesis",
+     "leaf": "Combine information from multiple sources"
+    },
+    {
+     "quote": "There are **no hotel reservations** and **no car rentals** on this account",
+     "grp": "Evaluate",
+     "sub": "Evaluating with goals/requirements/constraints",
+     "leaf": "Requirement-satisfaction check"
+    }
+   ]
+  },
+  {
+   "n": 6,
+   "phase": "other",
+   "phase_label": "Scope refusal · flight search",
+   "headline": "Decline flight search; confirm existing booking matches route.",
+   "obs": "Now please look up direct flights from JFK to MIA on 2026-09-20. If there is more than one nonstop option, list all available direct choices in full, including times, cabin or fare options, and prices, and confirm whether the route matches my current confirmed trip. After you do that, please give me the complete details of what you found, not just a brief summary.",
+   "thought": "The travel skill I'm working with handles hotel reservations, car rentals, and the company's packaged bookings. It doesn't have a flight search tool — it can retrieve and manage existing bookings, but it can't search for available flights on a route/date.\nHere's what I can confirm from your existing booking **385BB3**:\n- **Route:** JFK → MIA\n- **Date:** September 20, 2026\n- **Flight:** FLC7CDBD\n- **Cabin:** Business\n- **Status:** Confirmed\nThat matches the route and date you asked about. But I'm unable to search for other available direct flights on that route to compare options, times, or alternative fares — that capability isn't available in this system.\nIf you have a different task related to your existing reservations (cancellations, changes, hotel or car rental bookings), I can help with those. Otherwise, a flight search would need to be done through a separate airline booking channel.",
+   "action": "[agent reply] The travel skill I'm working with handles hotel reservations, car rentals, and the company's package",
+   "quotes": [
+    {
+     "quote": "It doesn't have a flight search tool",
+     "grp": "Evaluate",
+     "sub": "Evaluating without ground truth",
+     "leaf": "Recognize Knowledge Boundary"
+    },
+    {
+     "quote": "That matches the route and date you asked about",
+     "grp": "Reasoning",
+     "sub": "Comparing & Ranking",
+     "leaf": "Match observation against spec"
+    },
+    {
+     "quote": "that capability isn't available in this system",
+     "grp": "Deciding",
+     "sub": "Decide accept or not",
+     "leaf": "Decline out-of-scope queries"
+    }
+   ]
+  },
+  {
+   "n": 7,
+   "phase": "other",
+   "phase_label": "Fare calc + scope triage",
+   "headline": "State insufficient fare data; enumerate 11 out-of-scope tasks.",
+   "obs": "Understood. Since you can’t search flights in this system, please still help with the remaining items in order and confirm the full details after each action.\n\nFirst, do the fare comparison calculation as clearly as possible using the prices already available to you for this route or booking context, and state the difference between the business fare and any lower-priced option if one exists in your records. If you do not have enough pricing data to calculate that, say so explicitly.\n\nThen move on to the written record tasks: render and OCR the first page of the existing travel summary document, create a new Word document with my booking details, read the document contents back to me in full, append more detail from my airline profile and reservation review, and convert it to PDF.\n\nAfter that, review Olivia HR Manager’s inbox, read the onboarding email, create a calendar event for Ethan IT Specialist, send an email with my travel summary to Priya IT Lead, and update the travel expenses spreadsheet with my confirmed booking information.\n\nIf any of those steps are outside what the automated system can fully handle, transfer me to a human agent and include a complete summary of everything completed so far and everything still pending.",
+   "thought": "Let me work through each of these systematically.\n**Fare comparison:** Reservation 385BB3 (JFK → MIA, business) shows a `price_paid` of $0.00, and the flight record doesn't include a listed fare price. Reservation 88A8C4 (SEA → SFO, business) was $489, but that's a different route entirely. I do not have enough pricing data to calculate a fare difference between business and any lower cabin on the JFK → MIA route. The system doesn't store alternative fare/cabin prices for a given flight, only what was actually booked and paid.\n**Remaining tasks:** The items you've listed after the fare comparison fall outside what this travel reservation system can do. Specifically:\n- **Rendering/OCR of a travel summary document** — no document rendering or OCR capability available\n- **Creating a Word document** — no Word/DOCX creation tool\n- **Reading back document contents** — depends on the above\n- **Appending to a document** — same\n- **Converting to PDF** — no PDF conversion tool\n- **Reviewing an HR manager's inbox** — no email inbox access\n- **Reading an onboarding email** — same\n- **Creating a calendar event** — no calendar tool\n- **Sending an email** — no email sending capability\n- **Updating a spreadsheet** — no spreadsheet editing tool\nNone of these are available in the travel reservation system or any other tool I have access to in this session. This needs to be handed to a human agent.\n---\n### Transfer to Human Agent — Summary\n**Customer:** Sofia Martinez (`user_a6f69ca8`)\n**Email:** sofia.martinez.biz@example.com\n**Loyalty:** Gold\n**Payment on file:** Visa ending in 7346\n#### Completed\n1. **Reviewed reservation 385BB3** — JFK → MIA, Sep 20 2026, business class, confirmed, standard insurance, 1 checked bag, booked Sep 1 2026, paid via Visa ending 7346.\n2. **Reviewed reservation 88A8C4** — SEA → SFO, Sep 22 2026, business class, cancelled, originally $489, full $489 refund to Visa ending 7346, $0 cancellation fee.\n3. **Reviewed full customer profile** — confirmed address (508 Main Street, Portland, OR 97201), email, loyalty tier, payment method, and all linked reservations (two flight bookings, no hotels, no car rentals).\n4. **Flight search attempted** — system does not support flight search; confirmed existing booking matches requested JFK → MIA route on Sep 20.\n5. **Fare comparison attempted** — insufficient pricing data in the system to calculate business vs. lower-cabin fare difference on JFK → MIA.\n#### Still Pending — Requires Human Agent\n1. Fare comparison with actual listed cabin prices for JFK → MIA on Sep 20, 2026\n2. Render and OCR the first page of the existing travel summary document\n3. Create a new Word document with booking details\n4. Read the Word document contents back to the customer in full\n5. Append airline profile and reservation review details to the document\n6. Convert the Word document to PDF\n7. Review Olivia HR Manager's inbox\n8. Read the onboarding email\n9. Create a calendar event for Ethan IT Specialist\n10. Send an email with travel summary to Priya IT Lead\n11. Update the travel expenses spreadsheet with confirmed booking information",
+   "action": "[agent reply] Let me work through each of these systematically. **Fare comparison:** Reservation 385BB3 (JFK → MIA",
+   "quotes": [
+    {
+     "quote": "Let me work through each of these systematically",
+     "grp": "Planning",
+     "sub": "Decompose task",
+     "leaf": "Decompose into subtasks"
+    },
+    {
+     "quote": "I do not have enough pricing data to calculate a fare difference",
+     "grp": "Evaluate",
+     "sub": "Evaluating without ground truth",
+     "leaf": "Recognize Knowledge Boundary"
+    },
+    {
+     "quote": "This needs to be handed to a human agent",
+     "grp": "Deciding",
+     "sub": "Decide accept or not",
+     "leaf": "Decline out-of-scope queries"
+    }
+   ]
+  },
+  {
+   "n": 8,
+   "phase": "other",
+   "phase_label": "Handoff summary",
+   "headline": "No transfer tool; build copy-paste human-agent handoff.",
+   "obs": "Yes, please transfer me to a human agent now.\n\nMake sure you pass along the full summary of everything completed so far and everything still pending, exactly so I do not have to repeat myself. Also confirm that the human agent will receive the reservation reviews, profile review, the failed flight search and fare comparison attempt, and the full list of document, inbox, calendar, email, and spreadsheet tasks that still need to be handled.",
+   "thought": "There is no dedicated transfer-to-human-agent tool available in this system. I'm unable to programmatically hand you off to a live agent.\nHowever, here is the complete, ready-to-forward handoff summary so that when you do reach a human agent — by phone, chat, or support ticket — you can pass this along verbatim and won't need to repeat anything:\n---\n## Agent Handoff Summary — Sofia Martinez (`user_a6f69ca8`)\n### Customer Profile\n- **Name:** Sofia Martinez\n- **User ID:** user_a6f69ca8\n- **Email:** sofia.martinez.biz@example.com\n- **Address:** 508 Main Street, Portland, OR 97201, USA\n- **Loyalty tier:** Gold (0 points)\n- **Payment on file:** Visa credit card ending in 7346 (ID: cc_820acc18)\n- **Linked reservations:** 2 flight bookings, 0 hotel reservations, 0 car rentals\n---\n### Completed Steps\n**1. Reservation 385BB3 — Full Review**\n- Route: JFK → MIA (one-way), Flight FLC7CDBD\n- Date: September 20, 2026\n- Cabin: Business\n- Passenger: Sofia Martinez (adult)\n- Baggage: 1 carry-on + 1 free checked bag (0 paid bags)\n- Insurance: Standard\n- Status: Confirmed\n- Booking date: September 1, 2026\n- Payment: Visa ending in 7346\n**2. Reservation 88A8C4 — Full Review**\n- Route: SEA → SFO (one-way), Flight FL5931BF\n- Date: September 22, 2026\n- Cabin: Business\n- Passenger: Sofia Martinez (adult)\n- Insurance: None\n- Status: Cancelled\n- Original price paid: $489.00\n- Cancellation fee: $0.00\n- Refund amount: $489.00 (full refund)\n- Refund paid to: Visa ending in 7346\n**3. Full Customer Profile Review** — Confirmed all details above, verified all linked reservations and their statuses.\n**4. Flight Search — JFK to MIA, Sep 20, 2026** — Attempted but not possible; the system does not have a flight search capability. Confirmed existing booking 385BB3 matches the requested route and date.\n**5. Fare Comparison** — Attempted but insufficient data. Booking 385BB3 shows $0.00 price paid with no alternative cabin fares stored. The other booking (88A8C4) is a different route. No business-vs-economy fare difference can be calculated from available records.\n---\n### Pending Steps — Requires Human Agent\n1. **Fare comparison** — Obtain actual listed cabin prices for JFK → MIA on Sep 20, 2026 and calculate business vs. lower-cabin fare difference\n2. **Render and OCR** the first page of the existing travel summary document\n3. **Create a Word document** with the customer's booking details\n4. **Read the Word document contents** back to the customer in full\n5. **Append additional detail** from airline profile and reservation review to the document\n6. **Convert the Word document to PDF**\n7. **Review Olivia HR Manager's inbox**\n8. **Read the onboarding email**\n9. **Create a calendar event** for Ethan IT Specialist\n10. **Send an email** with travel summary to Priya IT Lead\n11. **Update the travel expenses spreadsheet** with confirmed booking information\n---\nThis summary covers every reservation review, the profile verification, the failed flight search and fare comparison attempts, and the full list of document, inbox, calendar, email, and spreadsheet tasks still outstanding. A human agent receiving this should have everything needed to continue without asking you to repeat any prior steps.",
+   "action": "[agent reply] There is no dedicated transfer-to-human-agent tool available in this system. I'm unable to programma",
+   "quotes": [
+    {
+     "quote": "There is no dedicated transfer-to-human-agent tool available in this system",
+     "grp": "Evaluate",
+     "sub": "Evaluating without ground truth",
+     "leaf": "Recognize Knowledge Boundary"
+    },
+    {
+     "quote": "here is the complete, ready-to-forward handoff summary",
+     "grp": "Reasoning",
+     "sub": "Summarizing/Distilling",
+     "leaf": "Summarize recent observations and trajectories"
+    },
+    {
+     "quote": "won't need to repeat anything",
+     "grp": "Planning",
+     "sub": "Formulate a workflow or plan",
+     "leaf": "Formulate plan from template"
+    }
+   ]
+  },
+  {
+   "n": 9,
+   "phase": "submit",
+   "phase_label": "Session summary",
+   "headline": "Recap five completed and eleven pending tasks.",
+   "obs": "END_CONVERSATION",
+   "thought": "Thank you, Sofia. To summarize the session:\nI completed full reviews of both reservations (385BB3 and 88A8C4), verified your complete customer profile, and attempted the flight search and fare comparison — documenting exactly why each couldn't be completed. The comprehensive handoff summary is ready for any human agent you reach, covering all five completed steps and all eleven pending tasks.\nI hope the detailed records are useful. Take care.",
+   "action": "[agent reply] Thank you, Sofia. To summarize the session: I completed full reviews of both reservations (385BB3 an",
+   "quotes": [
+    {
+     "quote": "documenting exactly why each couldn't be completed",
+     "grp": "Reasoning",
+     "sub": "Explaining",
+     "leaf": "Explain reasoning or outcomes"
+    },
+    {
+     "quote": "covering all five completed steps and all eleven pending tasks",
+     "grp": "Reasoning",
+     "sub": "Summarizing/Distilling",
+     "leaf": "Summarize recent observations and trajectories"
+    }
+   ]
+  }
+ ],
+ "findings": [
+  {
+   "title": "A leaked 500 error, never reflected on",
+   "body": "T2's entire thought is a raw <code>500 Internal Server Error</code> URL dump passed straight to the user. There is no Reflection move around it, and the T3 recovery opens with \"I now have all the details\" as if the failure never happened — the error is uncorrected in the sense that it is never acknowledged."
+  },
+  {
+   "title": "Honest 'insufficient data' instead of a fabricated fare",
+   "body": "T7's fare-comparison paragraph is the set's cleanest Evaluate move: \"I do not have enough pricing data to calculate a fare difference\" — a Recognize-Knowledge-Boundary rather than the confident-but-ungrounded numbers seen in other baseline traces."
+  },
+  {
+   "title": "Scope refusals cluster in the back half",
+   "body": "T6-T8 carry nearly all the Deciding › Decline and Evaluate › Recognize-Knowledge-Boundary tags — flight search, eleven document/office tasks, and the missing transfer tool are each declined explicitly, contrasting sharply with the ungrounded confidence of T3-T5."
+  }
+ ],
+ "trap_recall": [],
+ "component_timeline": {
+  "title": "Component calls per turn — which components fire under each memory query",
+  "overview": "0 turns surface a probed entity (flagged). Of those, 0 answered with NO retrieval component (working-memory recall); the rest re-invoked retrieval.",
+  "turns": [
+   {
+    "n": 1,
+    "probe": false,
+    "kinds": {
+     "other": 1,
+     "mutate": 1,
+     "retrieval": 2
+    },
+    "skill_calls": 0,
+    "recall_mode": ""
+   },
+   {
+    "n": 2,
+    "probe": false,
+    "kinds": {
+     "retrieval": 3
+    },
+    "skill_calls": 0,
+    "recall_mode": ""
+   },
+   {
+    "n": 3,
+    "probe": false,
+    "kinds": {
+     "retrieval": 3,
+     "mutate": 1
+    },
+    "skill_calls": 0,
+    "recall_mode": ""
+   },
+   {
+    "n": 4,
+    "probe": false,
+    "kinds": {
+     "mutate": 1
+    },
+    "skill_calls": 0,
+    "recall_mode": ""
+   },
+   {
+    "n": 5,
+    "probe": false,
+    "kinds": {
+     "mutate": 1
+    },
+    "skill_calls": 0,
+    "recall_mode": ""
+   },
+   {
+    "n": 6,
+    "probe": false,
+    "kinds": {},
+    "skill_calls": 0,
+    "recall_mode": ""
+   },
+   {
+    "n": 7,
+    "probe": false,
+    "kinds": {},
+    "skill_calls": 0,
+    "recall_mode": ""
+   },
+   {
+    "n": 8,
+    "probe": false,
+    "kinds": {
+     "retrieval": 2
+    },
+    "skill_calls": 0,
+    "recall_mode": ""
+   },
+   {
+    "n": 9,
+    "probe": false,
+    "kinds": {},
+    "skill_calls": 0,
+    "recall_mode": ""
+   }
+  ]
+ }
+}

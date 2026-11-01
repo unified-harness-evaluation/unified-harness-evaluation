@@ -1,0 +1,1384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Trajectory · goose/baseline/tc_lh_ff9af6fb · Quote-grounded Annotations</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400&family=JetBrains+Mono:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #ffffff;
+  --bg-panel: #f7f7f5;
+  --ink: #1a1a1a;
+  --ink-soft: #555555;
+  --ink-mute: #888888;
+  --rule: #e0e0e0;
+  --rule-soft: #efefef;
+  --accent: #b8451a;
+  --accent-soft: #f0d7c4;
+  --thought: #5b4a8a;
+  --action: #2d5a3d;
+  --obs: #6b5b3a;
+  --obs-soft: #ecdfc4;
+  --highlight: #fff3a8;
+
+  --grp-Retrieval: #6b5b3a;
+  --grp-Retrieval-bg: rgba(107, 91, 58, 0.13);
+  --grp-Memory: #6a5a3a;
+  --grp-Memory-bg: rgba(106, 90, 58, 0.13);
+  --grp-Planning: #2d4a6a;
+  --grp-Planning-bg: rgba(45, 74, 106, 0.13);
+  --grp-Reasoning: #5b4a8a;
+  --grp-Reasoning-bg: rgba(91, 74, 138, 0.13);
+  --grp-Evaluate: #1a5878;
+  --grp-Evaluate-bg: rgba(26, 88, 120, 0.13);
+  --grp-Deciding: #4a4a5a;
+  --grp-Deciding-bg: rgba(74, 74, 90, 0.13);
+  --grp-Grounding: #8a4a6a;
+  --grp-Grounding-bg: rgba(138, 74, 106, 0.13);
+  --grp-Executing: #2d5a3d;
+  --grp-Executing-bg: rgba(45, 90, 61, 0.13);
+  --grp-Learning: #8a3a4a;
+  --grp-Learning-bg: rgba(138, 58, 74, 0.13);
+  --grp-Reflection: #b8451a;
+  --grp-Reflection-bg: rgba(184, 69, 26, 0.15);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: 'Fraunces', Georgia, serif;
+  font-size: 15px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+body {
+  min-height: 100vh;
+}
+
+header.masthead {
+  border-bottom: 1px solid var(--rule);
+  padding: 28px 384px 24px 40px;
+  background: var(--bg-panel);
+  position: relative;
+  z-index: 5;
+}
+
+.eyebrow {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+  margin-bottom: 8px;
+}
+
+h1.title {
+  font-family: 'Fraunces', serif;
+  font-weight: 600;
+  font-variation-settings: 'opsz' 144;
+  font-size: 38px;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  margin-bottom: 6px;
+}
+
+h1.title em {
+  font-style: italic;
+  font-weight: 400;
+  color: var(--accent);
+}
+
+.subtitle {
+  font-family: 'Fraunces', serif;
+  font-size: 16px;
+  color: var(--ink-soft);
+  font-style: italic;
+  font-weight: 400;
+  max-width: 820px;
+}
+
+.meta-row {
+  display: flex;
+  gap: 24px;
+  margin-top: 16px;
+  flex-wrap: wrap;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--ink-mute);
+}
+
+.meta-row span strong {
+  color: var(--ink);
+  font-weight: 500;
+}
+
+.outcome-pill {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 2px;
+  font-weight: 600;
+}
+.outcome-resolved { background: rgba(45,90,61,0.13); color: var(--grp-Executing); }
+.outcome-unresolved { background: rgba(184,69,26,0.13); color: var(--accent); }
+
+.app {
+  position: relative;
+  min-height: calc(100vh - 140px);
+}
+
+@media (max-width: 1100px) {
+  header.masthead { padding-right: 40px; }
+  main.trajectory { margin-right: 0 !important; max-width: 100% !important; }
+  aside.codebook-panel {
+    position: relative !important;
+    top: auto !important;
+    right: auto !important;
+    width: 100% !important;
+    height: auto !important;
+    max-height: none !important;
+    border-left: none !important;
+    border-top: 1px solid var(--rule);
+  }
+}
+
+main.trajectory {
+  padding: 32px 40px 80px;
+  max-width: 900px;
+  margin-right: 360px;
+}
+
+.section-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.section-label::after { content: ''; flex: 1; height: 1px; background: var(--rule); }
+
+.issue-block {
+  background: var(--bg-panel);
+  border: 1px solid var(--rule);
+  border-left: 3px solid var(--accent);
+  padding: 18px 22px;
+  margin-bottom: 28px;
+  font-family: 'Fraunces', serif;
+  font-size: 14.5px;
+  color: var(--ink-soft);
+  line-height: 1.6;
+  white-space: pre-wrap;
+}
+.issue-block strong { font-weight: 600; color: var(--ink); }
+.issue-block code { font-family: 'JetBrains Mono', monospace; font-size: 12.5px; background: var(--rule-soft); padding: 1px 5px; border-radius: 2px; }
+
+.summary-block {
+  background: var(--bg-panel);
+  border: 1px solid var(--rule);
+  border-left: 3px solid var(--thought);
+  padding: 20px 24px 22px;
+  margin-bottom: 32px;
+  font-family: 'Fraunces', serif;
+  font-size: 15px;
+  line-height: 1.7;
+  color: var(--ink);
+  position: relative;
+}
+.summary-block .summary-eyebrow {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9.5px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--thought);
+  font-weight: 600;
+  margin-bottom: 10px;
+  display: block;
+}
+.summary-block .summary-text {
+  font-style: italic;
+  color: var(--ink);
+  letter-spacing: 0.005em;
+}
+.summary-block .summary-text strong { font-style: normal; font-weight: 600; color: var(--ink); }
+.summary-block .summary-text em { font-style: normal; color: var(--accent); }
+.summary-block .summary-text code { font-family: 'JetBrains Mono', monospace; font-style: normal; font-size: 13px; background: var(--rule-soft); padding: 1px 5px; border-radius: 2px; color: var(--ink); }
+
+.method-note {
+  font-family: 'Fraunces', serif;
+  font-style: italic;
+  font-size: 13.5px;
+  color: var(--ink-soft);
+  margin-bottom: 24px;
+  padding: 12px 16px;
+  background: rgba(255, 243, 168, 0.4);
+  border-left: 2px solid #c9a64a;
+  border-radius: 0 2px 2px 0;
+  line-height: 1.6;
+}
+.method-note strong { font-style: normal; font-weight: 600; color: var(--ink); }
+.method-note code { font-family: 'JetBrains Mono', monospace; font-size: 12px; background: rgba(0,0,0,0.06); padding: 1px 5px; border-radius: 2px; font-style: normal; }
+
+.turn {
+  position: relative;
+  margin-bottom: 28px;
+  padding: 22px 24px 20px 28px;
+  background: var(--bg-panel);
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  transition: all 0.25s ease;
+}
+.turn::before { content: ''; position: absolute; left: -1px; top: -1px; bottom: -1px; width: 4px; background: var(--rule); transition: background 0.25s ease; }
+.turn.active { border-color: var(--ink); box-shadow: 0 4px 24px rgba(26,24,20,0.08); }
+.turn.active::before { background: var(--accent); width: 4px; }
+
+.turn-header {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  margin-bottom: 14px;
+  padding-bottom: 12px;
+  border-bottom: 1px dashed var(--rule);
+}
+
+.turn-num {
+  font-family: 'Fraunces', serif;
+  font-weight: 600;
+  font-size: 28px;
+  font-variation-settings: 'opsz' 144;
+  color: var(--accent);
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+.turn-num small { font-size: 11px; font-family: 'JetBrains Mono', monospace; color: var(--ink-mute); font-weight: 400; display: block; letter-spacing: 0.1em; margin-bottom: 2px; }
+
+.turn-tag-line { font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-style: normal; font-size: 15px; color: var(--ink); font-weight: 500; flex: 1; line-height: 1.45; }
+
+.turn-phase {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border: 1px solid var(--rule);
+  border-radius: 2px;
+  color: var(--ink-soft);
+  background: var(--bg);
+}
+.phase-reproduce { color: var(--obs); border-color: var(--obs-soft); background: var(--obs-soft); }
+.phase-localize { color: var(--thought); border-color: rgba(91,74,138,0.2); background: rgba(91,74,138,0.08); }
+.phase-edit { color: var(--action); border-color: rgba(45,90,61,0.2); background: rgba(45,90,61,0.08); }
+.phase-recover { color: var(--accent); border-color: var(--accent-soft); background: var(--accent-soft); }
+.phase-verify { color: var(--grp-Evaluate); border-color: rgba(26,88,120,0.2); background: rgba(26,88,120,0.08); }
+.phase-submit { color: var(--ink); border-color: var(--rule); background: var(--rule-soft); }
+.phase-other { color: var(--ink-soft); border-color: var(--rule); background: var(--bg); }
+
+.oat-block { margin: 12px 0; padding-left: 14px; border-left: 2px solid; font-size: 14px; line-height: 1.55; }
+.oat-block .lbl { font-family: 'JetBrains Mono', monospace; font-size: 9.5px; letter-spacing: 0.18em; text-transform: uppercase; font-weight: 600; margin-bottom: 6px; display: block; }
+
+.oat-obs { border-color: var(--obs); }
+.oat-obs .lbl { color: var(--obs); }
+
+.oat-thought { border-color: var(--thought); background: rgba(91, 74, 138, 0.025); padding: 8px 14px 10px; border-radius: 0 2px 2px 0; }
+.oat-thought .lbl { color: var(--thought); }
+.oat-thought .lbl .small { opacity: 0.5; font-weight: 400; text-transform: none; letter-spacing: 0.05em; font-style: italic; }
+.thought-text { font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-style: normal; font-size: 14px; color: var(--ink); line-height: 1.65; letter-spacing: 0; }
+
+.oat-action { border-color: var(--action); }
+.oat-action .lbl { color: var(--action); }
+.oat-action .content {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12.5px;
+  background: #1f1f1f;
+  color: #eaeaea;
+  padding: 8px 12px;
+  border-radius: 2px;
+  display: block;
+  margin-top: 4px;
+  white-space: pre-wrap;
+  line-height: 1.5;
+}
+.oat-action .content .cmt { color: #888888; }
+.oat-action .content .kw { color: #d4a574; }
+
+.content { color: var(--ink); }
+.content code { font-family: 'JetBrains Mono', monospace; font-size: 12.5px; background: var(--rule-soft); padding: 1px 5px; border-radius: 2px; }
+
+.qmark {
+  font-style: italic;
+  background: var(--qbg, var(--rule-soft));
+  border-bottom: 1.5px solid var(--qcolor, var(--ink-mute));
+  padding: 0 2px;
+  margin: 0 1px;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  border-radius: 1px;
+  position: relative;
+}
+.qmark:hover { background: var(--qcolor, var(--ink-mute)); color: var(--bg); }
+.qmark sup { font-family: 'JetBrains Mono', monospace; font-style: normal; font-size: 9px; font-weight: 600; color: var(--qcolor, var(--ink-mute)); margin-left: 2px; letter-spacing: 0; vertical-align: super; line-height: 0; }
+.qmark:hover sup { color: var(--bg); }
+
+.annotations {
+  margin-top: 14px;
+  padding: 12px 14px;
+  background: var(--bg);
+  border: 1px solid var(--rule);
+  border-radius: 3px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.annotations-header { font-family: 'JetBrains Mono', monospace; font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink-mute); font-weight: 600; margin-bottom: 4px; }
+
+.annot-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1.1fr);
+  gap: 10px;
+  align-items: baseline;
+  font-size: 13px;
+  cursor: pointer;
+  padding: 5px 6px;
+  border-radius: 2px;
+  transition: background 0.18s ease;
+}
+.annot-row:hover { background: var(--rule-soft); }
+.annot-row.flash { background: var(--qbg, var(--rule-soft)); }
+
+.annot-quote {
+  font-family: 'Fraunces', serif;
+  font-style: italic;
+  color: var(--qcolor, var(--ink));
+  font-size: 13px;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.annot-quote::before { content: '"'; opacity: 0.5; }
+.annot-quote::after { content: '"'; opacity: 0.5; }
+.annot-quote .qnum { font-family: 'JetBrains Mono', monospace; font-style: normal; font-size: 9px; font-weight: 600; margin-right: 4px; opacity: 0.7; vertical-align: super; }
+
+.annot-arrow { color: var(--ink-mute); font-family: 'JetBrains Mono', monospace; font-size: 11px; }
+
+.annot-tag { font-family: 'Inter', sans-serif; font-size: 11.5px; color: var(--ink-soft); letter-spacing: 0.005em; }
+.annot-tag .annot-grp { font-weight: 600; color: var(--qcolor, var(--ink)); }
+.annot-tag .annot-sep { margin: 0 4px; opacity: 0.4; }
+.annot-tag .annot-leaf { color: var(--ink); }
+
+.insight {
+  margin-top: 12px;
+  padding: 10px 12px 10px 14px;
+  background: var(--highlight);
+  border-radius: 2px;
+  font-family: 'Fraunces', serif;
+  font-size: 13px;
+  font-style: italic;
+  color: #5a4a1a;
+  position: relative;
+  line-height: 1.55;
+}
+.insight::before { content: '※'; position: absolute; left: -22px; top: 8px; font-size: 14px; color: var(--accent); font-style: normal; }
+.insight strong { font-style: normal; font-weight: 600; color: #3a2f10; }
+
+/* Segment summary card inside the right-panel trajectory signature.
+   Sits above the first row of each `segments[]` entry — a compact "what
+   the agent is doing in this stretch" preface for the row block below. */
+.sig-segment {
+  margin: 14px 0 6px;
+  padding: 8px 10px;
+  background: var(--highlight);
+  border-left: 3px solid var(--accent);
+  border-radius: 0 2px 2px 0;
+}
+.sig-segment:first-child { margin-top: 4px; }
+.sig-segment-tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 8.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent);
+  font-weight: 700;
+  margin-bottom: 3px;
+}
+.sig-segment-title {
+  font-family: 'Fraunces', serif;
+  font-weight: 600;
+  font-size: 12.5px;
+  font-style: italic;
+  color: #3a2f10;
+  line-height: 1.3;
+  margin-bottom: 3px;
+}
+.sig-segment-body {
+  font-family: 'Fraunces', serif;
+  font-size: 11.5px;
+  color: #5a4a1a;
+  line-height: 1.5;
+}
+.sig-segment-body code {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10.5px;
+  background: rgba(184,69,26,0.08);
+  padding: 0 3px;
+  border-radius: 2px;
+}
+
+aside.codebook-panel {
+  background: var(--bg-panel);
+  border-left: 1px solid var(--rule);
+  padding: 32px 24px 60px;
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 360px;
+  height: 100vh;
+  overflow-y: auto;
+  z-index: 10;
+}
+aside.codebook-panel::-webkit-scrollbar { width: 6px; }
+aside.codebook-panel::-webkit-scrollbar-track { background: transparent; }
+aside.codebook-panel::-webkit-scrollbar-thumb { background: var(--rule); border-radius: 3px; }
+
+/* Drag handle on the panel's left edge — sits over the border, 6px hit area,
+   shows a thin colored stripe on hover/drag. Double-click resets width. */
+#panel-resize-handle {
+  position: absolute;
+  top: 0;
+  left: -3px;
+  width: 6px;
+  height: 100%;
+  cursor: col-resize;
+  z-index: 20;
+  background: transparent;
+  transition: background 0.15s ease;
+}
+#panel-resize-handle:hover,
+#panel-resize-handle:active {
+  background: linear-gradient(to right, transparent 0%, transparent 40%, var(--accent) 40%, var(--accent) 60%, transparent 60%);
+}
+
+.panel-title { font-family: 'Fraunces', serif; font-weight: 600; font-size: 22px; font-variation-settings: 'opsz' 144; margin-bottom: 4px; letter-spacing: -0.01em; }
+.panel-sub { font-family: 'Fraunces', serif; font-style: italic; font-size: 13px; color: var(--ink-soft); margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid var(--rule); }
+
+/* Pie chart section */
+.pie-section {
+  margin-bottom: 24px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--rule);
+}
+.pie-svg-wrap {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 12px;
+}
+.pie-legend {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-family: 'Inter', sans-serif;
+  font-size: 11px;
+}
+.pie-legend-row {
+  display: grid;
+  grid-template-columns: 12px 1fr auto auto;
+  gap: 8px;
+  align-items: center;
+  color: var(--ink-soft);
+}
+.pie-legend-swatch { width: 10px; height: 10px; border-radius: 1px; }
+.pie-legend-name { font-weight: 500; color: var(--ink); }
+.pie-legend-pct { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--ink-mute); }
+.pie-legend-count { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--ink-mute); }
+
+.pie-slice { transition: opacity 0.2s ease; cursor: pointer; }
+.pie-slice:hover { opacity: 0.8; }
+
+.cb-group { margin-bottom: 18px; }
+.cb-group-header { display: flex; align-items: baseline; gap: 8px; margin-bottom: 6px; }
+.cb-group-name { font-family: 'Fraunces', serif; font-weight: 600; font-size: 14px; font-style: italic; color: var(--qcolor, var(--ink)); }
+.cb-count { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--ink-mute); background: var(--bg); padding: 1px 6px; border-radius: 8px; border: 1px solid var(--rule); }
+.cb-bar { height: 4px; background: var(--rule-soft); border-radius: 2px; margin-bottom: 8px; overflow: hidden; }
+.cb-bar-fill { height: 100%; border-radius: 2px; transition: width 0.4s ease; }
+.cb-items { display: flex; flex-direction: column; gap: 2px; margin-left: 4px; }
+.cb-item {
+  font-family: 'Inter', sans-serif;
+  font-size: 11.5px;
+  color: var(--ink-soft);
+  padding: 4px 8px 4px 12px;
+  border-left: 2px solid var(--rule);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border-radius: 0 2px 2px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 6px;
+}
+.cb-item:hover { background: var(--bg); border-left-color: var(--ink-soft); color: var(--ink); }
+.cb-item.fired { border-left-color: var(--qcolor, var(--accent)); color: var(--ink); background: var(--qbg, var(--accent-soft)); font-weight: 500; }
+.cb-item-text { flex: 1; }
+.cb-item .turn-refs { font-family: 'JetBrains Mono', monospace; font-size: 9px; color: var(--ink-mute); flex-shrink: 0; }
+.cb-item.fired .turn-refs { color: var(--qcolor, var(--accent)); font-weight: 600; }
+
+.summary-footer {
+  margin-top: 60px;
+  padding: 28px;
+  background: var(--bg-panel);
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+}
+.summary-footer h2 { font-family: 'Fraunces', serif; font-weight: 600; font-size: 22px; margin-bottom: 4px; letter-spacing: -0.01em; }
+.summary-footer .sub { font-style: italic; color: var(--ink-soft); font-size: 14px; margin-bottom: 20px; }
+.findings { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; }
+.finding { padding: 14px 16px; border-left: 2px solid var(--accent); background: var(--bg); font-size: 13px; line-height: 1.55; }
+.finding strong { font-weight: 600; display: block; margin-bottom: 4px; color: var(--ink); }
+.finding span { color: var(--ink-soft); }
+
+@keyframes pulse-ring {
+  0% { box-shadow: 0 0 0 0 rgba(184,69,26,0.4); }
+  100% { box-shadow: 0 0 0 8px rgba(184,69,26,0); }
+}
+.cb-item.fired.flash, .annot-row.flash, .qmark.flash-pulse { animation: pulse-ring 0.6s ease-out; }
+
+.legend {
+  display: flex;
+  gap: 14px;
+  margin-bottom: 24px;
+  padding: 10px 14px;
+  background: var(--bg-panel);
+  border: 1px solid var(--rule);
+  border-radius: 2px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: var(--ink-soft);
+  flex-wrap: wrap;
+  align-items: center;
+}
+.legend-item { display: flex; align-items: center; gap: 6px; }
+.legend-dot { width: 8px; height: 8px; border-radius: 1px; }
+.legend-dot.obs { background: var(--obs); }
+.legend-dot.thought { background: var(--thought); }
+.legend-dot.action { background: var(--action); }
+.legend small { margin-left: auto; color: var(--ink-mute); font-style: italic; }
+
+/* ===== Trajectory signature (right panel, above the bar chart) =====
+   Auto-built in JS from the same turns/quotes data. No extra schema fields. */
+.signature-section {
+  margin-bottom: 24px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--rule);
+}
+.sig-section-title {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+  margin-bottom: 4px;
+  font-weight: 600;
+}
+.sig-section-sub {
+  font-family: 'Fraunces', serif;
+  font-style: italic;
+  font-size: 11.5px;
+  color: var(--ink-soft);
+  margin-bottom: 10px;
+  line-height: 1.4;
+}
+.sig-flat {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10.5px;
+  line-height: 1.55;
+  color: var(--ink-soft);
+  background: var(--bg);
+  border: 1px solid var(--rule);
+  border-radius: 2px;
+  padding: 10px 12px;
+  margin-bottom: 12px;
+  white-space: pre-wrap;
+  word-break: normal;
+  overflow-wrap: anywhere;
+  user-select: all;
+  cursor: text;
+  max-height: 220px;
+  overflow-y: auto;
+}
+.sig-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-bottom: 4px;
+}
+.sig-row {
+  display: grid;
+  grid-template-columns: 36px minmax(0, 1fr);
+  gap: 6px;
+  align-items: start;
+  padding: 5px 6px 5px 4px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  border-radius: 2px;
+  text-align: left;
+  font: inherit;
+  color: inherit;
+  transition: background 0.15s ease;
+}
+.sig-row:hover { background: var(--bg); }
+.sig-row:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+.sig-num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: var(--ink-mute);
+  font-weight: 600;
+  text-align: right;
+  padding-right: 4px;
+  padding-top: 2px;
+}
+.sig-num .sig-flag {
+  display: inline;
+  margin-left: 2px;
+  color: var(--accent);
+  font-weight: 700;
+}
+.sig-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px;
+  align-items: center;
+}
+.sig-chip {
+  font-family: 'Inter', sans-serif;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  padding: 1px 6px 2px;
+  border-radius: 2px;
+  border: 1px solid;
+  line-height: 1.35;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 4px;
+}
+.sig-chip-grp {
+  text-transform: uppercase;
+  font-size: 8.5px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  opacity: 0.7;
+}
+.sig-chip-sub {
+  font-size: 10px;
+  font-weight: 600;
+}
+.sig-chip-sep {
+  font-size: 10px;
+  opacity: 0.45;
+  margin: 0 1px;
+}
+.sig-chip-leaf {
+  font-size: 9.5px;
+  font-weight: 500;
+  font-style: italic;
+  opacity: 0.78;
+}
+.sig-chip-empty {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--ink-mute);
+  padding: 0 4px;
+}
+.sig-chip.grp-Retrieval  { color: var(--grp-Retrieval);  background: var(--grp-Retrieval-bg);  border-color: var(--grp-Retrieval); }
+.sig-chip.grp-Memory     { color: var(--grp-Memory);     background: var(--grp-Memory-bg);     border-color: var(--grp-Memory); }
+.sig-chip.grp-Planning   { color: var(--grp-Planning);   background: var(--grp-Planning-bg);   border-color: var(--grp-Planning); }
+.sig-chip.grp-Reasoning  { color: var(--grp-Reasoning);  background: var(--grp-Reasoning-bg);  border-color: var(--grp-Reasoning); }
+.sig-chip.grp-Evaluate   { color: var(--grp-Evaluate);   background: var(--grp-Evaluate-bg);   border-color: var(--grp-Evaluate); }
+.sig-chip.grp-Deciding   { color: var(--grp-Deciding);   background: var(--grp-Deciding-bg);   border-color: var(--grp-Deciding); }
+.sig-chip.grp-Grounding  { color: var(--grp-Grounding);  background: var(--grp-Grounding-bg);  border-color: var(--grp-Grounding); }
+.sig-chip.grp-Executing  { color: var(--grp-Executing);  background: var(--grp-Executing-bg);  border-color: var(--grp-Executing); }
+.sig-chip.grp-Learning   { color: var(--grp-Learning);   background: var(--grp-Learning-bg);   border-color: var(--grp-Learning); }
+.sig-chip.grp-Reflection { color: var(--grp-Reflection); background: var(--grp-Reflection-bg); border-color: var(--grp-Reflection); }
+
+.sig-restart-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 6px;
+  margin: 4px 0;
+  background: rgba(184,69,26,0.06);
+  border-left: 2px solid var(--accent);
+  border-radius: 0 2px 2px 0;
+  font-family: 'Fraunces', serif;
+  font-style: italic;
+  font-size: 11px;
+  color: var(--accent);
+  cursor: help;
+}
+.sig-restart-glyph { font-size: 16px; line-height: 1; }
+.sig-restart-text { color: var(--ink-soft); }
+
+</style>
+</head>
+<body>
+
+<header class="masthead">
+  <div class="eyebrow">Trajectory · Quote-grounded annotation</div>
+  <h1 class="title">Trajectory <em>↔</em> Codebook</h1>
+  <div class="subtitle">Each codebook tag is grounded to a specific quoted phrase from the verbatim thought text — pinning <em>what</em> in the agent's reasoning triggered <em>which</em> action category.</div>
+  <div class="meta-row">
+    <span><strong>Instance</strong> goose/baseline/tc_lh_ff9af6fb</span>
+    <span><strong>Model</strong> claude-opus-4.6 · goose · BASELINE</span>
+    <span><strong>Turns</strong> 6</span>
+    <span><strong>Outcome</strong> <span class="outcome-pill outcome-unresolved">UNRESOLVED ✗</span></span>
+    <span><strong>Annotations</strong> 17</span>
+  </div>
+</header>
+
+<div class="app">
+
+<main class="trajectory">
+
+<div class="section-label">issue statement</div>
+<div class="issue-block">Please update the inventory spreadsheet first. In `data/product_inventory.xlsx`, on the `Inventory` sheet, clear the product name cell for the `AUTUMN10 Cart Discount` entry in row 20. Then read that section of the sheet back to me so I can confirm the surrounding inventory details and verify the change. After you do it, please confirm the full details of exactly what you changed and what you read back.</div>
+
+<div class="section-label">trajectory summary</div>
+<div class="summary-block">
+  <span class="summary-eyebrow">What happened in this run</span>
+  <div class="summary-text">A multi-turn OfficeBench-style assistant session spanning three tool domains. It opens with a spreadsheet edit: the agent locates product_inventory.xlsx (recovering from a wrong path and a non-existent 'Inventory' sheet), clears the product-name cell for the AUTUMN10 Cart Discount in row 20 of the only sheet ('Products'), and reads the surrounding rows back to confirm only column B changed. It then handles a chain of email and calendar follow-ups about an urgent contractor-onboarding equipment request: loading the OfficeBench email tools, sending confirmation/coordination emails to Ethan and Priya, and creating readiness-check and confirmation events on Oct 23, each verified by re-reading from both sides. Every mutation follows a do-then-verify pattern and the run ends with a recap. The outcome is recorded unresolved: the agent silently substitutes the 'Products' sheet for the requested 'Inventory' sheet, and never reconciles that the original thread lives under an @company.com domain while all sent mail uses @example.com.</div>
+</div>
+
+
+
+
+<div class="section-label">component-call timeline</div>
+<div style="background:#16141c;border:1px solid #2a2730;border-radius:8px;padding:12px 14px;margin-bottom:18px">
+  <div style="font-weight:700;color:#e8e2d2;font-size:14px;margin-bottom:2px">Component calls per turn — which components fire under each memory query</div>
+  <div style="color:#aba596;font-size:12.5px;margin:4px 0 10px">0 turns surface a probed entity (flagged). Of those, 0 answered with NO retrieval component (working-memory recall); the rest re-invoked retrieval.</div>
+  <table style="width:100%;border-collapse:collapse">
+    <thead><tr style="text-align:left;color:#8a8478;font-size:10.5px;text-transform:uppercase;letter-spacing:.5px">
+      <th style="padding:4px 8px">Turn</th><th style="padding:4px 8px"></th><th style="padding:4px 8px">Components called</th><th style="padding:4px 8px">Cognitive moves</th><th style="padding:4px 8px">Recall mode / note</th>
+    </tr></thead>
+    <tbody>
+        <tr style="border-top:1px solid #241f2b;background:transparent;vertical-align:top">
+          <td style="padding:5px 8px;color:#b8a888;font-size:11px;white-space:nowrap;font-weight:600">T1</td>
+          <td style="padding:5px 8px;white-space:nowrap"></td>
+          <td style="padding:5px 8px"><span style="display:inline-block;padding:1px 6px;border-radius:4px;background:#8a3a4a;color:#fff;font-size:10.5px;margin:1px 2px 1px 0">mutate×7</span><span style="display:inline-block;padding:1px 6px;border-radius:4px;background:#2d4a6a;color:#fff;font-size:10.5px;margin:1px 2px 1px 0">compute×2</span></td>
+          <td style="padding:5px 8px"><span title="Planning › Decompose task › Plan deeper inspection before edit" style="display:inline-block;padding:1px 6px;border-radius:4px;background:#2d4a6a;color:#fff;font-size:10.5px;margin:1px 2px 1px 0"><strong style="font-variant:small-caps">Planning</strong><span style="opacity:.85"> · Decompose task</span></span><span title="Executing › Executing plan › Apply patch via edit" style="display:inline-block;padding:1px 6px;border-radius:4px;background:#2d5a3d;color:#fff;font-size:10.5px;margin:1px 2px 1px 0"><strong style="font-variant:small-caps">Executing</strong><span style="opacity:.85"> · Executing plan</span></span><span title="Evaluate › Evaluating with goals/requirements/constraints › Goal-completion check" style="display:inline-block;padding:1px 6px;border-radius:4px;background:#1a5878;color:#fff;font-size:10.5px;margin:1px 2px 1px 0"><strong style="font-variant:small-caps">Evaluate</strong><span style="opacity:.85"> · Evaluating with goals/requirements/constraints</span></span></td>
+          <td style="padding:5px 8px"></td>
+        </tr>
+        <tr style="border-top:1px solid #241f2b;background:transparent;vertical-align:top">
+          <td style="padding:5px 8px;color:#b8a888;font-size:11px;white-space:nowrap;font-weight:600">T2</td>
+          <td style="padding:5px 8px;white-space:nowrap"></td>
+          <td style="padding:5px 8px"><span style="display:inline-block;padding:1px 6px;border-radius:4px;background:#2d4a6a;color:#fff;font-size:10.5px;margin:1px 2px 1px 0">compute×18</span><span style="display:inline-block;padding:1px 6px;border-radius:4px;background:#6b5b3a;color:#fff;font-size:10.5px;margin:1px 2px 1px 0">retrieval×7</span><span style="display:inline-block;padding:1px 6px;border-radius:4px;background:#4a4a5a;color:#fff;font-size:10.5px;margin:1px 2px 1px 0">other×1</span></td>
+          <td style="padding:5px 8px"><span title="Planning › Decompose task › Plan deeper inspection before edit" style="display:inline-block;padding:1px 6px;border-radius:4px;background:#2d4a6a;color:#fff;font-size:10.5px;margin:1px 2px 1px 0"><strong style="font-variant:small-caps">Planning</strong><span style="opacity:.85"> · Decompose task</span></span><span title="Retrieval › Retrieve from skill library › Retrieve from skill library" style="display:inline-block;padding:1px 6px;border-radius:4px;background:#6b5b3a;color:#fff;font-size:10.5px;margin:1px 2px 1px 0"><strong style="font-variant:small-caps">Retrieval</strong><span style="opacity:.85"> · Retrieve from skill library</span></span><span title="Evaluate › Evaluating with goals/requirements/constraints › Goal-completion check" style="display:inline-block;padding:1px 6px;border-radius:4px;background:#1a5878;color:#fff;font-size:10.5px;margin:1px 2px 1px 0"><strong style="font-variant:small-caps">Evaluate</strong><span style="opacity:.85"> · Evaluating with goals/requirements/constraints</span></span></td>
+          <td style="padding:5px 8px"></td>
+        </tr>
+        <tr style="border-top:1px solid #241f2b;background:transparent;vertical-align:top">
+          <td style="padding:5px 8px;color:#b8a888;font-size:11px;white-space:nowrap;font-weight:600">T3</td>
+          <td style="padding:5px 8px;white-space:nowrap"></td>
+          <td style="padding:5px 8px"><span style="display:inline-block;padding:1px 6px;border-radius:4px;background:#2d4a6a;color:#fff;font-size:10.5px;margin:1px 2px 1px 0">compute×9</span><span style="display:inline-block;padding:1px 6px;border-radius:4px;background:#6b5b3a;color:#fff;font-size:10.5px;margin:1px 2px 1px 0">retrieval×1</span><span style="display:inline-block;padding:1px 6px;border-radius:4px;background:#8a3a4a;color:#fff;font-size:10.5px;margin:1px 2px 1px 0">mutate×1</span></td>
+          <td style="padding:5px 8px"><span title="Planning › Decompose task › Decompose into subtasks" style="display:inline-block;padding:1px 6px;border-radius:4px;background:#2d4a6a;color:#fff;font-size:10.5px;margin:1px 2px 1px 0"><strong style="font-variant:small-caps">Planning</strong><span style="opacity:.85"> · Decompose task</span></span><span title="Reasoning › Inferring › Infer hidden state from observable evidence" style="display:inline-block;padding:1px 6px;border-radius:4px;background:#5b4a8a;color:#fff;font-size:10.5px;margin:1px 2px 1px 0"><strong style="font-variant:small-caps">Reasoning</strong><span style="opacity:.85"> · Inferring</span></span><span title="Executing › Executing plan › Initiate planned action" style="display:inline-block;padding:1px 6px;border-radius:4px;background:#2d5a3d;color:#fff;font-size:10.5px;margin:1px 2px 1px 0"><strong style="font-variant:small-caps">Executing</strong><span style="opacity:.85"> · Executing plan</span></span></td>
+          <td style="padding:5px 8px"></td>
+        </tr>
+        <tr style="border-top:1px solid #241f2b;background:transparent;vertical-align:top">
+          <td style="padding:5px 8px;color:#b8a888;font-size:11px;white-space:nowrap;font-weight:600">T4</td>
+          <td style="padding:5px 8px;white-space:nowrap"></td>
+          <td style="padding:5px 8px"><span style="display:inline-block;padding:1px 6px;border-radius:4px;background:#2d4a6a;color:#fff;font-size:10.5px;margin:1px 2px 1px 0">compute×4</span><span style="display:inline-block;padding:1px 6px;border-radius:4px;background:#6b5b3a;color:#fff;font-size:10.5px;margin:1px 2px 1px 0">retrieval×1</span><span style="display:inline-block;padding:1px 6px;border-radius:4px;background:#8a3a4a;color:#fff;font-size:10.5px;margin:1px 2px 1px 0">mutate×1</span></td>
+          <td style="padding:5px 8px"><span title="Planning › Decompose task › Decompose into subtasks" style="display:inline-block;padding:1px 6px;border-radius:4px;background:#2d4a6a;color:#fff;font-size:10.5px;margin:1px 2px 1px 0"><strong style="font-variant:small-caps">Planning</strong><span style="opacity:.85"> · Decompose task</span></span><span title="Executing › Executing plan › Initiate planned action" style="display:inline-block;padding:1px 6px;border-radius:4px;background:#2d5a3d;color:#fff;font-size:10.5px;margin:1px 2px 1px 0"><strong style="font-variant:small-caps">Executing</strong><span style="opacity:.85"> · Executing plan</span></span><span title="Evaluate › Evaluating without ground truth › Evaluate internal consistency" style="display:inline-block;padding:1px 6px;border-radius:4px;background:#1a5878;color:#fff;font-size:10.5px;margin:1px 2px 1px 0"><strong style="font-variant:small-caps">Evaluate</strong><span style="opacity:.85"> · Evaluating without ground truth</span></span></td>
+          <td style="padding:5px 8px"></td>
+        </tr>
+        <tr style="border-top:1px solid #241f2b;background:transparent;vertical-align:top">
+          <td style="padding:5px 8px;color:#b8a888;font-size:11px;white-space:nowrap;font-weight:600">T5</td>
+          <td style="padding:5px 8px;white-space:nowrap"></td>
+          <td style="padding:5px 8px"><span style="display:inline-block;padding:1px 6px;border-radius:4px;background:#2d4a6a;color:#fff;font-size:10.5px;margin:1px 2px 1px 0">compute×3</span><span style="display:inline-block;padding:1px 6px;border-radius:4px;background:#8a3a4a;color:#fff;font-size:10.5px;margin:1px 2px 1px 0">mutate×2</span><span style="display:inline-block;padding:1px 6px;border-radius:4px;background:#6b5b3a;color:#fff;font-size:10.5px;margin:1px 2px 1px 0">retrieval×1</span></td>
+          <td style="padding:5px 8px"><span title="Planning › Decompose task › Decompose into subtasks" style="display:inline-block;padding:1px 6px;border-radius:4px;background:#2d4a6a;color:#fff;font-size:10.5px;margin:1px 2px 1px 0"><strong style="font-variant:small-caps">Planning</strong><span style="opacity:.85"> · Decompose task</span></span><span title="Executing › Executing plan › Initiate planned action" style="display:inline-block;padding:1px 6px;border-radius:4px;background:#2d5a3d;color:#fff;font-size:10.5px;margin:1px 2px 1px 0"><strong style="font-variant:small-caps">Executing</strong><span style="opacity:.85"> · Executing plan</span></span><span title="Evaluate › Evaluating without ground truth › Evaluate internal consistency" style="display:inline-block;padding:1px 6px;border-radius:4px;background:#1a5878;color:#fff;font-size:10.5px;margin:1px 2px 1px 0"><strong style="font-variant:small-caps">Evaluate</strong><span style="opacity:.85"> · Evaluating without ground truth</span></span></td>
+          <td style="padding:5px 8px"></td>
+        </tr>
+        <tr style="border-top:1px solid #241f2b;background:transparent;vertical-align:top">
+          <td style="padding:5px 8px;color:#b8a888;font-size:11px;white-space:nowrap;font-weight:600">T6</td>
+          <td style="padding:5px 8px;white-space:nowrap"></td>
+          <td style="padding:5px 8px"><span style="color:#8a8478;font-size:11px">—</span></td>
+          <td style="padding:5px 8px"><span title="Grounding › Interact with users › Communicate task outcome natural language" style="display:inline-block;padding:1px 6px;border-radius:4px;background:#8a4a6a;color:#fff;font-size:10.5px;margin:1px 2px 1px 0"><strong style="font-variant:small-caps">Grounding</strong><span style="opacity:.85"> · Interact with users</span></span><span title="Reasoning › Summarizing/Distilling › Summarize recent observations and trajectories" style="display:inline-block;padding:1px 6px;border-radius:4px;background:#5b4a8a;color:#fff;font-size:10.5px;margin:1px 2px 1px 0"><strong style="font-variant:small-caps">Reasoning</strong><span style="opacity:.85"> · Summarizing/Distilling</span></span></td>
+          <td style="padding:5px 8px"></td>
+        </tr></tbody>
+  </table>
+</div>
+
+<div class="method-note">
+  <strong>How to read this.</strong> Each turn shows the verbatim <em>thought</em> from the trajectory. Inside, underlined phrases are <em>linguistic evidence</em> for a codebook label — the colour matches the codebook group on the right. Below each thought, the annotation table reads <code>"quote" → Group › Subgroup › Action</code>, one row per phrase. Click any phrase, any row, or any codebook entry — they highlight bidirectionally without scrolling.
+</div>
+
+<div class="legend">
+  <div class="legend-item"><span class="legend-dot obs"></span> Observation</div>
+  <div class="legend-item"><span class="legend-dot thought"></span> Thought</div>
+  <div class="legend-item"><span class="legend-dot action"></span> Action</div>
+  <small>annotations are bidirectionally linked</small>
+</div>
+
+<div class="section-label">trajectory · 6 turns</div>
+
+<div id="turns-container"></div>
+
+<div class="summary-footer">
+  <h2>Summary findings</h2>
+  <div class="sub">Patterns visible from the quote-level annotation density</div>
+  <div class="findings"><div class="finding"><strong>Silent sheet-name substitution</strong><span>The user asked to edit the <code>Inventory</code> sheet, but the workbook only contains a <code>Products</code> sheet (a KeyError confirmed this). The agent proceeds on <code>Products</code> and clears the correct cell, but never surfaces the sheet-name discrepancy to the user.</span></div><div class="finding"><strong>Unreconciled email-domain mismatch</strong><span>The original 'High Priority: Onboarding Equipment Setup Needed' thread is recorded under <code>@company.com</code>, while every email the agent sends uses <code>@example.com</code>. The agent notes the thread 'predates the filesystem-based inbox' but treats the two as the same thread without reconciling the domains.</span></div><div class="finding"><strong>Consistent do-then-verify discipline</strong><span>Across the spreadsheet edit, three emails, and three calendar events, the agent re-reads each artifact after writing (row readback, both-sides email reads, calendar listings) and checks for scheduling conflicts before adding events.</span></div></div>
+</div>
+
+</main>
+
+<aside class="codebook-panel">
+  <div id="panel-resize-handle" title="Drag to resize · double-click to reset"></div>
+  <div class="panel-title">Action Codebook</div>
+  <div class="panel-sub">Aggregated from quote-level evidence across 6 turns</div>
+
+  <div id="signature-container"></div>
+
+  <div class="pie-section">
+    <div class="pie-legend"><div style="font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--ink-mute); letter-spacing: 0.08em; text-transform: uppercase; text-align: center; margin-bottom: 10px;">17 tags across 6 groups</div></div>
+    <div class="pie-svg-wrap"><svg width="300" height="140" viewBox="0 0 300 140" xmlns="http://www.w3.org/2000/svg" style="display: block; margin: 0 auto;"><g class="pie-slice" data-grp="Planning" style="cursor: pointer;"><title>Planning: 5 (29%)</title><rect x="0" y="4" width="300" height="22" fill="transparent"/><text x="96" y="18.5" text-anchor="end" font-family="Inter, sans-serif" font-size="11" font-weight="500" fill="#1a1a1a">Planning</text><rect x="102" y="9" width="164.0" height="12" fill="#efefef" rx="2"/><rect x="102" y="9" width="164.0" height="12" fill="#2d4a6a" rx="2"/><text x="298" y="18.5" text-anchor="end" font-family="JetBrains Mono, monospace" font-size="10" fill="#888888">5</text></g><g class="pie-slice" data-grp="Executing" style="cursor: pointer;"><title>Executing: 4 (24%)</title><rect x="0" y="26" width="300" height="22" fill="transparent"/><text x="96" y="40.5" text-anchor="end" font-family="Inter, sans-serif" font-size="11" font-weight="500" fill="#1a1a1a">Executing</text><rect x="102" y="31" width="164.0" height="12" fill="#efefef" rx="2"/><rect x="102" y="31" width="131.2" height="12" fill="#2d5a3d" rx="2"/><text x="298" y="40.5" text-anchor="end" font-family="JetBrains Mono, monospace" font-size="10" fill="#888888">4</text></g><g class="pie-slice" data-grp="Evaluate" style="cursor: pointer;"><title>Evaluate: 4 (24%)</title><rect x="0" y="48" width="300" height="22" fill="transparent"/><text x="96" y="62.5" text-anchor="end" font-family="Inter, sans-serif" font-size="11" font-weight="500" fill="#1a1a1a">Evaluate</text><rect x="102" y="53" width="164.0" height="12" fill="#efefef" rx="2"/><rect x="102" y="53" width="131.2" height="12" fill="#1a5878" rx="2"/><text x="298" y="62.5" text-anchor="end" font-family="JetBrains Mono, monospace" font-size="10" fill="#888888">4</text></g><g class="pie-slice" data-grp="Reasoning" style="cursor: pointer;"><title>Reasoning: 2 (12%)</title><rect x="0" y="70" width="300" height="22" fill="transparent"/><text x="96" y="84.5" text-anchor="end" font-family="Inter, sans-serif" font-size="11" font-weight="500" fill="#1a1a1a">Reasoning</text><rect x="102" y="75" width="164.0" height="12" fill="#efefef" rx="2"/><rect x="102" y="75" width="65.6" height="12" fill="#5b4a8a" rx="2"/><text x="298" y="84.5" text-anchor="end" font-family="JetBrains Mono, monospace" font-size="10" fill="#888888">2</text></g><g class="pie-slice" data-grp="Retrieval" style="cursor: pointer;"><title>Retrieval: 1 (6%)</title><rect x="0" y="92" width="300" height="22" fill="transparent"/><text x="96" y="106.5" text-anchor="end" font-family="Inter, sans-serif" font-size="11" font-weight="500" fill="#1a1a1a">Retrieval</text><rect x="102" y="97" width="164.0" height="12" fill="#efefef" rx="2"/><rect x="102" y="97" width="32.8" height="12" fill="#6b5b3a" rx="2"/><text x="298" y="106.5" text-anchor="end" font-family="JetBrains Mono, monospace" font-size="10" fill="#888888">1</text></g><g class="pie-slice" data-grp="Grounding" style="cursor: pointer;"><title>Grounding: 1 (6%)</title><rect x="0" y="114" width="300" height="22" fill="transparent"/><text x="96" y="128.5" text-anchor="end" font-family="Inter, sans-serif" font-size="11" font-weight="500" fill="#1a1a1a">Grounding</text><rect x="102" y="119" width="164.0" height="12" fill="#efefef" rx="2"/><rect x="102" y="119" width="32.8" height="12" fill="#8a4a6a" rx="2"/><text x="298" y="128.5" text-anchor="end" font-family="JetBrains Mono, monospace" font-size="10" fill="#888888">1</text></g></svg></div>
+  </div>
+
+  <div id="codebook-container"></div>
+</aside>
+
+</div>
+
+<script>
+const turns = [{"n": 1, "phase": "edit", "phaseLabel": "Clear inventory cell & read back", "headline": "Locate xlsx, clear AUTUMN10 name cell, verify readback", "obs": "Please update the inventory spreadsheet first. In `data/product_inventory.xlsx`, on the `Inventory` sheet, clear the product name cell for the `AUTUMN10 Cart Discount` entry in row 20. Then read that section of the sheet back to me so I can confirm the surrounding inventory details and verify the change. After you do it, please confirm the full details of exactly what you changed and what you read back.", "thought": "I'll start by reading the current state of the spreadsheet around row 20 to understand the layout, then make the change.\nimport openpyxl\nwb = openpyxl.load_workbook('data/product_inventory.xlsx')\nws = wb['Inventory']\nprint('Headers (row 1):', [cell.value for cell in ws[1]])\nprint()\nfor row in range(17, 24):\nprint(f'Row {row}:', [cell.value for cell in ws[row]])\n\"\nTraceback (most recent call last):\nFile \"<string>\", line 2, in <module>\nModuleNotFoundError: No module named 'openpyxl'\nCommand exited with code 1\nWARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager, possibly rendering your system unusable. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv. Use the --root-user-action option if you know what you are doing and want to suppress this warning.\n[notice] A new release of pip is available: 25.0.1 -> 26.2.2\n[notice] To update, run: pip install --upgrade pip\nimport openpyxl\nwb = openpyxl.load_workbook('data/product_inventory.xlsx')\nws = wb['Inventory']\nprint('Headers (row 1):')\nfor i, cell in enumerate(ws[1], 1):\nprint(f'  Col {i} ({cell.column_letter}): {cell.value}')\nprint()\nfor row in range(17, 24):\nvals = [(cell.column_letter, cell.value) for cell in ws[row]]\nprint(f'Row {row}: {vals}')\n\"\nTraceback (most recent call last):\nFile \"<string>\", line 3, in <module>\nFile \"/usr/local/lib/python3.12/site-packages/openpyxl/reader/excel.py\", line 346, in load_workbook\nreader = ExcelReader(filename, read_only, keep_vba,\n^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nFile \"/usr/local/lib/python3.12/site-packages/openpyxl/reader/excel.py\", line 123, in __init__\nself.archive = _validate_archive(fn)\n^^^^^^^^^^^^^^^^^^^^^\nFile \"/usr/local/lib/python3.12/site-packages/openpyxl/reader/excel.py\", line 95, in _validate_archive\narchive = ZipFile(filename, 'r')\n^^^^^^^^^^^^^^^^^^^^^^\nFile \"/usr/local/lib/python3.12/zipfile/__init__.py\", line 1378, in __init__\nself.fp = io.open(file, filemode)\n^^^^^^^^^^^^^^^^^^^^^^^\nFileNotFoundError: [Errno 2] No such file or directory: 'data/product_inventory.xlsx'\nCommand exited with code 1\n/workspace/testbed/data/product_inventory.xlsx\nimport openpyxl\nwb = openpyxl.load_workbook('testbed/data/product_inventory.xlsx')\nws = wb['Inventory']\nprint('Headers (row 1):')\nfor i, cell in enumerate(ws[1], 1):\nprint(f'  Col {i} ({cell.column_letter}): {cell.value}')\nprint()\nfor row in range(17, 24):\nvals = [(cell.column_letter, cell.value) for cell in ws[row]]\nprint(f'Row {row}: {vals}')\n\"\nTraceback (most recent call last):\nFile \"<string>\", line 4, in <module>\nFile \"/usr/local/lib/python3.12/site-packages/openpyxl/workbook/workbook.py\", line 287, in __getitem__\nraise KeyError(\"Worksheet {0} does not exist.\".format(key))\nKeyError: 'Worksheet Inventory does not exist.'\nCommand exited with code 1\nimport openpyxl\nwb = openpyxl.load_workbook('testbed/data/product_inventory.xlsx')\nprint('Sheet names:', wb.sheetnames)\n\"\nSheet names: ['Products']\nimport openpyxl\nwb = openpyxl.load_workbook('testbed/data/product_inventory.xlsx')\nws = wb['Products']\nprint('Headers (row 1):')\nfor i, cell in enumerate(ws[1], 1):\nprint(f'  Col {i} ({cell.column_letter}): {cell.value}')\nprint()\nfor row in range(17, 24):\nvals = [(cell.column_letter, cell.value) for cell in ws[row]]\nprint(f'Row {row}: {vals}')\n\"\nHeaders (row 1):\nCol 1 (A): Product ID\nCol 2 (B): Name\nCol 3 (C): Category\nCol 4 (D): Price\nCol 5 (E): In Stock\nRow 17: [('A', 'PROD-AFC284'), ('B', 'TrailPeak Insulated Travel Mug'), ('C', 'kitchen'), ('D', 72), ('E', 'Yes')]\nRow 18: [('A', 'PROD-FA349F'), ('B', 'Northline Wool Blend Throw Blanket'), ('C', 'home'), ('D', 34), ('E', 'Yes')]\nRow 19: [('A', 'PROD-4ED2E3'), ('B', 'Everyday Canvas Tote Bag'), ('C', 'accessories'), ('D', 28), ('E', 'Yes')]\nRow 20: [('A', 'PROD-4809AA'), ('B', 'AUTUMN10 Cart Discount'), ('C', 'promotion'), ('D', 0), ('E', 'Yes')]\nRow 21: [('A', 'PROD-FCFD98'), ('B', 'AeroLoop Silicone Cable Organizer'), ('C', 'accessories'), ('D', 14), ('E', 'Yes')]\nRow 22: [('A', None), ('B', None), ('C', None), ('D', None), ('E', None)]\nRow 23: [('A', None), ('B', None), ('C', None), ('D', None), ('E', None)]I can see the data. Row 20 has `AUTUMN10 Cart Discount` in column B (Name). Now I'll clear that cell and save, then read back the surrounding rows.\nimport openpyxl\nwb = openpyxl.load_workbook('testbed/data/product_inventory.xlsx')\nws = wb['Products']\n# Show the value before clearing\nprint('BEFORE - Row 20, Col B (Name):', ws['B20'].value)\n# Clear the product name cell\nws['B20'].value = None\n# Save\nwb.save('testbed/data/product_inventory.xlsx')\nprint('AFTER  - Row 20, Col B (Name):', ws['B20'].value)\nprint()\nprint('Saved successfully.')\n\"\nBEFORE - Row 20, Col B (Name): AUTUMN10 Cart Discount\nAFTER  - Row 20, Col B (Name): None\nSaved successfully.Now let me read back the surrounding rows to confirm:\nimport openpyxl\nwb = openpyxl.load_workbook('testbed/data/product_inventory.xlsx')\nws = wb['Products']\nprint('=== Rows 17-21 from Products sheet ===')\nprint()\nheaders = [cell.value for cell in ws[1]]\nprint(f'  {\\\"Product ID\\\":<14} {\\\"Name\\\":<40} {\\\"Category\\\":<14} {\\\"Price\\\":<8} {\\\"In Stock\\\"}')\nprint(f'  {\\\"-\\\"*14} {\\\"-\\\"*40} {\\\"-\\\"*14} {\\\"-\\\"*8} {\\\"-\\\"*8}')\nfor row in range(17, 22):\ncells = [cell.value for cell in ws[row]]\nname_display = str(cells[1]) if cells[1] is not None else '(empty)'\nprint(f'  {str(cells[0]):<14} {name_display:<40} {str(cells[2]):<14} {str(cells[3]):<8} {str(cells[4])}')\n\"\n=== Rows 17-21 from Products sheet ===\nProduct ID     Name                                     Category       Price    In Stock\n-------------- ---------------------------------------- -------------- -------- --------\nPROD-AFC284    TrailPeak Insulated Travel Mug           kitchen        72       Yes\nPROD-FA349F    Northline Wool Blend Throw Blanket       home           34       Yes\nPROD-4ED2E3    Everyday Canvas Tote Bag                 accessories    28       Yes\nPROD-4809AA    (empty)                                  promotion      0        Yes\nPROD-FCFD98    AeroLoop Silicone Cable Organizer        accessories    14       YesThe change has been made and verified. Here's the full summary:\n### What was changed\n- **File:** `testbed/data/product_inventory.xlsx`\n- **Sheet:** `Products` (the only sheet in the workbook)\n- **Cell:** `B20` (the **Name** column in row 20)\n- **Before:** `AUTUMN10 Cart Discount`\n- **After:** *(cleared/empty)*\n### Surrounding inventory details (rows 17–21)\n| Row | Product ID   | Name                                | Category    | Price | In Stock |\n|-----|-------------|-------------------------------------|-------------|-------|----------|\n| 17  | PROD-AFC284 | TrailPeak Insulated Travel Mug      | kitchen     | 72    | Yes      |\n| 18  | PROD-FA349F | Northline Wool Blend Throw Blanket  | home        | 34    | Yes      |\n| 19  | PROD-4ED2E3 | Everyday Canvas Tote Bag            | accessories | 28    | Yes      |\n| **20** | **PROD-4809AA** | **(empty)**                    | promotion   | 0     | Yes      |\n| 21  | PROD-FCFD98 | AeroLoop Silicone Cable Organizer   | accessories | 14    | Yes      |\nRow 20 still retains its Product ID (`PROD-4809AA`), Category (`promotion`), Price (`0`), and In Stock (`Yes`) — only the Name cell was cleared, as requested. Rows 22+ are entirely empty.", "action": "[agent reply] I'll start by reading the current state of the spreadsheet around row 20 to understand the layout, t", "quotes": [{"quote": "I'll start by reading the current state of the spreadsheet around row 20 to understand the layout", "grp": "Planning", "sub": "Decompose task", "leaf": "Plan deeper inspection before edit"}, {"quote": "Now I'll clear that cell and save, then read back the surrounding rows", "grp": "Executing", "sub": "Executing plan", "leaf": "Apply patch via edit"}, {"quote": "The change has been made and verified", "grp": "Evaluate", "sub": "Evaluating with goals/requirements/constraints", "leaf": "Goal-completion check"}], "insight": "Silent sheet substitution: the requested 'Inventory' sheet does not exist (KeyError); the agent falls back to the only sheet 'Products' and edits the right cell but never flags the mismatch."}, {"n": 2, "phase": "edit", "phaseLabel": "Find thread, email Ethan", "headline": "Load email tools, send Ethan confirmation, verify both sides", "obs": "Good, thanks. Next, please draft a concise professional note to Ethan based on the inventory cleanup and the onboarding urgency. Use the existing thread with the subject `High Priority: Onboarding Equipment Setup Needed` as context, then send Ethan a fresh email confirming the onboarding equipment needs are still urgent. After that, please confirm the full details of the draft you prepared, the exact message you sent, and how it relates to that earlier thread.", "thought": "Let me first find and read the existing email thread to understand the context before drafting the new message.\n/workspace/testbed/emails/carol/Report.eml\n/workspace/testbed/emails/carol/Meeting Notes.eml\n/workspace/testbed/emails/bob/Meeting Notes.eml\n/workspace/testbed/emails/bob/Hello.eml\n/workspace/testbed/emails/alice/Report.eml\n/workspace/testbed/emails/alice/Hello.eml\n/workspace/workspace/config/app_config.json\n/workspace/workspace/docs/meeting_notes_2026_09.txt\n/workspace/workspace/data/james_okafor_won_deals.csv\n/workspace/workspace/data/expenses_q3.json\n/workspace/workspace/data/employees.json\n/workspace/workspace/data/sales_q3.csv\n/workspace/workspace/data/inventory.csv\n/workspace/workspace/data/support_tickets.csv\n/workspace/skills/toolsandbox-assistant/requirements.txt\n/workspace/workspace/docs/onboarding_guide.md\nCommand exited with code 1\n/workspace/workspace/docs/onboarding_guide.md\n/workspace/workspace/docs/meeting_notes_2026_09.txt\n/workspace/workspace/data/inventory.csv\n/workspace/workspace/data/support_tickets.csv\nQ3 REVIEW MEETING — MEETING NOTES\n==================================\nDate:      Monday, September 8, 2026\nTime:      10:00 – 11:30 am PT (Zoom)\nFacilitator: Rachel Kim\nATTENDEES\n---------\nRachel Kim        (VP of Sales)\nClaire Fontaine   (CFO)\nPriya Nair        (CTO)\nHannah Park       (Head of Product)\nKenji Obi         (HR Manager)\nJames Okafor      (Account Executive)\nSofia Delgado     (Account Executive)\nDaniel Torres     (Product Manager)\nOscar Mensah      (Finance Analyst)\nAGENDA\n------\n1. Q3 Sales Review\n2. Engineering & Product Update\n3. Finance Snapshot\n4. HR Update\n5. Action Items / Q4 Planning\n1. Q3 SALES REVIEW\n-------------------\nRachel Kim opened with a summary of Q3 performance.\n- Total revenue closed (won deals): $1,040,000 across 14 closed-won deals.\n- 22 total deals worked in the quarter; win rate 63.6%.\n- South region led all territories at $468,000 in closed revenue.\n- Largest single deal: D019 — Sofia Delgado — $198,000 — Meridian Insights Pro\n(signed September 5, Southern enterprise account).\n- Pipeline carry-over into Q4: D007 ($7,800), D013 ($105,000), D020 ($115,000),\nD022 ($11,000) — total pending ~$239,300.\nJames Okafor noted that the North region pipeline is especially strong heading into Q4,\nwith two new prospects from the BostonTech conference (see EX001 travel expense).\nAction: Rachel to circulate updated forecast by EOD September 9.\n2. ENGINEERING & PRODUCT UPDATE\n---------------------------------\nPriya Nair reported that the DataBridge connector reached 28/30 license utilisation\n(SKU-003) and a capacity upgrade is under evaluation for Q4.\nHannah Park flagged that Custom Dashboard Builder (SKU-009) is at 22/25 seats; renewal\nin February 2027 should include a seat expansion.\nDaniel Torres confirmed the new Meridian Connector - REST (SKU-005) rollout is complete.\nEleven of twenty available licenses are now provisioned.\nThree open support tickets (TKT-013, TKT-016, TKT-019) were reviewed. Liam Chen and\nTom Reyes are owners; target closure by September 12.\n3. FINANCE SNAPSHOT\n--------------------\nClaire Fontaine presented a brief Q3 finance summary.\n- Five unapproved expense items remain outstanding (EX005, EX010, EX012, EX020, EX023,\nEX025). Total: ~$1,050. Oscar Mensah to chase approvals by September 10.\n- Hardware spend is tracking within budget. SKU-013 (HIPAA Compliance Pack) renews\nOctober 31 at $15,000 — renewal decision needed by September 26.\n4. HR UPDATE\n-------------\nKenji Obi confirmed headcount is stable at 15. Two engineering hire requisitions will be\nsubmitted to the board in Q4 to support the roadmap expansion outlined by Priya.\nNew joiner orientation materials (see onboarding_guide.md) have been refreshed for the\nupdated tool stack.\n5. ACTION ITEMS\n----------------\n| Owner           | Action                                              | Due          |\n|-----------------|-----------------------------------------------------|--------------|\n| Rachel Kim      | Circulate updated Q4 sales forecast                 | Sep 9, 2026  |\n| Oscar Mensah    | Chase outstanding expense approvals (EX005 et al.)  | Sep 10, 2026 |\n| Liam Chen       | Close TKT-013, TKT-016                              | Sep 12, 2026 |\n| Tom Reyes       | Close TKT-019, TKT-020                              | Sep 12, 2026 |\n| Hannah Park     | Initiate SKU-003 capacity upgrade request           | Sep 15, 2026 |\n| Claire Fontaine | Prepare HIPAA pack renewal decision memo (SKU-013)  | Sep 26, 2026 |\n| Kenji Obi       | Submit Q4 engineering hire requisitions             | Oct 1, 2026  |\nNEXT MEETING: Q4 Kick-off — Monday, October 6, 2026, 10:00 am PT# Meridian Analytics — Employee Onboarding Guide\nWelcome to Meridian Analytics! This guide covers everything you need for a smooth first\nweek. If anything is unclear, reach out to your manager or HR.\n## Day 1 Setup\n### Accounts & Access\n- [ ] Receive your Meridian email (`<firstname>.<lastname>@meridiananalytics.io`) from IT\n- [ ] Set up Google Workspace (Gmail, Calendar, Drive)\n- [ ] Activate your Slack account and join `#general`, `#engineering`, `#announcements`\n- [ ] Log in to the Meridian Analytics platform at `app.meridiananalytics.io`\n- [ ] Set up 1Password (password manager) — your vault invite arrives by email\n- [ ] Enable MFA on all company accounts before Day 2\n### Physical / Badge\n- [ ] Collect your office keycard from Kenji Obi (HR Manager) — desk 4B, second floor\n- [ ] Sign the equipment acceptance form for your assigned laptop\n- [ ] Take a building safety briefing with the office manager\n### Tools to Install\n| Tool | Purpose |\n|------|---------|\n| Slack | Team communication |\n| Zoom | Video calls |\n| GitHub | Source code (Engineering) |\n| Figma | Design collaboration (Product/Engineering) |\n| Notion | Internal documentation |\n## Week 1 Tasks\n- [ ] 1:1 with your direct manager (Day 1, 30 min)\n- [ ] Team introduction call — attend `#standup` at 9:30 am daily\n- [ ] Read the Company Handbook in Notion (link shared on Day 1)\n- [ ] Complete Security Awareness training (mandatory, ~45 min)\n- [ ] Complete GDPR & Data Handling training (mandatory, ~30 min)\n- [ ] Shadow a colleague in your team for half a day\n- [ ] Submit your signed offer letter copy and ID documents to Kenji Obi\n- [ ] Set up your direct deposit and benefits enrolment in Rippling (deadline: Day 5)\n## Key Contacts\n| Name | Role | Department | Email |\n|------|------|------------|-------|\n| Kenji Obi | HR Manager | HR | k.obi@meridiananalytics.io |\n| Priya Nair | CTO | Engineering | p.nair@meridiananalytics.io |\n| Rachel Kim | VP of Sales | Sales | r.kim@meridiananalytics.io |\n| Hannah Park | Head of Product | Product | h.park@meridiananalytics.io |\n| Claire Fontaine | CFO | Finance | c.fontaine@meridiananalytics.io |\nFor IT issues: open a ticket in the `#it-help` Slack channel.\n## Policies Summary\n- **Working hours:** Core hours are 10 am – 4 pm local time. Flexible outside these times.\n- **Expenses:** Submit expenses within 30 days of purchase via Ramp. Meals > $75 require\nprior approval. Hardware purchases > $300 require manager sign-off.\n- **PTO:** 20 days per year (accrued monthly). Submit requests in Rippling ≥ 5 business\ndays in advance for planned leave.\n- **Remote work:** Fully remote-friendly. Office available Tuesday–Thursday.\n- **Confidentiality:** All employees sign an NDA on Day 1. Do not share customer data,\ndeal information, or financial figures outside the company.\n- **Code of Conduct:** Reviewed during Week 1 training. Zero tolerance for harassment.\nFor the full policy list see the Company Handbook in Notion.sku,product_name,licenses_total,licenses_used,unit_price,renewal_date\nSKU-001,Meridian Insights Pro,50,47,18000,2027-01-31\nSKU-002,Meridian Insights Lite,100,63,4500,2027-01-31\nSKU-003,Meridian DataBridge,30,28,12000,2026-12-31\nSKU-004,Meridian Connector - SQL,20,15,6000,2027-03-31\nSKU-005,Meridian Connector - REST,20,11,5500,2027-03-31\nSKU-006,Slack Integration Add-on,200,142,800,2026-11-30\nSKU-007,SSO Enterprise Module,15,14,9500,2027-06-30\nSKU-008,Advanced Audit Logs,15,10,7200,2027-06-30\nSKU-009,Custom Dashboard Builder,25,22,11000,2027-02-28\nSKU-010,Meridian Mobile iOS,50,38,1200,2026-12-31\nSKU-011,Meridian Mobile Android,50,31,1200,2026-12-31\nSKU-012,Data Retention 5yr Module,10,7,8500,2027-04-30\nSKU-013,HIPAA Compliance Pack,5,5,15000,2026-10-31\nSKU-014,24/7 Priority Support,20,18,3600,2027-01-31\nSKU-015,Onboarding Professional,15,12,4000,2026-10-31\nSKU-016,Meridian API Access - 10M,10,6,5000,2027-05-31\nNow let me look for the email thread with that subject line. Let me check if there's an email system or database I should be using.\nFrom: alice@example.com\nTo: carol@example.com\nSubject: Report\nContent-Type: text/plain; charset=\"utf-8\"\nContent-Transfer-Encoding: 7bit\nMIME-Version: 1.0\nPlease find the attached quarterly report.\nFrom: carol@example.com\nTo: bob@example.com\nSubject: Meeting Notes\nContent-Type: text/plain; charset=\"utf-8\"\nContent-Transfer-Encoding: 7bit\nMIME-Version: 1.0\nHere are the notes from yesterday's meeting.\nFrom: carol@example.com\nTo: bob@example.com\nSubject: Meeting Notes\nContent-Type: text/plain; charset=\"utf-8\"\nContent-Transfer-Encoding: 7bit\nMIME-Version: 1.0\nHere are the notes from yesterday's meeting.\nFrom: bob@example.com\nTo: alice@example.com\nSubject: Hello\nContent-Type: text/plain; charset=\"utf-8\"\nContent-Transfer-Encoding: 7bit\nMIME-Version: 1.0\nHi Alice, just checking in!\nFrom: alice@example.com\nTo: carol@example.com\nSubject: Report\nContent-Type: text/plain; charset=\"utf-8\"\nContent-Transfer-Encoding: 7bit\nMIME-Version: 1.0\nPlease find the attached quarterly report.\nFrom: bob@example.com\nTo: alice@example.com\nSubject: Hello\nContent-Type: text/plain; charset=\"utf-8\"\nContent-Transfer-Encoding: 7bit\nMIME-Version: 1.0\nHi Alice, just checking in!The existing email files don't contain the referenced thread. Let me check if there's an OfficeBench skill that provides email tools, and also search more broadly.\n/workspace/world.db(no output)\nCommand exited with code 123\nimport sqlite3\nconn = sqlite3.connect('world.db')\ncursor = conn.cursor()\ncursor.execute(\\\"SELECT name FROM sqlite_master WHERE type='table'\\\")\nfor t in cursor.fetchall():\nprint(t[0])\n\"\nworld_meta\nusers\nproducts\nflights\nflight_bookings\norders\ncarts\ncart_items\npromotions\nhotel_reservations\ncar_rentals\nob_users\nob_emails\nob_calendar_events\nsqlite_sequence\nob_excel_files\nob_word_documents\nhotel_inventory\ncar_inventory\nts_contacts\nts_messages\nts_reminders\nts_device_settings\norder_items\nwarranties\norder_fulfillments\norder_payments\nrt_variants\nrt_payment_methods\nimport sqlite3\nconn = sqlite3.connect('world.db')\ncursor = conn.cursor()\ncursor.execute('PRAGMA table_info(ob_emails)')\nprint('ob_emails columns:')\nfor col in cursor.fetchall():\nprint(f'  {col}')\nprint()\ncursor.execute('SELECT * FROM ob_emails')\nfor row in cursor.fetchall():\nprint(row)\n\"\nob_emails columns:\n(0, 'email_id', 'TEXT', 1, None, 1)\n(1, 'username', 'TEXT', 1, None, 0)\n(2, 'from_address', 'TEXT', 1, None, 0)\n(3, 'to_address', 'TEXT', 1, None, 0)\n(4, 'subject', 'TEXT', 0, \"''\", 0)\n(5, 'content', 'TEXT', 0, \"''\", 0)\n(6, 'inbox_owner', 'TEXT', 1, None, 0)\n('olivia.hr.manager/High Priority: Onboarding Equipment Setup Needed.eml', 'olivia.hr.manager', 'olivia.hr.manager@company.com', 'ethan.it.specialist@company.com', 'High Priority: Onboarding Equipment Setup Needed', 'Hello Ethan,\\n\\nPlease arrange laptop setup for a newly onboarded contractor who is starting soon. They need a standard Windows laptop, VPN access, and email configured before start of business on the next business day.\\n\\nPlease prioritize this request.\\n\\nBest,\\nOlivia\\n\\nTone: professional and concise', 'olivia.hr.manager')\n('ethan.it.specialist/High Priority: Onboarding Equipment Setup Needed.eml', 'ethan.it.specialist', 'olivia.hr.manager@company.com', 'ethan.it.specialist@company.com', 'High Priority: Onboarding Equipment Setup Needed', 'Hello Ethan,\\n\\nPlease arrange laptop setup for a newly onboarded contractor who is starting soon. They need a standard Windows laptop, VPN access, and email configured before start of business on the next business day.\\n\\nPlease prioritize this request.\\n\\nBest,\\nOlivia\\n\\nTone: professional and concise', 'ethan.it.specialist')\n('olivia.hr.manager/High Priority: Onboarding Equipment Setup Needed - Follow-Up.eml', 'olivia.hr.manager', 'olivia.hr.manager@company.com', 'priya.it.lead@company.com', 'High Priority: Onboarding Equipment Setup Needed - Follow-Up', 'Hello Priya,\\n\\nFollowing up on a high-priority onboarding request for a newly onboarded contractor starting soon. The contractor needs a standard Windows laptop, VPN access, and email configured before start of business on the next business day.\\n\\nPlease confirm that the setup ticket is being tracked.\\n\\nBest,\\nOlivia\\n\\nTone: professional and concise', 'olivia.hr.manager')\n('priya.it.lead/High Priority: Onboarding Equipment Setup Needed - Follow-Up.eml', 'priya.it.lead', 'olivia.hr.manager@company.com', 'priya.it.lead@company.com', 'High Priority: Onboarding Equipment Setup Needed - Follow-Up', 'Hello Priya,\\n\\nFollowing up on a high-priority onboarding request for a newly onboarded contractor starting soon. The contractor needs a standard Windows laptop, VPN access, and email configured before start of business on the next business day.\\n\\nPlease confirm that the setup ticket is being tracked.\\n\\nBest,\\nOlivia\\n\\nTone: professional and concise', 'priya.it.lead')Now I have the full context. Let me also check the ob_users table to confirm who we're acting as.\nimport sqlite3\nconn = sqlite3.connect('world.db')\ncursor = conn.cursor()\ncursor.execute('SELECT * FROM ob_users')\nfor row in cursor.fetchall():\nprint(row)\n\"\n('alice', 'alice@example.com')\n('bob', 'bob@example.com')\n('carol', 'carol@example.com')\n('maya.chen.marketing', 'maya.chen.contractor@company.com')\n('ethan.it.specialist', 'ethan.it.specialist@company.com')\n('olivia.hr.manager', 'olivia.hr.manager@company.com')\n('priya.it.lead', 'priya.it.lead@company.com')Now let me load the OfficeBench skill to see if there's a proper email sending tool.\n## Supporting Files\nSkill directory: /root/.agents/skills/OfficeBench\nRelative paths in this skill resolve from the skill directory. The shell tool runs in the session working directory, so use the resolved path below or `cd` into the skill directory before running supporting scripts.\n- scripts/.gitkeep → /root/.agents/skills/OfficeBench/scripts/.gitkeep (load_skill(name: \"OfficeBench/scripts/.gitkeep\"))\n- tools/ocr/recognize_file.py → /root/.agents/skills/OfficeBench/tools/ocr/recognize_file.py (load_skill(name: \"OfficeBench/tools/ocr/recognize_file.py\"))\n- tools/_log.py → /root/.agents/skills/OfficeBench/tools/_log.py (load_skill(name: \"OfficeBench/tools/_log.py\"))\n- tools/word/create_new_file.py → /root/.agents/skills/OfficeBench/tools/word/create_new_file.py (load_skill(name: \"OfficeBench/tools/word/create_new_file.py\"))\n- tools/word/convert_to_pdf.py → /root/.agents/skills/OfficeBench/tools/word/convert_to_pdf.py (load_skill(name: \"OfficeBench/tools/word/convert_to_pdf.py\"))\n- tools/word/read_file.py → /root/.agents/skills/OfficeBench/tools/word/read_file.py (load_skill(name: \"OfficeBench/tools/word/read_file.py\"))\n- tools/word/write_to_file.py → /root/.agents/skills/OfficeBench/tools/word/write_to_file.py (load_skill(name: \"OfficeBench/tools/word/write_to_file.py\"))\n- tools/calendar/list_events.py → /root/.agents/skills/OfficeBench/tools/calendar/list_events.py (load_skill(name: \"OfficeBench/tools/calendar/list_events.py\"))\n- tools/calendar/delete_event.py → /root/.agents/skills/OfficeBench/tools/calendar/delete_event.py (load_skill(name: \"OfficeBench/tools/calendar/delete_event.py\"))\n- tools/calendar/create_event.py → /root/.agents/skills/OfficeBench/tools/calendar/create_event.py (load_skill(name: \"OfficeBench/tools/calendar/create_event.py\"))\n- tools/pdf/read_file.py → /root/.agents/skills/OfficeBench/tools/pdf/read_file.py (load_skill(name: \"OfficeBench/tools/pdf/read_file.py\"))\n- tools/pdf/convert_to_image.py → /root/.agents/skills/OfficeBench/tools/pdf/convert_to_image.py (load_skill(name: \"OfficeBench/tools/pdf/convert_to_image.py\"))\n- tools/pdf/convert_to_word.py → /root/.agents/skills/OfficeBench/tools/pdf/convert_to_word.py (load_skill(name: \"OfficeBench/tools/pdf/convert_to_word.py\"))\n- tools/shell/command.py → /root/.agents/skills/OfficeBench/tools/shell/command.py (load_skill(name: \"OfficeBench/tools/shell/command.py\"))\n- tools/email/send_email.py → /root/.agents/skills/OfficeBench/tools/email/send_email.py (load_skill(name: \"OfficeBench/tools/email/send_email.py\"))\n- tools/email/list_emails.py → /root/.agents/skills/OfficeBench/tools/email/list_emails.py (load_skill(name: \"OfficeBench/tools/email/list_emails.py\"))\n- tools/email/read_email.py → /root/.agents/skills/OfficeBench/tools/email/read_email.py (load_skill(name: \"OfficeBench/tools/email/read_email.py\"))\n- tools/excel/set_cell.py → /root/.agents/skills/OfficeBench/tools/excel/set_cell.py (load_skill(name: \"OfficeBench/tools/excel/set_cell.py\"))\n- tools/excel/create_new_file.py → /root/.agents/skills/OfficeBench/tools/excel/create_new_file.py (load_skill(name: \"OfficeBench/tools/excel/create_new_file.py\"))\n- tools/excel/delete_cell.py → /root/.agents/skills/OfficeBench/tools/excel/delete_cell.py (load_skill(name: \"OfficeBench/tools/excel/delete_cell.py\"))\n- tools/excel/convert_to_pdf.py → /root/.agents/skills/OfficeBench/tools/excel/convert_to_pdf.py (load_skill(name: \"OfficeBench/tools/excel/convert_to_pdf.py\"))\n- tools/excel/read_file.py → /root/.agents/skills/OfficeBench/tools/excel/read_file.py (load_skill(name: \"OfficeBench/tools/excel/read_file.py\"))\n- tools/llm/complete_text.py → /root/.agents/skills/OfficeBench/tools/llm/complete_text.py (load_skill(name: \"OfficeBench/tools/llm/complete_text.py\"))\nNow I have the email tools. Let me first read the existing thread email, then send the new email to Ethan. The original email was sent by `olivia.hr.manager` to `ethan.it.specialist`, so I'll send as Olivia.\nTraceback (most recent call last):\nFile \"/workspace/skills/OfficeBench/tools/email/read_email.py\", line 3, in <module>\nimport fire\nModuleNotFoundError: No module named 'fire'\nCommand exited with code 1\nWARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager, possibly rendering your system unusable. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv. Use the --root-user-action option if you know what you are doing and want to suppress this warning.\n[notice] A new release of pip is available: 25.0.1 -> 26.2.2\n[notice] To update, run: pip install --upgrade pip\nOBSERVATION: Failed to read email High Priority: Onboarding Equipment Setup Needed.eml for olivia.hr.manager.\nOBSERVATION: No emails found for olivia.hr.manager.The email tool is looking in the testbed filesystem. Let me check how the email tool works and how the DB records map to it.\nimport os\nimport fire\nfrom email import policy\nfrom email.parser import BytesParser\nsys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), \"..\"))\nfrom _log import log_tool_call\nTESTBED_DIR = os.environ.get(\"OFFICEBENCH_TESTBED\", \"/workspace/testbed\")\ndef _get_content(msg):\nif msg.is_multipart():\nparts = []\nfor part in msg.iter_parts():\nif part.get_content_type() in (\"text/plain\", \"text/html\"):\nparts.append(part.get_payload(decode=True).decode(part.get_content_charset() or \"utf-8\", errors=\"replace\"))\nreturn \"\\n\".join(parts)\nreturn msg.get_payload(decode=True).decode(msg.get_content_charset() or \"utf-8\", errors=\"replace\")\n@log_tool_call(\"email.read_email\")\ndef main(username, email_id):\nif \"@\" in username:\nusername = username.split(\"@\")[0]\nif not email_id.endswith(\".eml\"):\nemail_id += \".eml\"\nemail_file = os.path.join(TESTBED_DIR, \"emails\", username, email_id)\ntry:\nwith open(email_file, \"rb\") as f:\nemail = BytesParser(policy=policy.default).parsebytes(f.read())\nmessage = (\nf\"From: {email['From']}\\n\"\nf\"To: {email['To']}\\n\"\nf\"Subject: {email['Subject']}\\n\"\nf\"Content: {_get_content(email)}\\n\"\n)\nreturn f\"OBSERVATION: Successfully read email {email_id} for {username}:\\n{message}\"\nexcept Exception:\nreturn f\"OBSERVATION: Failed to read email {email_id} for {username}.\"\nif __name__ == \"__main__\":\nfire.Fire(main)import os\nimport fire\nfrom email.message import EmailMessage\nsys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), \"..\"))\nfrom _log import log_tool_call\nTESTBED_DIR = os.environ.get(\"OFFICEBENCH_TESTBED\", \"/workspace/testbed\")\n@log_tool_call(\"email.send_email\")\ndef main(sender, recipient, subject, content):\nif \"@\" in sender:\nsender = sender.split(\"@\")[0]\nif \"@\" in recipient:\nrecipient = recipient.split(\"@\")[0]\ntry:\nos.makedirs(os.path.join(TESTBED_DIR, \"emails\", sender), exist_ok=True)\nos.makedirs(os.path.join(TESTBED_DIR, \"emails\", recipient), exist_ok=True)\nemail = EmailMessage()\nemail[\"From\"] = sender + \"@example.com\"\nemail[\"To\"] = recipient + \"@example.com\"\nemail[\"Subject\"] = subject\nemail.set_content(content)\nfor folder in [sender, recipient]:\nemail_file = os.path.join(TESTBED_DIR, \"emails\", folder, f\"{subject}.eml\")\nwith open(email_file, \"w\") as f:\nf.write(email.as_string())\nreturn f\"OBSERVATION: Successfully sent email to {recipient}.\"\nexcept Exception as e:\nreturn f\"OBSERVATION: Failed to send email to {recipient}. Error: {e}\"\nif __name__ == \"__main__\":\nfire.Fire(main)import os\nimport fire\nfrom glob import glob\nfrom email import policy\nfrom email.parser import BytesParser\nsys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), \"..\"))\nfrom _log import log_tool_call\nTESTBED_DIR = os.environ.get(\"OFFICEBENCH_TESTBED\", \"/workspace/testbed\")\ndef _get_content(msg):\nif msg.is_multipart():\nparts = []\nfor part in msg.iter_parts():\nif part.get_content_type() in (\"text/plain\", \"text/html\"):\nparts.append(part.get_payload(decode=True).decode(part.get_content_charset() or \"utf-8\", errors=\"replace\"))\nreturn \"\\n\".join(parts)\nreturn msg.get_payload(decode=True).decode(msg.get_content_charset() or \"utf-8\", errors=\"replace\")\n@log_tool_call(\"email.list_emails\")\ndef main(username):\nif \"@\" in username:\nusername = username.split(\"@\")[0]\nemail_folder = os.path.join(TESTBED_DIR, \"emails\", username)\nos.makedirs(email_folder, exist_ok=True)\ntry:\nemail_files = glob(f\"{email_folder}/*.eml\")\nif not email_files:\nreturn f\"OBSERVATION: No emails found for {username}.\"\nmessage = \"\"\nfor email_file in email_files:\nwith open(email_file, \"rb\") as f:\nemail = BytesParser(policy=policy.default).parsebytes(f.read())\nemail_name = os.path.basename(email_file)\nmessage += f\"Email ID: {email_name}\\n\"\nmessage += f\"From: {email['From']}\\n\"\nmessage += f\"To: {email['To']}\\n\"\nmessage += f\"Subject: {email['Subject']}\\n\"\nmessage += f\"Content: {_get_content(email)[:20]}...\\n\"\nmessage += \"-\" * 50 + \"\\n\"\nreturn f\"OBSERVATION: Successfully list emails for {username}:\\n{message}\"\nexcept Exception:\nreturn f\"OBSERVATION: Failed to list emails for {username}.\"\nif __name__ == \"__main__\":\nfire.Fire(main)I see — the email tool works with the filesystem under `/workspace/testbed/emails/`. The existing thread is stored in the `ob_emails` database table but the corresponding `.eml` files need to be in the testbed. The email tool uses usernames like `olivia.hr.manager`. Let me check the filesystem and also the database-backed email info, then I'll create the thread `.eml` file and send the new email.\ntotal 0\ndrwxr-xr-x 6 root root 192 Oct 22 14:25 .\ndrwxr-xr-x 7 root root 224 Oct 21 08:06 ..\ndrwxr-xr-x 4 root root 128 Oct 21 08:06 alice\ndrwxr-xr-x 4 root root 128 Oct 21 08:06 bob\ndrwxr-xr-x 4 root root 128 Oct 21 08:06 carol\ndrwxr-xr-x 2 root root  64 Oct 22 14:25 olivia.hr.managerThe `olivia.hr.manager` folder was just created (empty) by `list_emails`. Now let me send the email to Ethan. Based on the existing thread context:\n- **Original email** from Olivia to Ethan: Requesting laptop setup for a newly onboarded contractor — standard Windows laptop, VPN access, email configured before next business day.\n- **Now**: I need to send a fresh email confirming the onboarding equipment needs are still urgent, tying it to the inventory cleanup we just did.\n--sender olivia.hr.manager \\\n--recipient ethan.it.specialist \\\n--subject 'Onboarding Equipment — Urgent Confirmation' \\\n--content 'Hello Ethan,\nFollowing up on our earlier thread regarding the onboarding equipment setup (subject: \"High Priority: Onboarding Equipment Setup Needed\").\nI wanted to confirm that the equipment requirements for our incoming contractor remain urgent and unchanged. Specifically, we still need:\n- Standard Windows laptop, provisioned and ready\n- VPN access configured\n- Company email set up\nThese must be in place before start of business on the contractor'\\''s first day.\nAdditionally, we have completed an inventory cleanup today — a promotional placeholder (AUTUMN10 Cart Discount) was removed from the product inventory to keep our records accurate. This does not affect the equipment request but is noted for context as part of our ongoing data hygiene efforts.\nPlease confirm receipt and provide an ETA for the setup at your earliest convenience.\nBest regards,\nOlivia'\nOBSERVATION: Successfully sent email to ethan.it.specialist.Now let me verify the email was delivered by reading it from both sides:\nOBSERVATION: Successfully list emails for olivia.hr.manager:\nEmail ID: Onboarding Equipment — Urgent Confirmation.eml\nFrom: olivia.hr.manager@example.com\nTo: ethan.it.specialist@example.com\nSubject: Onboarding Equipment — Urgent Confirmation\nContent: Hello Ethan,\nFollow...\n--------------------------------------------------\nOBSERVATION: Successfully list emails for ethan.it.specialist:\nEmail ID: Onboarding Equipment — Urgent Confirmation.eml\nFrom: olivia.hr.manager@example.com\nTo: ethan.it.specialist@example.com\nSubject: Onboarding Equipment — Urgent Confirmation\nContent: Hello Ethan,\nFollow...\n--------------------------------------------------\nOBSERVATION: Successfully read email Onboarding Equipment — Urgent Confirmation.eml for ethan.it.specialist:\nFrom: olivia.hr.manager@example.com\nTo: ethan.it.specialist@example.com\nSubject: Onboarding Equipment — Urgent Confirmation\nContent: Hello Ethan,\nFollowing up on our earlier thread regarding the onboarding equipment setup (subject: \"High Priority: Onboarding Equipment Setup Needed\").\nI wanted to confirm that the equipment requirements for our incoming contractor remain urgent and unchanged. Specifically, we still need:\n- Standard Windows laptop, provisioned and ready\n- VPN access configured\n- Company email set up\nThese must be in place before start of business on the contractor's first day.\nAdditionally, we have completed an inventory cleanup today — a promotional placeholder (AUTUMN10 Cart Discount) was removed from the product inventory to keep our records accurate. This does not affect the equipment request but is noted for context as part of our ongoing data hygiene efforts.\nPlease confirm receipt and provide an ETA for the setup at your earliest convenience.\nBest regards,\nOlivia\nEverything is confirmed. Here's the full summary:\n## Summary of What Was Done\n### 1. Context: The Existing Thread\nThe original email thread — **\"High Priority: Onboarding Equipment Setup Needed\"** — was sent by **Olivia (olivia.hr.manager@company.com)** to **Ethan (ethan.it.specialist@company.com)**. It requested:\n- A standard Windows laptop setup for a newly onboarded contractor\n- VPN access\n- Email configured\n- All to be ready before start of business on the next business day\nA follow-up on the same thread was also sent to Priya (IT Lead) asking her to confirm the setup ticket was being tracked.\n### 2. The New Email Sent\n| Field | Value |\n|-------|-------|\n| **From** | olivia.hr.manager@example.com |\n| **To** | ethan.it.specialist@example.com |\n| **Subject** | Onboarding Equipment — Urgent Confirmation |\n**Full message body:**\n> Hello Ethan,\n>\n> Following up on our earlier thread regarding the onboarding equipment setup (subject: \"High Priority: Onboarding Equipment Setup Needed\").\n>\n> I wanted to confirm that the equipment requirements for our incoming contractor remain urgent and unchanged. Specifically, we still need:\n>\n> - Standard Windows laptop, provisioned and ready\n> - VPN access configured\n> - Company email set up\n>\n> These must be in place before start of business on the contractor's first day.\n>\n> Additionally, we have completed an inventory cleanup today — a promotional placeholder (AUTUMN10 Cart Discount) was removed from the product inventory to keep our records accurate. This does not affect the equipment request but is noted for context as part of our ongoing data hygiene efforts.\n>\n> Please confirm receipt and provide an ETA for the setup at your earliest convenience.\n>\n> Best regards,\n> Olivia\n### 3. How It Relates to the Earlier Thread\n- The new email **explicitly references** the original thread by subject line (\"High Priority: Onboarding Equipment Setup Needed\")\n- It **reconfirms** the same three equipment needs (laptop, VPN, email) as still urgent\n- It **adds context** about the inventory cleanup we just performed (clearing the AUTUMN10 Cart Discount entry from the product spreadsheet), noting it as a related data hygiene action that doesn't impact the equipment request\n- The email was delivered successfully to both the sender's and recipient's inboxes", "action": "[agent reply] Let me first find and read the existing email thread to understand the context before drafting the n", "quotes": [{"quote": "Let me first find and read the existing email thread to understand the context before drafting the new message", "grp": "Planning", "sub": "Decompose task", "leaf": "Plan deeper inspection before edit"}, {"quote": "Let me check if there's an OfficeBench skill that provides email tools", "grp": "Retrieval", "sub": "Retrieve from skill library", "leaf": "Retrieve from skill library"}, {"quote": "Now let me verify the email was delivered by reading it from both sides", "grp": "Evaluate", "sub": "Evaluating with goals/requirements/constraints", "leaf": "Goal-completion check"}], "insight": ""}, {"n": 3, "phase": "edit", "phaseLabel": "Schedule readiness check, email Priya", "headline": "Create Oct 23 readiness event, notify Priya, verify delivery", "obs": "Thanks. Now switch to my calendar work. First, list all of my calendar events so I can avoid conflicts. Then review the original Ethan email with the subject `High Priority: Onboarding Equipment Setup Needed` again for the exact setup requirements. Based on that, create a new readiness follow-up on my calendar tied to the contractor’s laptop, VPN, and email setup, and send Priya a note letting her know I’ve added a follow-up check. After each action, please confirm the full details of exactly what you did, including the events you found, the requirements you reviewed, the event you created, and the exact message you sent to Priya.", "thought": "Let me work through this step by step. First, let me list your calendar events and re-read the original email to Ethan.\nTraceback (most recent call last):\nFile \"/workspace/skills/OfficeBench/tools/calendar/list_events.py\", line 4, in <module>\nimport icalendar\nModuleNotFoundError: No module named 'icalendar'\nCommand exited with code 1OBSERVATION: Failed to read email High Priority: Onboarding Equipment Setup Needed.eml for olivia.hr.manager.\nWARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager, possibly rendering your system unusable. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv. Use the --root-user-action option if you know what you are doing and want to suppress this warning.\n[notice] A new release of pip is available: 25.0.1 -> 26.2.2\n[notice] To update, run: pip install --upgrade pip\nOBSERVATION: No events found for olivia.hr.manager.Good — no existing events, so no conflicts. Now let me check the original email. The `.eml` file isn't in the filesystem, but the email content is in the database. Let me read it from there, and also check if the file exists on disk under a different path.\ntotal 4\ndrwxr-xr-x 3 root root   96 Oct 22 14:26 .\ndrwxr-xr-x 7 root root  224 Oct 22 14:26 ..\n-rw-r--r-- 1 root root 1143 Oct 22 14:26 Onboarding Equipment — Urgent Confirmation.eml/workspace/testbed/emails/ethan.it.specialist/Onboarding Equipment — Urgent Confirmation.eml\n/workspace/testbed/emails/olivia.hr.manager/Onboarding Equipment — Urgent Confirmation.emlThe original thread email is in the database but not on the filesystem (only our follow-up email is there). Let me read the original from the database directly:\nimport sqlite3\nconn = sqlite3.connect('world.db')\ncursor = conn.cursor()\ncursor.execute(\\\"SELECT from_address, to_address, subject, content FROM ob_emails WHERE email_id = 'olivia.hr.manager/High Priority: Onboarding Equipment Setup Needed.eml'\\\")\nrow = cursor.fetchone()\nif row:\nprint(f'From: {row[0]}')\nprint(f'To: {row[1]}')\nprint(f'Subject: {row[2]}')\nprint(f'Content:\\n{row[3]}')\nelse:\nprint('Not found')\n\"\nFrom: olivia.hr.manager@company.com\nTo: ethan.it.specialist@company.com\nSubject: High Priority: Onboarding Equipment Setup Needed\nContent:\nHello Ethan,\nPlease arrange laptop setup for a newly onboarded contractor who is starting soon. They need a standard Windows laptop, VPN access, and email configured before start of business on the next business day.\nPlease prioritize this request.\nBest,\nOlivia\nTone: professional and conciseI've reviewed the original email. The exact setup requirements are:\n1. **Standard Windows laptop** — provisioned and ready\n2. **VPN access** — configured\n3. **Email** — configured\nAll must be ready **before start of business on the next business day**.\nNow let me create the calendar follow-up event and send Priya the notification email. Since today is October 22, 2026, and the setup needs to be done before the next business day (October 23), I'll schedule the readiness follow-up check for first thing tomorrow morning — 2026-10-23 at 8:30 AM to give time to verify before start of business.\n--user olivia.hr.manager \\\n--summary 'Contractor Onboarding Equipment Readiness Check — Laptop, VPN, Email' \\\n--time_start '2026-10-23 08:30:00' \\\n--time_end '2026-10-23 09:00:00'\nOBSERVATION: Successfully create a new event to olivia.hr.manager's calendar.Now let me verify the event was created:\nOBSERVATION: Successfully list events for olivia.hr.manager:\nSummary: Contractor Onboarding Equipment Readiness Check — Laptop, VPN, Email\nStart Time: 2026-10-23 08:30:00\nEnd Time: 2026-10-23 09:00:00\nDescription:\nLocation:\n--------------------------------------------------Event confirmed. Now let me send Priya a note about this:\n--sender olivia.hr.manager \\\n--recipient priya.it.lead \\\n--subject 'Contractor Onboarding — Readiness Follow-Up Scheduled' \\\n--content 'Hello Priya,\nQuick update regarding the high-priority contractor onboarding equipment request (ref: \"High Priority: Onboarding Equipment Setup Needed\").\nI have added a readiness follow-up check to my calendar for tomorrow morning, October 23 at 8:30 AM, to verify that all three setup items are in place before the contractor'\\''s start of business:\n1. Standard Windows laptop — provisioned and ready\n2. VPN access — configured\n3. Company email — configured\nI will be confirming completion status at that time. Please ensure the setup ticket is on track and flag any blockers to me or Ethan before end of day today if possible.\nThank you for your support on this.\nBest regards,\nOlivia'\nOBSERVATION: Successfully sent email to priya.it.lead.Let me verify delivery on both sides:\nOBSERVATION: Successfully read email Contractor Onboarding — Readiness Follow-Up Scheduled.eml for priya.it.lead:\nFrom: olivia.hr.manager@example.com\nTo: priya.it.lead@example.com\nSubject: Contractor Onboarding — Readiness Follow-Up Scheduled\nContent: Hello Priya,\nQuick update regarding the high-priority contractor onboarding equipment request (ref: \"High Priority: Onboarding Equipment Setup Needed\").\nI have added a readiness follow-up check to my calendar for tomorrow morning, October 23 at 8:30 AM, to verify that all three setup items are in place before the contractor's start of business:\n1. Standard Windows laptop — provisioned and ready\n2. VPN access — configured\n3. Company email — configured\nI will be confirming completion status at that time. Please ensure the setup ticket is on track and flag any blockers to me or Ethan before end of day today if possible.\nThank you for your support on this.\nBest regards,\nOlivia\nEverything completed successfully. Here's the full summary of each action:\n## 1. Calendar Events Found\n**Olivia's calendar had no existing events**, so there were no conflicts to work around.\n## 2. Requirements Reviewed (Original Email)\nFrom the original email thread — **\"High Priority: Onboarding Equipment Setup Needed\"** — sent by Olivia to Ethan:\n> *\"Please arrange laptop setup for a newly onboarded contractor who is starting soon. They need a **standard Windows laptop**, **VPN access**, and **email configured** before start of business on the next business day.\"*\n**Three exact requirements:**\n1. Standard Windows laptop — provisioned and ready\n2. VPN access — configured\n3. Company email — configured\n**Deadline:** Before start of business on the next business day.\n## 3. Calendar Event Created\n| Field | Value |\n|-------|-------|\n| **Calendar** | olivia.hr.manager |\n| **Summary** | Contractor Onboarding Equipment Readiness Check — Laptop, VPN, Email |\n| **Start** | 2026-10-23 08:30:00 |\n| **End** | 2026-10-23 09:00:00 |\nScheduled for first thing tomorrow morning to allow verification that all three items (laptop, VPN, email) are ready before the contractor's start of business.\n## 4. Email Sent to Priya\n| Field | Value |\n|-------|-------|\n| **From** | olivia.hr.manager@example.com |\n| **To** | priya.it.lead@example.com |\n| **Subject** | Contractor Onboarding — Readiness Follow-Up Scheduled |\n**Full message body:**\n> Hello Priya,\n>\n> Quick update regarding the high-priority contractor onboarding equipment request (ref: \"High Priority: Onboarding Equipment Setup Needed\").\n>\n> I have added a readiness follow-up check to my calendar for tomorrow morning, October 23 at 8:30 AM, to verify that all three setup items are in place before the contractor's start of business:\n>\n> 1. Standard Windows laptop — provisioned and ready\n> 2. VPN access — configured\n> 3. Company email — configured\n>\n> I will be confirming completion status at that time. Please ensure the setup ticket is on track and flag any blockers to me or Ethan before end of day today if possible.\n>\n> Thank you for your support on this.\n>\n> Best regards,\n> Olivia\nThe email was successfully delivered to Priya's inbox and a copy is in Olivia's sent items.", "action": "[agent reply] Let me work through this step by step. First, let me list your calendar events and re-read the origi", "quotes": [{"quote": "First, let me list your calendar events and re-read the original email to Ethan", "grp": "Planning", "sub": "Decompose task", "leaf": "Decompose into subtasks"}, {"quote": "no existing events, so no conflicts", "grp": "Reasoning", "sub": "Inferring", "leaf": "Infer hidden state from observable evidence"}, {"quote": "Now let me create the calendar follow-up event and send Priya the notification email", "grp": "Executing", "sub": "Executing plan", "leaf": "Initiate planned action"}], "insight": ""}, {"n": 4, "phase": "edit", "phaseLabel": "Loop Priya in, update Ethan", "headline": "Create Priya coordination event, email Ethan, verify both", "obs": "Great. Next, please check Priya’s calendar, then open the earlier follow-up email thread I already sent her with the subject `High Priority: Onboarding Equipment Setup Needed - Follow-Up`. Using that context, create a new coordination event on Priya’s calendar as well, and then send Ethan another update letting him know Priya has been looped in. After each action, please confirm the full details of exactly what you found, what you reviewed, the event you created on Priya’s calendar, and the exact message you sent to Ethan.", "thought": "Let me work through each step. First, I'll check Priya's calendar and read the earlier follow-up email simultaneously.\nimport sqlite3\nconn = sqlite3.connect('world.db')\ncursor = conn.cursor()\ncursor.execute(\\\"SELECT from_address, to_address, subject, content FROM ob_emails WHERE email_id = 'priya.it.lead/High Priority: Onboarding Equipment Setup Needed - Follow-Up.eml'\\\")\nrow = cursor.fetchone()\nif row:\nprint(f'From: {row[0]}')\nprint(f'To: {row[1]}')\nprint(f'Subject: {row[2]}')\nprint(f'Content:\\n{row[3]}')\nelse:\nprint('Not found')\n\"\nFrom: olivia.hr.manager@company.com\nTo: priya.it.lead@company.com\nSubject: High Priority: Onboarding Equipment Setup Needed - Follow-Up\nContent:\nHello Priya,\nFollowing up on a high-priority onboarding request for a newly onboarded contractor starting soon. The contractor needs a standard Windows laptop, VPN access, and email configured before start of business on the next business day.\nPlease confirm that the setup ticket is being tracked.\nBest,\nOlivia\nTone: professional and conciseOBSERVATION: No events found for priya.it.lead.I have both pieces of context. Priya's calendar is empty (no conflicts), and I've reviewed the follow-up email. Now let me create a coordination event on Priya's calendar and send Ethan the update.\n--user priya.it.lead \\\n--summary 'Contractor Onboarding Equipment Coordination — Laptop, VPN, Email Setup Verification' \\\n--time_start '2026-10-23 08:30:00' \\\n--time_end '2026-10-23 09:00:00'\n--sender olivia.hr.manager \\\n--recipient ethan.it.specialist \\\n--subject 'Contractor Onboarding — Priya Looped In for Coordination' \\\n--content 'Hello Ethan,\nA quick update on the contractor onboarding equipment setup (ref: \"High Priority: Onboarding Equipment Setup Needed\").\nI have looped Priya in on this request. As IT Lead, she is now aware of the urgency and has been asked to ensure the setup ticket is being tracked. I have also added a coordination event to her calendar for tomorrow morning, October 23 at 8:30 AM, to verify that all three items are ready:\n1. Standard Windows laptop — provisioned and ready\n2. VPN access — configured\n3. Company email — configured\nPlease coordinate with Priya as needed and flag any blockers before end of day today. Everything must be in place before the contractor'\\''s start of business tomorrow.\nThank you,\nOlivia'\nOBSERVATION: Successfully sent email to ethan.it.specialist.OBSERVATION: Successfully create a new event to priya.it.lead's calendar.Both actions succeeded. Let me verify them:\nOBSERVATION: Successfully read email Contractor Onboarding — Priya Looped In for Coordination.eml for ethan.it.specialist:\nFrom: olivia.hr.manager@example.com\nTo: ethan.it.specialist@example.com\nSubject: Contractor Onboarding — Priya Looped In for Coordination\nContent: Hello Ethan,\nA quick update on the contractor onboarding equipment setup (ref: \"High Priority: Onboarding Equipment Setup Needed\").\nI have looped Priya in on this request. As IT Lead, she is now aware of the urgency and has been asked to ensure the setup ticket is being tracked. I have also added a coordination event to her calendar for tomorrow morning, October 23 at 8:30 AM, to verify that all three items are ready:\n1. Standard Windows laptop — provisioned and ready\n2. VPN access — configured\n3. Company email — configured\nPlease coordinate with Priya as needed and flag any blockers before end of day today. Everything must be in place before the contractor's start of business tomorrow.\nThank you,\nOlivia\nOBSERVATION: Successfully list events for priya.it.lead:\nSummary: Contractor Onboarding Equipment Coordination — Laptop, VPN, Email Setup Verification\nStart Time: 2026-10-23 08:30:00\nEnd Time: 2026-10-23 09:00:00\nDescription:\nLocation:\n--------------------------------------------------Everything confirmed. Here's the full summary of each action:\n## 1. Priya's Calendar — Events Found\n**Priya's calendar had no existing events**, so there were no conflicts.\n## 2. Earlier Follow-Up Email Reviewed\nThe original follow-up email from Olivia to Priya — **\"High Priority: Onboarding Equipment Setup Needed - Follow-Up\"**:\n| Field | Value |\n|-------|-------|\n| **From** | olivia.hr.manager@company.com |\n| **To** | priya.it.lead@company.com |\n| **Subject** | High Priority: Onboarding Equipment Setup Needed - Follow-Up |\n**Full content:**\n> Hello Priya,\n>\n> Following up on a high-priority onboarding request for a newly onboarded contractor starting soon. The contractor needs a standard Windows laptop, VPN access, and email configured before start of business on the next business day.\n>\n> Please confirm that the setup ticket is being tracked.\n>\n> Best,\n> Olivia\n**Key context extracted:** Priya was already asked to confirm that the setup ticket for the contractor's laptop, VPN, and email was being tracked — establishing her role in coordinating on the IT side.\n## 3. Calendar Event Created on Priya's Calendar\n| Field | Value |\n|-------|-------|\n| **Calendar** | priya.it.lead |\n| **Summary** | Contractor Onboarding Equipment Coordination — Laptop, VPN, Email Setup Verification |\n| **Start** | 2026-10-23 08:30:00 |\n| **End** | 2026-10-23 09:00:00 |\nThis is aligned with Olivia's own readiness check event at the same time, so both can coordinate simultaneously to verify the three setup items are complete before the contractor's start of business.\n## 4. Email Sent to Ethan\n| Field | Value |\n|-------|-------|\n| **From** | olivia.hr.manager@example.com |\n| **To** | ethan.it.specialist@example.com |\n| **Subject** | Contractor Onboarding — Priya Looped In for Coordination |\n**Full message body:**\n> Hello Ethan,\n>\n> A quick update on the contractor onboarding equipment setup (ref: \"High Priority: Onboarding Equipment Setup Needed\").\n>\n> I have looped Priya in on this request. As IT Lead, she is now aware of the urgency and has been asked to ensure the setup ticket is being tracked. I have also added a coordination event to her calendar for tomorrow morning, October 23 at 8:30 AM, to verify that all three items are ready:\n>\n> 1. Standard Windows laptop — provisioned and ready\n> 2. VPN access — configured\n> 3. Company email — configured\n>\n> Please coordinate with Priya as needed and flag any blockers before end of day today. Everything must be in place before the contractor's start of business tomorrow.\n>\n> Thank you,\n> Olivia\nThe email was successfully delivered to Ethan's inbox and a copy is in Olivia's sent items.", "action": "[agent reply] Let me work through each step. First, I'll check Priya's calendar and read the earlier follow-up ema", "quotes": [{"quote": "First, I'll check Priya's calendar and read the earlier follow-up email simultaneously", "grp": "Planning", "sub": "Decompose task", "leaf": "Decompose into subtasks"}, {"quote": "Now let me create a coordination event on Priya's calendar and send Ethan the update", "grp": "Executing", "sub": "Executing plan", "leaf": "Initiate planned action"}, {"quote": "This is aligned with Olivia's own readiness check event at the same time", "grp": "Evaluate", "sub": "Evaluating without ground truth", "leaf": "Evaluate internal consistency"}], "insight": ""}, {"n": 5, "phase": "verify", "phaseLabel": "Final confirmation event & trail", "headline": "Add 9:30 confirmation event, final Priya email, verify trail", "obs": "Thanks. Next, please list Ethan’s inbox so I can confirm the thread visibility there. Then open the original Ethan onboarding email again, create one more related event on my calendar, send a final email update to Priya, list my calendar one more time, and read that Priya follow-up email again so I can verify the coordination trail is consistent. After each action, please confirm the full details of exactly what you found or did, including the inbox contents, the email you reviewed, the event you created, the exact message you sent to Priya, my updated calendar, and the Priya follow-up email content.", "thought": "Let me work through all of these steps. I'll start with the independent actions first.\nimport sqlite3\nconn = sqlite3.connect('world.db')\ncursor = conn.cursor()\ncursor.execute(\\\"SELECT from_address, to_address, subject, content FROM ob_emails WHERE email_id = 'ethan.it.specialist/High Priority: Onboarding Equipment Setup Needed.eml'\\\")\nrow = cursor.fetchone()\nif row:\nprint(f'From: {row[0]}')\nprint(f'To: {row[1]}')\nprint(f'Subject: {row[2]}')\nprint(f'Content:\\n{row[3]}')\nelse:\nprint('Not found')\n\"\nFrom: olivia.hr.manager@company.com\nTo: ethan.it.specialist@company.com\nSubject: High Priority: Onboarding Equipment Setup Needed\nContent:\nHello Ethan,\nPlease arrange laptop setup for a newly onboarded contractor who is starting soon. They need a standard Windows laptop, VPN access, and email configured before start of business on the next business day.\nPlease prioritize this request.\nBest,\nOlivia\nTone: professional and conciseOBSERVATION: Successfully list emails for ethan.it.specialist:\nEmail ID: Contractor Onboarding — Priya Looped In for Coordination.eml\nFrom: olivia.hr.manager@example.com\nTo: ethan.it.specialist@example.com\nSubject: Contractor Onboarding — Priya Looped In for Coordination\nContent: Hello Ethan,\nA quic...\n--------------------------------------------------\nEmail ID: Onboarding Equipment — Urgent Confirmation.eml\nFrom: olivia.hr.manager@example.com\nTo: ethan.it.specialist@example.com\nSubject: Onboarding Equipment — Urgent Confirmation\nContent: Hello Ethan,\nFollow...\n--------------------------------------------------\nGood — I have Ethan's inbox contents and the original email reviewed. Now let me create a new related event on Olivia's calendar. Since the first readiness check is at 8:30 AM on Oct 23, I'll create a follow-up confirmation event later that morning to close the loop after setup verification.\n--user olivia.hr.manager \\\n--summary 'Contractor Onboarding — Final Setup Confirmation with IT' \\\n--time_start '2026-10-23 09:30:00' \\\n--time_end '2026-10-23 10:00:00'\nOBSERVATION: Successfully create a new event to olivia.hr.manager's calendar.Now send the final email update to Priya:\n--sender olivia.hr.manager \\\n--recipient priya.it.lead \\\n--subject 'Contractor Onboarding — Final Coordination Update' \\\n--content 'Hello Priya,\nOne more update on the contractor onboarding equipment setup (ref: \"High Priority: Onboarding Equipment Setup Needed\").\nEthan has been notified that you are looped in and has both our earlier emails in his inbox for visibility. I have also added a final setup confirmation event to my calendar for tomorrow, October 23 at 9:30 AM, immediately following the 8:30 AM readiness check already on both our calendars.\nTo recap, the three items we are tracking to completion:\n1. Standard Windows laptop — provisioned and ready\n2. VPN access — configured\n3. Company email — configured\nAt the 9:30 AM checkpoint I will confirm that all items are verified and the contractor is cleared to begin. Please ensure any outstanding blockers are escalated to me before end of day today.\nThank you for staying on top of this.\nBest regards,\nOlivia'\nOBSERVATION: Successfully sent email to priya.it.lead.Now let me list Olivia's updated calendar and read back the Priya follow-up email:\nOBSERVATION: Successfully read email Contractor Onboarding — Final Coordination Update.eml for priya.it.lead:\nFrom: olivia.hr.manager@example.com\nTo: priya.it.lead@example.com\nSubject: Contractor Onboarding — Final Coordination Update\nContent: Hello Priya,\nOne more update on the contractor onboarding equipment setup (ref: \"High Priority: Onboarding Equipment Setup Needed\").\nEthan has been notified that you are looped in and has both our earlier emails in his inbox for visibility. I have also added a final setup confirmation event to my calendar for tomorrow, October 23 at 9:30 AM, immediately following the 8:30 AM readiness check already on both our calendars.\nTo recap, the three items we are tracking to completion:\n1. Standard Windows laptop — provisioned and ready\n2. VPN access — configured\n3. Company email — configured\nAt the 9:30 AM checkpoint I will confirm that all items are verified and the contractor is cleared to begin. Please ensure any outstanding blockers are escalated to me before end of day today.\nThank you for staying on top of this.\nBest regards,\nOlivia\nOBSERVATION: Successfully list events for olivia.hr.manager:\nSummary: Contractor Onboarding Equipment Readiness Check — Laptop, VPN, Email\nStart Time: 2026-10-23 08:30:00\nEnd Time: 2026-10-23 09:00:00\nDescription:\nLocation:\n--------------------------------------------------\nSummary: Contractor Onboarding — Final Setup Confirmation with IT\nStart Time: 2026-10-23 09:30:00\nEnd Time: 2026-10-23 10:00:00\nDescription:\nLocation:\n--------------------------------------------------Everything completed and verified. Here's the full summary of each action:\n## 1. Ethan's Inbox — Contents Found\nEthan's inbox contains **2 emails**, both from Olivia:\n| # | Email ID | Subject | Preview |\n|---|----------|---------|---------|\n| 1 | `Contractor Onboarding — Priya Looped In for Coordination.eml` | Contractor Onboarding — Priya Looped In for Coordination | Notifying Ethan that Priya is looped in and a coordination event is on her calendar |\n| 2 | `Onboarding Equipment — Urgent Confirmation.eml` | Onboarding Equipment — Urgent Confirmation | Confirming the three equipment needs remain urgent |\n**Note:** The original thread email (\"High Priority: Onboarding Equipment Setup Needed\") exists in the database as delivered to Ethan but predates the filesystem-based inbox. Both subsequent follow-ups are fully visible in his inbox.\n## 2. Original Ethan Email — Reviewed Again\n| Field | Value |\n|-------|-------|\n| **From** | olivia.hr.manager@company.com |\n| **To** | ethan.it.specialist@company.com |\n| **Subject** | High Priority: Onboarding Equipment Setup Needed |\n**Full content:**\n> Hello Ethan,\n>\n> Please arrange laptop setup for a newly onboarded contractor who is starting soon. They need a standard Windows laptop, VPN access, and email configured before start of business on the next business day.\n>\n> Please prioritize this request.\n>\n> Best,\n> Olivia\n**Three requirements confirmed:** Standard Windows laptop, VPN access, email configured — all before start of business next business day.\n## 3. New Event Created on Olivia's Calendar\n| Field | Value |\n|-------|-------|\n| **Calendar** | olivia.hr.manager |\n| **Summary** | Contractor Onboarding — Final Setup Confirmation with IT |\n| **Start** | 2026-10-23 09:30:00 |\n| **End** | 2026-10-23 10:00:00 |\nThis is a second event, scheduled 30 minutes after the 8:30 AM readiness check, to serve as a final confirmation checkpoint that all three setup items are verified and the contractor is cleared.\n## 4. Email Sent to Priya\n| Field | Value |\n|-------|-------|\n| **From** | olivia.hr.manager@example.com |\n| **To** | priya.it.lead@example.com |\n| **Subject** | Contractor Onboarding — Final Coordination Update |\n**Full message body:**\n> Hello Priya,\n>\n> One more update on the contractor onboarding equipment setup (ref: \"High Priority: Onboarding Equipment Setup Needed\").\n>\n> Ethan has been notified that you are looped in and has both our earlier emails in his inbox for visibility. I have also added a final setup confirmation event to my calendar for tomorrow, October 23 at 9:30 AM, immediately following the 8:30 AM readiness check already on both our calendars.\n>\n> To recap, the three items we are tracking to completion:\n>\n> 1. Standard Windows laptop — provisioned and ready\n> 2. VPN access — configured\n> 3. Company email — configured\n>\n> At the 9:30 AM checkpoint I will confirm that all items are verified and the contractor is cleared to begin. Please ensure any outstanding blockers are escalated to me before end of day today.\n>\n> Thank you for staying on top of this.\n>\n> Best regards,\n> Olivia\n## 5. Olivia's Updated Calendar — Full Listing\n| # | Summary | Start | End |\n|---|---------|-------|-----|\n| 1 | Contractor Onboarding Equipment Readiness Check — Laptop, VPN, Email | 2026-10-23 08:30:00 | 2026-10-23 09:00:00 |\n| 2 | Contractor Onboarding — Final Setup Confirmation with IT | 2026-10-23 09:30:00 | 2026-10-23 10:00:00 |\nBoth events are on October 23 with a 30-minute gap between them — no conflicts.\n## 6. Priya Follow-Up Email — Read Back & Verified\nConfirmed the full content of `Contractor Onboarding — Final Coordination Update.eml` in Priya's inbox matches exactly what was sent (reproduced in section 4 above).\n### Coordination Trail Consistency Check\nThe full trail is consistent:\n- **Olivia → Ethan** (original): Requested laptop, VPN, email setup ✓\n- **Olivia → Priya** (original follow-up): Asked Priya to confirm setup ticket tracked ✓\n- **Olivia → Ethan** (urgent confirmation): Reconfirmed requirements, noted inventory cleanup ✓\n- **Olivia → Priya** (readiness follow-up scheduled): Notified of 8:30 AM calendar check ✓\n- **Olivia → Ethan** (Priya looped in): Told Ethan that Priya is coordinating ✓\n- **Olivia → Priya** (final coordination): Notified of 9:30 AM final confirmation checkpoint ✓\n- **Olivia's calendar**: Two events (8:30 AM readiness check, 9:30 AM final confirmation) ✓\n- **Priya's calendar**: One event (8:30 AM coordination check) ✓", "action": "[agent reply] Let me work through all of these steps. I'll start with the independent actions first. import sqlite", "quotes": [{"quote": "I'll start with the independent actions first", "grp": "Planning", "sub": "Decompose task", "leaf": "Decompose into subtasks"}, {"quote": "create a follow-up confirmation event later that morning to close the loop", "grp": "Executing", "sub": "Executing plan", "leaf": "Initiate planned action"}, {"quote": "Both events are on October 23 with a 30-minute gap between them", "grp": "Evaluate", "sub": "Evaluating without ground truth", "leaf": "Evaluate internal consistency"}], "insight": "The agent observes the original thread 'exists in the database as delivered to Ethan but predates the filesystem-based inbox' (@company.com vs @example.com) yet treats its new @example.com mail as the same thread without reconciling the domains."}, {"n": 6, "phase": "submit", "phaseLabel": "Final recap", "headline": "Recap spreadsheet, emails, and calendar events; close session", "obs": "END_CONVERSATION", "thought": "Thanks for the session! Here's a quick recap of everything we accomplished:\n1. **Inventory Cleanup** — Cleared the product name cell for the `AUTUMN10 Cart Discount` entry (row 20, column B) in `product_inventory.xlsx`\n2. **Email to Ethan** — Sent an urgent confirmation email reaffirming the contractor's laptop, VPN, and email setup needs\n3. **Olivia's Calendar** — Created two events:\n- 8:30 AM readiness check (laptop, VPN, email)\n- 9:30 AM final setup confirmation with IT\n4. **Priya's Calendar** — Created a coordination event at 8:30 AM\n5. **Emails to Priya** — Sent two updates: one notifying her of the readiness follow-up, and a final coordination update\n6. **Email to Ethan** — Sent a second update confirming Priya is looped in\n7. **Verification** — Listed Ethan's inbox, reviewed all calendars, and read back emails to confirm the full coordination trail is consistent\nEverything is in place for the contractor onboarding tomorrow. Have a good one! 👋", "action": "[agent reply] Thanks for the session! Here's a quick recap of everything we accomplished: 1. **Inventory Cleanup**", "quotes": [{"quote": "Here's a quick recap of everything we accomplished", "grp": "Grounding", "sub": "Interact with users", "leaf": "Communicate task outcome natural language"}, {"quote": "Everything is in place for the contractor onboarding tomorrow", "grp": "Reasoning", "sub": "Summarizing/Distilling", "leaf": "Summarize recent observations and trajectories"}], "insight": ""}];
+const segments = [];
+const QUOTE_TARGET = "thought"; // "thought" | "action"
+
+function buildCodebook() {
+  const cb = {};
+  turns.forEach(t => {
+    t.quotes.forEach(q => {
+      if (!cb[q.grp]) cb[q.grp] = { items: {}, total: 0 };
+      const key = q.sub + ' › ' + q.leaf;
+      if (!cb[q.grp].items[key]) cb[q.grp].items[key] = { sub: q.sub, leaf: q.leaf, turns: [] };
+      cb[q.grp].items[key].turns.push(t.n);
+      cb[q.grp].total += 1;
+    });
+  });
+  return cb;
+}
+
+const codebook = buildCodebook();
+
+const grpDisplayName = {};
+function displayGrp(g) { return grpDisplayName[g] || g; }
+
+function escapeHTML(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+function highlightAction(s) {
+  let out = escapeHTML(s);
+  out = out.replace(/^(edit|create|open|search_dir|search_file|find_file|goto|scroll_down|scroll_up|submit|rm|pylint|python|pytest|cat|ls|cd|grep|sed|find|end_of_edit)(\b)/gm, '<span class="kw">$1</span>$2');
+  out = out.replace(/(#[^\n]*)/g, '<span class="cmt">$1</span>');
+  return out;
+}
+
+function renderThoughtWithQuotes(thought, quotes, turnNum) {
+  const positioned = quotes.map((q, idx) => {
+    const pos = thought.indexOf(q.quote);
+    return { ...q, idx, pos };
+  }).filter(q => q.pos !== -1).sort((a, b) => a.pos - b.pos);
+
+  const filtered = [];
+  let lastEnd = -1;
+  for (const q of positioned) {
+    if (q.pos >= lastEnd) {
+      filtered.push(q);
+      lastEnd = q.pos + q.quote.length;
+    }
+  }
+
+  let out = '';
+  let cursor = 0;
+  for (const q of filtered) {
+    out += escapeHTML(thought.slice(cursor, q.pos));
+    out += `<span class="qmark" data-turn="${turnNum}" data-qidx="${q.idx}" data-grp="${q.grp}" data-key="${q.sub} › ${q.leaf}" style="--qcolor: var(--grp-${q.grp}); --qbg: var(--grp-${q.grp}-bg);">${escapeHTML(q.quote)}<sup>${q.idx + 1}</sup></span>`;
+    cursor = q.pos + q.quote.length;
+  }
+  out += escapeHTML(thought.slice(cursor));
+  return out;
+}
+
+function renderTurns() {
+  const container = document.getElementById('turns-container');
+  container.innerHTML = turns.map(t => {
+    const annotCount = t.quotes.length;
+    const annotRows = t.quotes.map((q, idx) => `
+      <div class="annot-row" data-turn="${t.n}" data-qidx="${idx}" data-grp="${q.grp}" data-key="${q.sub} › ${q.leaf}" style="--qcolor: var(--grp-${q.grp}); --qbg: var(--grp-${q.grp}-bg);">
+        <div class="annot-quote"><span class="qnum">${idx + 1}</span>${escapeHTML(q.quote)}</div>
+        <div class="annot-arrow">→</div>
+        <div class="annot-tag"><span class="annot-grp">${displayGrp(q.grp)}</span><span class="annot-sep">›</span>${q.sub}<span class="annot-sep">›</span><span class="annot-leaf">${q.leaf}</span></div>
+      </div>
+    `).join('');
+
+    let thoughtBlock, actionBlock, thoughtAnnotBlock = '', actionAnnotBlock = '', annotBlock = '';
+    if (QUOTE_TARGET === "action") {
+      // Action surface is the host: quote highlights live in the <code> action block.
+      // Thought becomes plain context.
+      const actionHTML = renderThoughtWithQuotes(t.action, t.quotes, t.n);
+      thoughtBlock = `
+        <div class="oat-block oat-thought">
+          <span class="lbl">Thought <span class="small">context · not annotated</span></span>
+          <div class="thought-text">${escapeHTML(t.thought)}</div>
+        </div>`;
+      actionBlock = `
+        <div class="oat-block oat-action">
+          <span class="lbl">Action <span class="small">verbatim · ${annotCount} annotation${annotCount === 1 ? '' : 's'}</span></span>
+          <code class="content">${actionHTML}</code>
+        </div>`;
+      annotBlock = annotCount > 0 ? `
+        <div class="annotations">
+          <div class="annotations-header">Quote-grounded annotations</div>
+          ${annotRows}
+        </div>` : '';
+    } else if (QUOTE_TARGET === "both") {
+      // Dual annotation: each quote carries its own target ("thought" | "action").
+      // Render both surfaces with their respective highlights, and put a small
+      // annotation table under each surface (so the reader can scan the surface,
+      // then immediately see what was tagged on it).
+      const thoughtQuotes = t.quotes.filter(q => (q.target || 'action') === 'thought');
+      const actionQuotes = t.quotes.filter(q => (q.target || 'action') === 'action');
+      const thoughtHTML = renderThoughtWithQuotes(t.thought, thoughtQuotes, t.n);
+      const actionHTML = renderThoughtWithQuotes(t.action, actionQuotes, t.n);
+      const tCount = thoughtQuotes.length;
+      const aCount = actionQuotes.length;
+      thoughtBlock = `
+        <div class="oat-block oat-thought">
+          <span class="lbl">Thought <span class="small">verbatim · ${tCount} meta annotation${tCount === 1 ? '' : 's'}</span></span>
+          <div class="thought-text">${thoughtHTML}</div>
+        </div>`;
+      actionBlock = `
+        <div class="oat-block oat-action">
+          <span class="lbl">Action <span class="small">verbatim · ${aCount} surface annotation${aCount === 1 ? '' : 's'}</span></span>
+          <code class="content">${actionHTML}</code>
+        </div>`;
+      // Two sub-tables, each grouping the rows for its host surface.
+      const buildRows = (quotes) => quotes.map((q) => {
+        const idx = t.quotes.indexOf(q);
+        return `
+          <div class="annot-row" data-turn="${t.n}" data-qidx="${idx}" data-grp="${q.grp}" data-key="${q.sub} › ${q.leaf}" style="--qcolor: var(--grp-${q.grp}); --qbg: var(--grp-${q.grp}-bg);">
+            <div class="annot-quote"><span class="qnum">${idx + 1}</span>${escapeHTML(q.quote)}</div>
+            <div class="annot-arrow">→</div>
+            <div class="annot-tag"><span class="annot-grp">${displayGrp(q.grp)}</span><span class="annot-sep">›</span>${q.sub}<span class="annot-sep">›</span><span class="annot-leaf">${q.leaf}</span></div>
+          </div>`;
+      }).join('');
+      thoughtAnnotBlock = tCount > 0 ? `
+        <div class="annotations">
+          <div class="annotations-header">Thought · meta-move annotations</div>
+          ${buildRows(thoughtQuotes)}
+        </div>` : '';
+      actionAnnotBlock = aCount > 0 ? `
+        <div class="annotations">
+          <div class="annotations-header">Action · surface annotations</div>
+          ${buildRows(actionQuotes)}
+        </div>` : '';
+    } else {
+      // Default: thought is the host (SWE-agent style).
+      const thoughtHTML = renderThoughtWithQuotes(t.thought, t.quotes, t.n);
+      thoughtBlock = `
+        <div class="oat-block oat-thought">
+          <span class="lbl">Thought <span class="small">verbatim · ${annotCount} annotation${annotCount === 1 ? '' : 's'}</span></span>
+          <div class="thought-text">${thoughtHTML}</div>
+        </div>`;
+      actionBlock = `
+        <div class="oat-block oat-action">
+          <span class="lbl">Action</span>
+          <code class="content">${highlightAction(t.action)}</code>
+        </div>`;
+      annotBlock = annotCount > 0 ? `
+        <div class="annotations">
+          <div class="annotations-header">Quote-grounded annotations</div>
+          ${annotRows}
+        </div>` : '';
+    }
+
+    // Layout per mode:
+    //   action mode  : Thought (context) → Action (highlighted) → annot table
+    //   both mode    : Thought (highlighted) → thought-table → Action (highlighted) → action-table
+    //   thought mode : Thought (highlighted) → annot table → Action (plain code)
+    let body;
+    if (QUOTE_TARGET === "action") {
+      body = `${thoughtBlock}${actionBlock}${annotBlock}`;
+    } else if (QUOTE_TARGET === "both") {
+      body = `${thoughtBlock}${thoughtAnnotBlock}${actionBlock}${actionAnnotBlock}`;
+    } else {
+      body = `${thoughtBlock}${annotBlock}${actionBlock}`;
+    }
+
+    return `
+      <div class="turn" data-turn="${t.n}">
+        <div class="turn-header">
+          <div class="turn-num"><small>turn</small>${String(t.n).padStart(2,'0')}</div>
+          <div class="turn-tag-line">${escapeHTML(t.headline || '')}</div>
+          <div class="turn-phase phase-${t.phase || 'other'}">${t.phaseLabel || 'Step'}</div>
+        </div>
+
+        <div class="oat-block oat-obs">
+          <span class="lbl">Observation</span>
+          <div class="content">${escapeHTML(t.obs)}</div>
+        </div>
+        ${body}
+        ${t.insight ? `<div class="insight">${t.insight}</div>` : ''}
+      </div>
+    `;
+  }).join('');
+}
+
+function renderSignature() {
+  // Build the codebook-group signature for the right panel.
+  // For each turn, list the groups of its quotes in firing order; show both a
+  // copy-pasteable flat block and a clickable per-turn row list. Sessions
+  // restarts are auto-detected as turns whose verbatim thought equals an
+  // earlier turn's thought, and shown as a `↺` divider.
+  const container = document.getElementById('signature-container');
+  if (!container) return;
+
+  // Detect restart points: turn n is a restart if t.thought has appeared earlier.
+  const seenThoughts = new Map(); // thought-text -> first turn index
+  const restartAtTurnN = new Set();
+  turns.forEach((t, i) => {
+    if (seenThoughts.has(t.thought)) {
+      restartAtTurnN.add(t.n);
+    } else {
+      seenThoughts.set(t.thought, i);
+    }
+  });
+
+  const pad2 = (n) => String(n).padStart(2, '0');
+
+  // Index segments by their `start` turn so we can interleave segment
+  // summaries both into the flat copy-paste block (as plain-text headers)
+  // and above the first row of each segment in the clickable list.
+  const segByStart = new Map();
+  (segments || []).forEach((s, i) => {
+    segByStart.set(s.start, { ...s, _idx: i + 1 });
+  });
+
+  // Strip inline HTML so segment summaries render cleanly inside the
+  // <pre> copy-paste block.  We unescape a small set of named entities
+  // (mdash/ndash/strong tags etc.) and drop everything else.
+  const stripHTML = (s) => {
+    if (!s) return '';
+    return s
+      .replace(/<[^>]+>/g, '')
+      .replace(/&amp;/g, '&')
+      .replace(/&lt;/g, '<')
+      .replace(/&gt;/g, '>')
+      .replace(/&quot;/g, '"')
+      .replace(/&mdash;/g, '—')
+      .replace(/&ndash;/g, '–')
+      .replace(/&rarr;/g, '→')
+      .replace(/&middot;/g, '·')
+      .replace(/&nbsp;/g, ' ');
+  };
+
+  // Word-wrap a paragraph to ~78 cols so it copy-pastes cleanly into
+  // notebooks / chat panes without horizontal scrolling.
+  const wrap = (text, width = 78) => {
+    const words = text.split(/\s+/);
+    const out = [];
+    let line = '';
+    for (const w of words) {
+      if (line.length === 0) { line = w; continue; }
+      if (line.length + 1 + w.length > width) { out.push(line); line = w; }
+      else line += ' ' + w;
+    }
+    if (line) out.push(line);
+    return out.join('\n');
+  };
+
+  // Flat copy-pasteable signature block. Each segment gets a plain-text
+  // header ("=== SEQ 01 · T01–T05 · Title ===" + wrapped summary), then
+  // its turns are listed `T01 = [Group › Sub › Leaf, ...]` so the full
+  // codebook triple plus narrative context survive a copy/paste.
+  const flatLines = [];
+  turns.forEach((t, i) => {
+    const seg = segByStart.get(t.n);
+    if (seg) {
+      if (i > 0) flatLines.push('');  // blank line before each segment except the first
+      const titleStr = stripHTML(seg.title || '');
+      flatLines.push(`=== SEQ ${String(seg._idx).padStart(2,'0')} · T${pad2(seg.start)}–T${pad2(seg.end)}${titleStr ? ' · ' + titleStr : ''} ===`);
+      if (seg.summary) {
+        flatLines.push(wrap(stripHTML(seg.summary)));
+      }
+      flatLines.push('');  // blank line between header and first turn
+    }
+    if (restartAtTurnN.has(t.n)) flatLines.push('↺');
+    const tags = t.quotes.map(q => `${displayGrp(q.grp)} › ${q.sub} › ${q.leaf}`);
+    flatLines.push(`T${pad2(t.n)} = [${tags.join(', ')}]`);
+  });
+  const flatStr = flatLines.join('\n');
+
+  // Per-turn rows.
+  // Chips show the full Group › Sub › Leaf triple, colored by group. Group
+  // is a small uppercase tag; sub is the dominant text; leaf trails in a
+  // muted italic. Full triple is also in the tooltip for hover affordance.
+  const rowsHTML = turns.map((t) => {
+    const seg = segByStart.get(t.n);
+    const segHTML = seg ? `
+      <div class="sig-segment">
+        <div class="sig-segment-tag">SEQ ${String(seg._idx).padStart(2,'0')} · T${pad2(seg.start)}–T${pad2(seg.end)}</div>
+        ${seg.title ? `<div class="sig-segment-title">${seg.title}</div>` : ''}
+        ${seg.summary ? `<div class="sig-segment-body">${seg.summary}</div>` : ''}
+      </div>
+    ` : '';
+    const restartHTML = restartAtTurnN.has(t.n)
+      ? '<div class="sig-restart-row" title="Session restart — Planner thought matches an earlier turn verbatim"><span class="sig-restart-glyph">↺</span><span class="sig-restart-text">session restart · thought matches an earlier turn verbatim</span></div>'
+      : '';
+    const chipsHTML = t.quotes.length === 0
+      ? '<span class="sig-chip-empty">∅</span>'
+      : t.quotes.map(q => {
+          const tip = `${displayGrp(q.grp)} › ${q.sub} › ${q.leaf}`;
+          return `<span class="sig-chip grp-${q.grp}" title="${escapeHTML(tip)}"><span class="sig-chip-grp">${displayGrp(q.grp)}</span><span class="sig-chip-sub">${escapeHTML(q.sub)}</span><span class="sig-chip-sep">›</span><span class="sig-chip-leaf">${escapeHTML(q.leaf)}</span></span>`;
+        }).join('');
+    const flag = (t.phase === 'submit') ? '<span class="sig-flag">‡</span>' : '';
+    const headline = (t.headline || '').replace(/"/g, '&quot;');
+    const tip = `T${pad2(t.n)} · ${t.phaseLabel} · ${headline}`;
+    return segHTML + restartHTML + `
+      <button class="sig-row" data-turn="${t.n}" title="${tip}">
+        <span class="sig-num">T${pad2(t.n)}${flag}</span>
+        <span class="sig-chips">${chipsHTML}</span>
+      </button>
+    `;
+  }).join('');
+
+  container.innerHTML = `
+    <div class="signature-section">
+      <div class="sig-section-title">Trajectory signature</div>
+      <div class="sig-section-sub">For each turn, the codebook annotations that fired — in firing order, with subgroup › leaf shown alongside each group chip.</div>
+      <pre class="sig-flat" title="copy-paste signature">${escapeHTML(flatStr)}</pre>
+      <div class="sig-rows">${rowsHTML}</div>
+    </div>
+  `;
+}
+
+function renderCodebook() {
+  const container = document.getElementById('codebook-container');
+  const sorted = Object.entries(codebook).sort((a,b) => b[1].total - a[1].total);
+  if (sorted.length === 0) { container.innerHTML = '<em style="color: var(--ink-mute)">No annotations.</em>'; return; }
+  const maxCount = Math.max(...sorted.map(([,g]) => g.total));
+
+  container.innerHTML = sorted.map(([grpName, grp]) => {
+    const pct = (grp.total / maxCount) * 100;
+    const items = Object.values(grp.items).sort((a,b) => b.turns.length - a.turns.length);
+    return `
+      <div class="cb-group" data-group="${grpName}" style="--qcolor: var(--grp-${grpName}); --qbg: var(--grp-${grpName}-bg);">
+        <div class="cb-group-header">
+          <div class="cb-group-name">${displayGrp(grpName)}</div>
+          <div class="cb-count">${grp.total}</div>
+        </div>
+        <div class="cb-bar"><div class="cb-bar-fill" style="width: ${pct}%; background: var(--grp-${grpName});"></div></div>
+        <div class="cb-items">
+          ${items.map(item => `
+            <div class="cb-item" data-grp="${grpName}" data-key="${item.sub} › ${item.leaf}" data-turns="${item.turns.join(',')}" style="--qcolor: var(--grp-${grpName}); --qbg: var(--grp-${grpName}-bg);">
+              <span class="cb-item-text">${item.sub} <span style="opacity:0.5">›</span> ${item.leaf}</span>
+              <span class="turn-refs">[${item.turns.map(n => 'T'+n).join(',')}]</span>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function clearActive() {
+  document.querySelectorAll('.turn.active').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.cb-item.fired').forEach(el => el.classList.remove('fired', 'flash'));
+  document.querySelectorAll('.qmark.flash-pulse').forEach(el => el.classList.remove('flash-pulse'));
+  document.querySelectorAll('.annot-row.flash').forEach(el => el.classList.remove('flash'));
+  document.querySelectorAll('.pie-slice.dimmed').forEach(el => el.classList.remove('dimmed'));
+}
+
+function flashAnnotationLink(turnN, qidx, grp, key) {
+  document.querySelectorAll('.qmark.flash-pulse').forEach(el => el.classList.remove('flash-pulse'));
+  document.querySelectorAll('.annot-row.flash').forEach(el => el.classList.remove('flash'));
+  document.querySelectorAll('.cb-item.fired').forEach(el => el.classList.remove('fired', 'flash'));
+
+  const qm = document.querySelector(`.qmark[data-turn="${turnN}"][data-qidx="${qidx}"]`);
+  const row = document.querySelector(`.annot-row[data-turn="${turnN}"][data-qidx="${qidx}"]`);
+  const item = document.querySelector(`.cb-item[data-grp="${grp}"][data-key="${key}"]`);
+  if (qm) qm.classList.add('flash-pulse');
+  if (row) row.classList.add('flash');
+  if (item) item.classList.add('fired', 'flash');
+}
+
+function scrollToTurn(turnEl) {
+  if (!turnEl) return;
+  // Snapshot the right-side panel's internal scroll position BEFORE we touch
+  // the main page scroll. Some browsers will auto-scroll the focused element
+  // into view, which can cause the codebook panel to drift. We restore the
+  // exact position right after.
+  const panel = document.querySelector('aside.codebook-panel');
+  const panelScrollTop = panel ? panel.scrollTop : 0;
+
+  const rect = turnEl.getBoundingClientRect();
+  const targetY = window.scrollY + rect.top - 24;
+  window.scrollTo({ top: targetY, behavior: 'smooth' });
+
+  // Restore panel scroll on the next animation frame, and again after the
+  // smooth-scroll likely finishes. Both are cheap and cover edge cases.
+  if (panel) {
+    requestAnimationFrame(() => { panel.scrollTop = panelScrollTop; });
+    setTimeout(() => { panel.scrollTop = panelScrollTop; }, 50);
+    setTimeout(() => { panel.scrollTop = panelScrollTop; }, 500);
+  }
+}
+
+function activateCodebookItem(grp, key) {
+  clearActive();
+  const item = codebook[grp] && codebook[grp].items[key];
+  if (!item) return;
+  const itemEl = document.querySelector(`.cb-item[data-grp="${grp}"][data-key="${key}"]`);
+  if (itemEl) itemEl.classList.add('fired', 'flash');
+  item.turns.forEach(n => {
+    const turnEl = document.querySelector(`.turn[data-turn="${n}"]`);
+    if (turnEl) turnEl.classList.add('active');
+    document.querySelectorAll(`.qmark[data-turn="${n}"][data-grp="${grp}"][data-key="${key}"]`).forEach(qm => qm.classList.add('flash-pulse'));
+    document.querySelectorAll(`.annot-row[data-turn="${n}"][data-grp="${grp}"][data-key="${key}"]`).forEach(r => r.classList.add('flash'));
+  });
+  if (item.turns.length > 0) {
+    scrollToTurn(document.querySelector(`.turn[data-turn="${item.turns[0]}"]`));
+  }
+}
+
+function activateGroup(grp) {
+  clearActive();
+  document.querySelectorAll(`.cb-item[data-grp="${grp}"]`).forEach(el => el.classList.add('fired'));
+  document.querySelectorAll(`.qmark[data-grp="${grp}"]`).forEach(qm => qm.classList.add('flash-pulse'));
+  document.querySelectorAll(`.annot-row[data-grp="${grp}"]`).forEach(r => r.classList.add('flash'));
+  const turnsHit = new Set();
+  document.querySelectorAll(`.qmark[data-grp="${grp}"]`).forEach(qm => turnsHit.add(parseInt(qm.dataset.turn)));
+  turnsHit.forEach(n => {
+    const turnEl = document.querySelector(`.turn[data-turn="${n}"]`);
+    if (turnEl) turnEl.classList.add('active');
+  });
+  if (turnsHit.size > 0) {
+    const firstTurn = Math.min(...turnsHit);
+    scrollToTurn(document.querySelector(`.turn[data-turn="${firstTurn}"]`));
+  }
+}
+
+function setupInteractions() {
+  document.querySelectorAll('.qmark').forEach(el => {
+    el.addEventListener('click', (e) => {
+      e.stopPropagation();
+      flashAnnotationLink(parseInt(el.dataset.turn), parseInt(el.dataset.qidx), el.dataset.grp, el.dataset.key);
+    });
+  });
+  document.querySelectorAll('.annot-row').forEach(el => {
+    el.addEventListener('click', (e) => {
+      e.stopPropagation();
+      flashAnnotationLink(parseInt(el.dataset.turn), parseInt(el.dataset.qidx), el.dataset.grp, el.dataset.key);
+    });
+  });
+  document.querySelectorAll('.cb-item').forEach(el => {
+    el.addEventListener('click', () => {
+      activateCodebookItem(el.dataset.grp, el.dataset.key);
+    });
+  });
+  document.querySelectorAll('.pie-slice').forEach(el => {
+    el.addEventListener('click', () => {
+      activateGroup(el.dataset.grp);
+    });
+  });
+  document.querySelectorAll('.pie-legend-row').forEach(el => {
+    el.addEventListener('click', () => {
+      activateGroup(el.dataset.grp);
+    });
+  });
+  document.querySelectorAll('.sig-row').forEach(el => {
+    el.addEventListener('click', () => {
+      const n = parseInt(el.dataset.turn, 10);
+      const turnEl = document.querySelector(`.turn[data-turn="${n}"]`);
+      if (!turnEl) return;
+      document.querySelectorAll('.turn.active').forEach(x => x.classList.remove('active'));
+      turnEl.classList.add('active');
+      scrollToTurn(turnEl);
+    });
+  });
+}
+
+// Drag-to-resize handle on the left edge of the codebook panel.
+// The panel is `position: fixed; right: 0; width: 360px;` and the main has a
+// matching `margin-right: 360px`. We drive both off a single CSS variable
+// `--panel-w` so they stay in sync, and persist the user's last width in
+// localStorage so it sticks across reloads.
+function setupPanelResize() {
+  const panel = document.querySelector('aside.codebook-panel');
+  const main  = document.querySelector('main.trajectory');
+  const handle = document.getElementById('panel-resize-handle');
+  if (!panel || !main || !handle) return;
+
+  const MIN = 280;
+  const MAX_FRAC = 0.7;  // never let the panel eat more than 70% of the viewport
+  const STORAGE_KEY = 'tta.panel-width';
+
+  const apply = (w) => {
+    const cap = Math.max(MIN, Math.min(w, window.innerWidth * MAX_FRAC));
+    panel.style.width = cap + 'px';
+    main.style.marginRight = cap + 'px';
+  };
+
+  // Restore persisted width on load.
+  const saved = parseInt(localStorage.getItem(STORAGE_KEY) || '', 10);
+  if (!Number.isNaN(saved) && saved >= MIN) apply(saved);
+
+  let dragging = false;
+  let startX = 0;
+  let startW = 0;
+
+  handle.addEventListener('mousedown', (e) => {
+    dragging = true;
+    startX = e.clientX;
+    startW = panel.getBoundingClientRect().width;
+    document.body.style.cursor = 'col-resize';
+    document.body.style.userSelect = 'none';
+    e.preventDefault();
+  });
+
+  window.addEventListener('mousemove', (e) => {
+    if (!dragging) return;
+    // Drag left = wider panel; drag right = narrower.
+    const w = startW + (startX - e.clientX);
+    apply(w);
+  });
+
+  window.addEventListener('mouseup', () => {
+    if (!dragging) return;
+    dragging = false;
+    document.body.style.cursor = '';
+    document.body.style.userSelect = '';
+    localStorage.setItem(STORAGE_KEY, String(panel.getBoundingClientRect().width));
+  });
+
+  // Double-click the handle to reset to the default 360px.
+  handle.addEventListener('dblclick', () => {
+    apply(360);
+    localStorage.removeItem(STORAGE_KEY);
+  });
+}
+
+renderTurns();
+renderSignature();
+renderCodebook();
+setupInteractions();
+setupPanelResize();
+
+</script>
+</body>
+</html>

@@ -1,0 +1,22 @@
+image: harness-jcode
+turn_mode: cli
+# Harvest the full agent trajectory (tool calls, outputs, reasoning) from the
+# jcode session JSON in post_run.py and fold it into the saved trace. Override
+# per run with the HARNESS_CAPTURE_TRAJECTORY env var on the gateway process.
+capture_trajectory: true
+cmd: ["jcode", "run", "{task}", "--provider-profile", "proxy", "--model", "{model}", "--quiet"]
+env:
+  JCODE_PROXY_API_KEY: "{api_key}"
+  JCODE_NO_TELEMETRY: "1"
+  TERM: "dumb"
+  NO_COLOR: "1"
+workdir: /workspace
+session:
+  flag: ["--resume", "{session_id}"]
+  session_id_cmd: ["sh", "-c", "ls -t /root/.jcode/sessions/*.json 2>/dev/null | head -1 | xargs -I{} basename {} .json"]
+  session_id_regex: "^(.+)$"
+# global dir: loads unconditionally (project dirs are trust-gated on some CLIs)
+skills_dirs:
+  - ~/.jcode/skills
+# init a git repo in the fresh workspace (some CLIs use the git root as
+# project boundary or refuse to run outside one)

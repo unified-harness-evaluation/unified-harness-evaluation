@@ -1,0 +1,27 @@
+image: harness-opensquilla
+turn_mode: cli
+# Harvest the full agent trajectory (tool calls, outputs, reasoning) from the
+# opensquilla SQLite transcript (transcript_entries) in post_run.py and fold it
+# into the saved trace. Override per run with the HARNESS_CAPTURE_TRAJECTORY env
+# var on the gateway process.
+capture_trajectory: true
+cmd: ["opensquilla", "agent", "-m", "{task}", "--model", "{model}", "--workspace", "/workspace", "--timeout", "120", "--max-iterations", "10"]
+env:
+  OPENAI_API_KEY: "{api_key}"
+  OPENAI_API_BASE: "{proxy_base}/v1"
+  OPENSQUILLA_LOG_LEVEL: "WARNING"
+  # Above 8000 chars of skill listing (33 bundled skills + workspace skills),
+  # opensquilla silently drops all descriptions from the prompt, leaving only
+  # names; the model then has nothing to match tasks against. Raise the budget
+  # so descriptions survive.
+  OPENSQUILLA_SKILLS_MAX_SKILLS_PROMPT_CHARS: "40000"
+workdir: /workspace
+# --session-db-path is required for cross-invocation replay; --session-id alone
+# only groups turn captures, each run still starts a fresh in-memory session db.
+session:
+  flag: ["--session-id", "eval-session", "--session-db-path", "/root/.opensquilla/state/sessions.db"]
+  always: true
+skills_dirs:
+  - ~/.opensquilla/skills
+# init a git repo in the fresh workspace (some CLIs use the git root as
+# project boundary or refuse to run outside one)

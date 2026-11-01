@@ -1,0 +1,17 @@
+image: harness-mistral-vibe
+turn_mode: cli
+# Harvest the full agent trajectory (tool calls, inputs, outputs) from vibe's
+# session projection chunk in post_run.py and fold it into the saved trace.
+# Override per run with the HARNESS_CAPTURE_TRAJECTORY env var on the gateway.
+capture_trajectory: true
+cmd: ["vibe", "-p", "{task}", "--auto-approve", "--output", "text", "--trust"]
+env:
+  MISTRAL_API_KEY: "{api_key}"
+workdir: /workspace
+session:
+  flag: "-c"
+# global dir: loads unconditionally (project dirs are trust-gated on some CLIs)
+skills_dirs:
+  - ~/.agents/skills
+# init a git repo in the fresh workspace (some CLIs use the git root as
+# project boundary or refuse to run outside one)

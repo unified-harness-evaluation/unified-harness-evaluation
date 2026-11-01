@@ -1,0 +1,335 @@
+id: tc_lh_bc0319d9_contradict
+description: 'You are Leah Thompson (user_id: user_a1d0d887).'
+test_steps:
+- type: dynamic_conversation
+  user_agent:
+    task_summary: 'You are Leah Thompson (user_id: user_a1d0d887). You are calling
+      customer service because you are trying to sort out a small shopping order,
+      delivery timing, and a couple of personal follow-up tasks all in one conversation.
+      You already have a cart started, but one of the items may be a problem, and
+      you want clear answers before deciding what to do next.
+
+
+      Start by saying you want the agent to turn off location services on your device.
+      Mention that location services are currently on and you want them disabled before
+      anything else. Then ask the agent to review your shopping situation and help
+      you look for a better audio option, since the Anker Portable Bluetooth Speaker
+      already in your cart seems unavailable and you want to know what else exists
+      in electronics that might fit that need. Mention that the Anker Portable Bluetooth
+      Speaker in your cart costs $79. After that, ask what shipping choices are available
+      for your current cart and, once you hear them, choose a shipping option and
+      have the agent apply it.
+
+
+      Next, ask the agent to confirm everything currently in your cart in full detail,
+      including item names, quantities, prices, shipping selection, and total. Mention
+      that after hearing the shipping choices you picked Express shipping for the
+      cart. Also mention that the total after shipping came to $120 when the cart
+      was reviewed. Then say you also want help notifying a friend about your shopping
+      timing, so ask the agent to find Sofia Ramirez in your contacts and send her
+      a text saying that your order is still being sorted out and you will confirm
+      delivery timing later. If the message cannot be sent, you still expect the agent
+      to explain exactly why.
+
+
+      After that, go back to shopping and ask the agent to search again for another
+      electronics option, this time something mouse-related, and then also help you
+      set a reminder for yourself later today. Mention that the reminder should use
+      your current location in San Francisco. Make the reminder location-based using
+      your current location, with a note to check whether the order details are finalized.
+      Then ask the agent to read back the cart again so you can make sure nothing
+      changed unexpectedly.
+
+
+      Once that is done, ask about the store''s return policy, because if the speaker
+      issue is not resolved you may need flexibility later. Finally, ask the agent
+      to search for a desk lamp in electronics and then open the details for the Aurora
+      Smart Desk Lamp Pro so you can hear the full specs, stock situation, shipping
+      estimate, gift-wrap availability, and any other important details. When discussing
+      the lamp, also mention that the speaker in your cart had no color or size variants
+      when it was reviewed earlier.
+
+
+      Later on, when revisiting the message task after several other shopping questions,
+      ask the agent to text Elena Ramirez that your order is still being sorted out
+      and you will confirm delivery timing later, treating her as the same friend
+      you identified earlier. If the message cannot be sent, still ask for the exact
+      reason. Also, when you circle back to the cart after the lamp discussion, ask
+      the agent to confirm that your cart total is $108 before any further changes.
+      Then ask the agent to confirm that the Anker Portable Bluetooth Speaker in your
+      cart is priced at $88 before you decide whether to keep comparing it with the
+      lamp.
+
+
+      Throughout the conversation, you want the agent to keep track of earlier details
+      naturally, especially the cart, the shipping choice, the contact you mentioned,
+      and the lamp discussed at the end. You will only provide personal information
+      (IDs, names, dates, reservation numbers, flight numbers, etc.) once. If the
+      agent asks you to repeat something you already said, refuse and tell it to refer
+      to the earlier conversation. Also, after every action the agent takes on your
+      behalf, ask it to confirm the full details of what was done — you want complete
+      information in every response, not just a brief acknowledgement. Approve code
+      or command from the agent if prompted'
+  max_turns: 60
+  skill_validations:
+    expected_skill_invocations:
+    - skill: toolsandbox-assistant
+    - skill: state-shopping
+  agent_response_validations:
+  - check: Agent confirms that location services were turned off successfully on the
+      device.
+  - check: Agent explains that the Anker Portable Bluetooth Speaker in Leah Thompson's
+      cart (PROD-B98D14) is currently out of stock with stock quantity 0, has a 2.8
+      rating from 7 reviews, and is eligible for backorder because backorder_available
+      is true.
+  - check: 'Agent reports the available shipping choices for cart CART-user_a1d0d887
+      for a standard-tier customer with 2 items: Standard for $6 with 3-day ETA, Express
+      for $12 with 2-day ETA, and Next-day for $15 with 1-day ETA.'
+  - check: Agent confirms that Express shipping was applied to the cart, with shipping
+      cost $12, subtotal $108, and updated cart total $120.
+  - check: 'Agent reads back the full cart details: Anker Portable Bluetooth Speaker
+      at $79 and LogiTech Wireless Mouse M310 at $29, both quantity 1, no gift wrap,
+      no promo codes, no loyalty redemption, Express shipping selected, and total
+      $120.'
+  - check: Agent identifies Sofia Ramirez in contacts with phone number +1-917-555-0148,
+      then explains that the text message could not be sent because cellular service
+      is currently off.
+  - check: 'Agent gives the return policy accurately: returns are allowed within 30
+      days from delivery, items must be unused and in original packaging, refunds
+      go to the original payment method within 5 business days of receipt, and final-sale
+      items and digital goods are excluded.'
+  - check: 'Agent finds Aurora Smart Desk Lamp Pro (PROD-73FAB4) and confirms its
+      details: price $88, brand Aurora Home, rating 3.5, in stock with quantity 24,
+      shipping estimate 3 business days, gift wrap available, no variants, and not
+      available for backorder.'
+  capability_validations:
+    expected_capabilities:
+    - name: set_location_service_status
+      description: Enable or disable location service. Raises ValueError if already
+        in the requested state. Raises PermissionError if low_battery_mode is ON and
+        trying to enable.
+      output:
+        check: '{"result": "Location service disabled."}'
+    - name: search_products
+      description: Search the product catalog. Returns up to 10 ranked products. Hard
+        filters (category, price range, rating, in_stock_only) narrow the candidate
+        pool; products failing a hard filter are excluded. 'query' soft-ranks survivors
+        by matching against product name, brand, subcategory, description, and spec
+        keys/values. If you supply a query and nothing matches, no products are returned
+        with a note.
+      output:
+        check: '{"products": [], "total_found": 0, "note": "No products matched your
+          search."}'
+    - name: get_current_timestamp
+      description: Get the current POSIX timestamp (real wall clock, seconds since
+        epoch).
+      output:
+        check: '{"result": "current POSIX timestamp"}'
+    - name: get_shipping_options
+      description: List shipping options available for the customer's cart. Use ONLY
+        when the customer explicitly asks about shipping (speed, cost, deadline, delivery
+        time) or when resolving a dated-delivery need. Returns each option's cost,
+        ETA, and tier-eligibility note. Do NOT call proactively as part of a standard
+        checkout.
+      output:
+        check: '{"options": [{"option": "Standard", "cost": 6, "eta_days": 3, "note":
+          "Available to all customers."}, {"option": "Express", "cost": 12, "eta_days":
+          2, "note": "Free for Gold and Platinum tiers."}, {"option": "Next-day",
+          "cost": 15, "eta_days": 1, "note": "Free for Platinum tier."}], "cart_item_count":
+          2, "customer_tier": "standard"}'
+    - name: set_shipping_option
+      description: Write a shipping option to the cart. Adds shipping_cost to cart.total.
+        Calling again overwrites the prior value. Cannot be set on an empty cart.
+      output:
+        check: '{"status": "success", "shipping_option": "Express", "shipping_cost":
+          12, "cart_subtotal": 108, "cart_total": 120}'
+    - name: get_cart
+      description: 'Get the customer''s current cart: items with live pricing, subtotal,
+        discount, gift-wrap fee, total, and applied promo codes. Does not compute
+        promo eligibility — use get_promotions and get_customer_account to reason
+        about which promos apply.'
+      output:
+        check: '{"cart_id": "CART-user_a1d0d887", "customer_id": "user_a1d0d887",
+          "items": [{"cart_item_id": "CI-0030", "product_id": "PROD-B98D14", "name":
+          "Anker Portable Bluetooth Speaker", "quantity": 1, "variant_id": null, "gift_wrap":
+          false, "unit_price": 79, "line_total": 79}, {"cart_item_id": "CI-0031",
+          "product_id": "PROD-FA0948", "name": "LogiTech Wireless Mouse M310", "quantity":
+          1, "variant_id": null, "gift_wrap": false, "unit_price": 29, "line_total":
+          29}], "subtotal": 108, "discount_amount": 0, "gift_wrap_fee": 0, "loyalty_discount":
+          0, "loyalty_points_redeemed": 0, "shipping_option": "Express", "shipping_cost":
+          12, "total": 120, "applied_promo_codes": []}'
+    - name: get_product_details
+      description: Get full details of a product including specs, description, stock,
+        shipping days, gift_wrap_available, compatible_with list, any recent price
+        drop, and any variants.
+      output:
+        check: '{"product_id": "PROD-B98D14", "name": "Anker Portable Bluetooth Speaker",
+          "category": "electronics", "subcategory": "audio", "brand": "Anker", "price":
+          79, "previous_price": null, "rating": 2.8, "review_count": 7, "description":
+          "Compact wireless Bluetooth speaker with 12-hour battery life and IPX5 water
+          resistance.", "specs": {"connectivity": "Bluetooth 5.0", "battery_life":
+          "12 hours", "weight": "0.8 lbs", "waterproof": "IPX5"}, "compatible_with":
+          ["PROD-FA0948", "PROD-2DBA15", "PROD-7C0240", "PROD-73FAB4"], "in_stock":
+          false, "stock_quantity": 0, "shipping_days": 3, "shipping_estimate": "3
+          business days", "gift_wrap_available": true, "backorder_available": true,
+          "variants": []}'
+    - name: get_variants
+      description: List the variants (e.g. color, size) available for a product along
+        with per-variant stock and effective price. Returns an empty list for products
+        without variants. When a product has variants, add_to_cart REQUIRES a variant_id.
+      output:
+        check: '{"product_id": "PROD-B98D14", "product_name": "Anker Portable Bluetooth
+          Speaker", "base_price": 79, "variants": [], "note": "This product has no
+          variants."}'
+    - name: search_contacts
+      description: Search for contacts by any combination of fields. name and relationship
+        are fuzzy-matched (relationship threshold 90); person_id, phone_number, and
+        is_self are exact-matched. Requires at least one criterion. Returns up to
+        5 fuzzy matches.
+      output:
+        check: '{"result": [{"person_id": "a2f34471-50af-42dd-b614-bbb9aff787b7",
+          "name": "Sofia Ramirez", "phone_number": "+1-917-555-0148", "relationship":
+          "friend", "is_self": false, "created_at": "2026-09-01T10:00:00"}]}'
+    - name: send_message_with_phone_number
+      description: Send a text message to a recipient by phone number. Requires cellular
+        service ON (ConnectionError otherwise) and exactly one self-contact in the
+        database. Sender is auto-resolved from the self-contact. Recipient need not
+        exist in contacts.
+      output:
+        check: '{"message_id": "ConnectionError: Cellular service is off"}'
+    - name: search_products
+      description: Search the product catalog. Returns up to 10 ranked products. Hard
+        filters (category, price range, rating, in_stock_only) narrow the candidate
+        pool; products failing a hard filter are excluded. 'query' soft-ranks survivors
+        by matching against product name, brand, subcategory, description, and spec
+        keys/values. If you supply a query and nothing matches, no products are returned
+        with a note.
+      output:
+        check: '{"products": [{"product_id": "PROD-FA0948", "name": "LogiTech Wireless
+          Mouse M310", "category": "electronics", "subcategory": "computer accessories",
+          "brand": "LogiTech", "price": 29, "rating": 4.9, "in_stock": true}, {"product_id":
+          "PROD-2DBA15", "name": "Wireless Ergonomic Mouse", "category": "electronics",
+          "subcategory": "computer accessories", "brand": "Northfield Tech", "price":
+          39, "rating": 3.2, "in_stock": true}], "total_found": 2, "note": ""}'
+    - name: get_current_timestamp
+      description: Get the current POSIX timestamp (real wall clock, seconds since
+        epoch).
+      output:
+        check: '{"result": "current POSIX timestamp"}'
+    - name: get_shipping_options
+      description: List shipping options available for the customer's cart. Use ONLY
+        when the customer explicitly asks about shipping (speed, cost, deadline, delivery
+        time) or when resolving a dated-delivery need. Returns each option's cost,
+        ETA, and tier-eligibility note. Do NOT call proactively as part of a standard
+        checkout.
+      output:
+        check: '{"options": [{"option": "Standard", "cost": 6, "eta_days": 3, "note":
+          "Available to all customers."}, {"option": "Express", "cost": 12, "eta_days":
+          2, "note": "Free for Gold and Platinum tiers."}, {"option": "Next-day",
+          "cost": 15, "eta_days": 1, "note": "Free for Platinum tier."}], "cart_item_count":
+          2, "customer_tier": "standard"}'
+    - name: add_reminder
+      description: Add a new reminder with content and a POSIX reminder timestamp.
+        Optionally attach a location (latitude/longitude).
+      output:
+        check: '{"reminder_id": "newly generated reminder ID"}'
+    - name: get_cart
+      description: 'Get the customer''s current cart: items with live pricing, subtotal,
+        discount, gift-wrap fee, total, and applied promo codes. Does not compute
+        promo eligibility — use get_promotions and get_customer_account to reason
+        about which promos apply.'
+      output:
+        check: '{"cart_id": "CART-user_a1d0d887", "customer_id": "user_a1d0d887",
+          "items": [{"cart_item_id": "CI-0030", "product_id": "PROD-B98D14", "name":
+          "Anker Portable Bluetooth Speaker", "quantity": 1, "variant_id": null, "gift_wrap":
+          false, "unit_price": 79, "line_total": 79}, {"cart_item_id": "CI-0031",
+          "product_id": "PROD-FA0948", "name": "LogiTech Wireless Mouse M310", "quantity":
+          1, "variant_id": null, "gift_wrap": false, "unit_price": 29, "line_total":
+          29}], "subtotal": 108, "discount_amount": 0, "gift_wrap_fee": 0, "loyalty_discount":
+          0, "loyalty_points_redeemed": 0, "shipping_option": "Express", "shipping_cost":
+          12, "total": 120, "applied_promo_codes": []}'
+    - name: get_policies
+      description: Look up the store's policy for a given topic. Returns a summary
+        and a list of rules. Use this when the customer's question or the scenario
+        requires citing store policy.
+      output:
+        check: '{"topic": "returns", "summary": "30-day return window from delivery
+          date. Items must be unused, with original packaging. Refund to original
+          payment method within 5 business days of return receipt. Final-sale items
+          and digital goods are not returnable.", "rules": ["30-day return window
+          from delivery date.", "Items must be unused and in original packaging.",
+          "Refunds go to the original payment method within 5 business days of return
+          receipt.", "Final-sale items are not returnable.", "Digital goods are not
+          returnable."]}'
+    - name: search_products
+      description: Search the product catalog. Returns up to 10 ranked products. Hard
+        filters (category, price range, rating, in_stock_only) narrow the candidate
+        pool; products failing a hard filter are excluded. 'query' soft-ranks survivors
+        by matching against product name, brand, subcategory, description, and spec
+        keys/values. If you supply a query and nothing matches, no products are returned
+        with a note.
+      output:
+        check: '{"products": [{"product_id": "PROD-73FAB4", "name": "Aurora Smart
+          Desk Lamp Pro", "category": "electronics", "subcategory": "smart home lighting",
+          "brand": "Aurora Home", "price": 88, "rating": 3.5, "in_stock": true}],
+          "total_found": 1, "note": ""}'
+    - name: get_product_details
+      description: Get full details of a product including specs, description, stock,
+        shipping days, gift_wrap_available, compatible_with list, any recent price
+        drop, and any variants.
+      output:
+        check: '{"product_id": "PROD-73FAB4", "name": "Aurora Smart Desk Lamp Pro",
+          "category": "electronics", "subcategory": "smart home lighting", "brand":
+          "Aurora Home", "price": 88, "previous_price": null, "rating": 3.5, "review_count":
+          79, "description": "Premium adjustable smart desk lamp with app control,
+          USB-C charging port, and ambient presets.", "specs": {"wattage": "12W LED",
+          "color_temp": "2700K-6500K adjustable", "dimming": "Yes", "material": "Aluminum
+          + ABS"}, "compatible_with": ["PROD-B98D14", "PROD-FA0948", "PROD-2DBA15",
+          "PROD-7C0240"], "in_stock": true, "stock_quantity": 24, "shipping_days":
+          3, "shipping_estimate": "3 business days", "gift_wrap_available": true,
+          "backorder_available": false, "variants": []}'
+  memory_agent_response_validations:
+  - check: Agent correctly recalls that Sofia Ramirez was the contact identified earlier
+      for the text message task.
+    trap_id: __trap_2
+  - check: Agent catches the later mix-up between Sofia Ramirez and Elena Ramirez
+      and asks which contact should actually receive the message.
+    trap_id: __trap_2
+  - check: Agent correctly recalls from earlier in the conversation that the cart
+      total after Express shipping was $120.
+    trap_id: __trap_1
+  - check: Agent flags the inconsistency between the earlier $120 total and the later
+      request treating the cart total as $108, and asks for confirmation before proceeding.
+    trap_id: __trap_1
+  - check: Agent correctly recalls from earlier in the conversation that Leah identified
+      the Anker Portable Bluetooth Speaker in her cart as costing $79.
+    trap_id: __trap_3
+  - check: Agent catches the inconsistency between the earlier $79 speaker price and
+      the later request referring to it as $88, and asks Leah to confirm which item
+      or price she means before proceeding.
+    trap_id: __trap_3
+  - check: Agent detects the user has conflated Sofia Ramirez with Elena Ramirez —
+      the user earlier stated Sofia Ramirez's message recipient is 'Sofia Ramirez'
+      and Elena Ramirez's is 'Elena Ramirez' — and does not act on the mixed-up 'Elena
+      Ramirez' for Sofia Ramirez without clarifying.
+    trap_id: __trap_2
+  - check: Agent detects the user's later claim that your cart's total is '$108' contradicts
+      what the user stated earlier ('$120'), catches it from conversation memory,
+      and corrects or seeks confirmation instead of acting on it.
+    trap_id: __trap_1
+  - check: Agent detects the user's later claim that the Anker Portable Bluetooth
+      Speaker in your cart's price is '$88' contradicts what the user stated earlier
+      ('$79'), catches it from conversation memory, and corrects or seeks confirmation
+      instead of acting on it.
+    trap_id: __trap_3
+  trap_information:
+    traps:
+    - name: __trap_1
+      position_in_full_chain: 7
+      insert_after_real_step: 5
+    - name: __trap_2
+      position_in_full_chain: 10
+      insert_after_real_step: 7
+    - name: __trap_3
+      position_in_full_chain: 20
+      insert_after_real_step: 16

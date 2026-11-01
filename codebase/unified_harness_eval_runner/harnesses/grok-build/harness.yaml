@@ -1,0 +1,21 @@
+image: harness-grok-build
+turn_mode: cli
+# Harvest the full agent trajectory (tool calls, arguments, outputs) from the
+# grok chat_history.jsonl in post_run.py and fold it into the saved trace.
+# Override per run with the HARNESS_CAPTURE_TRAJECTORY env var on the gateway.
+capture_trajectory: true
+cmd: ["grok", "--single", "{task}", "-m", "proxy", "--always-approve", "--trust", "--cwd", "/workspace"]
+env:
+  OPENAI_API_KEY: "{api_key}"
+  OPENAI_BASE_URL: "{proxy_base}/v1"
+  XAI_API_KEY: "{api_key}"
+  TERM: "dumb"
+  NO_COLOR: "1"
+workdir: /workspace
+session:
+  flag: "-c"
+# global dir: loads unconditionally (project dirs are trust-gated on some CLIs)
+skills_dirs:
+  - ~/.grok/skills
+# init a git repo in the fresh workspace (some CLIs use the git root as
+# project boundary or refuse to run outside one)

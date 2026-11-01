@@ -1,0 +1,285 @@
+id: tc_lh_5d54871a_contradict
+description: 'You are Ethan Calloway (user_id: ethan_calloway_782), and you’re contacting
+  customer service because you have a few order issues to sort out at once after recently
+  moving and reviewing some recent purchases.'
+test_steps:
+- type: dynamic_conversation
+  user_agent:
+    task_summary: 'You are Ethan Calloway (user_id: ethan_calloway_782), and you’re
+      contacting customer service because you have a few order issues to sort out
+      at once after recently moving and reviewing some recent purchases. Start by
+      authenticating with your email, ethan.calloway2026@example.com. Early in the
+      conversation, say that your default account address needs to be updated to 19
+      Westover Hills Blvd, Apt 12C, Richmond, VA 23225, USA, and wait for the agent
+      to summarize the change and ask for confirmation before you agree. After the
+      address update is completed, ask the agent to pull up your profile and walk
+      you through the account details, including your saved payment methods and the
+      orders currently on file. When the agent reviews your profile, mention that
+      order #W1203023 is the one that was delivered to 2716 Birch Hollow Rd, Apt 4A,
+      Richmond, VA 23223, and you want to make sure you are looking at the right shipment.
+      Also mention that the Summit Zip Hoodie in that order is currently Heather Gray,
+      size M, so you can be sure the agent has the right item before discussing any
+      changes.
+
+
+      Next, ask about your delivered order #W1203023. You want the full details: shipping
+      address on that order, both items in the package, delivery status, tracking
+      information, and how it was paid. Once the agent confirms what was in that order,
+      ask them to look up the product details for the Summit Zip Hoodie from that
+      order and tell you what other variants are available. After hearing the options,
+      say you want to exchange the hoodie from Heather Gray, size M, to the Forest
+      Green, size M version, and use the same credit card on file for any price difference.
+      Make sure the agent tells you the exact item being exchanged, the replacement
+      variant, any price difference, the payment method used, and the updated order
+      status after the exchange.
+
+
+      After that, circle back and ask the agent to check that same order again so
+      you can verify the current status and confirm the exchange request was recorded
+      properly.
+
+
+      Then explain that you also need help with another account issue for Keira Holloway,
+      using keira.holloway2026@example.com, because there is a pending order on that
+      profile that should be cancelled. Ask the agent to show the account details
+      for that profile, then review order #W0643593 in full. Once they confirm it
+      is still pending, tell them to cancel it for the reason ordered by mistake.
+      You expect them to confirm the order status becomes cancelled and explain that
+      the refund goes back to the original Visa ending in 5538 and will take 5-7 business
+      days.
+
+
+      Finally, go back to your earlier delivered order and say you also want to return
+      the Coastal Breeze Linen Shirt from that shipment for a refund to the original
+      Visa ending in 2841. Before they process that final part, ask the agent to return
+      the Coastal Breeze Linen Shirt from the order that was delivered to 19 Westover
+      Hills Blvd, Apt 12C, Richmond, VA 23225. Right before they submit anything for
+      the earlier hoodie exchange, ask the agent to switch the Summit Zip Hoodie on
+      order #W1203023 from the Heather Gray size L version to the Forest Green size
+      M version using the same card on file. Then ask the agent to confirm your profile
+      details one last time so you can verify the address update and the remaining
+      orders listed on your account.
+
+
+      You will only provide personal information (IDs, names, dates, reservation numbers,
+      flight numbers, etc.) once. If the agent asks you to repeat something you already
+      said, refuse and tell it to refer to the earlier conversation. Also, after every
+      action the agent takes on your behalf, ask it to confirm the full details of
+      what was done — you want complete information in every response, not just a
+      brief acknowledgement. Approve code or command from the agent if prompted'
+  max_turns: 60
+  skill_validations:
+    expected_skill_invocations:
+    - skill: tau2Retail
+  agent_response_validations:
+  - check: Agent confirms Ethan Calloway's default address was updated from 2716 Birch
+      Hollow Rd, Apt 4A, Richmond, VA 23223 to 19 Westover Hills Blvd, Apt 12C, Richmond,
+      VA 23225 after obtaining explicit confirmation.
+  - check: 'Agent provides Ethan''s account details, including email ethan.calloway2026@example.com,
+      payment methods credit_card_5913549 (Visa ending in 2841) and paypal_9170405,
+      and order #W1203023.'
+  - check: 'Agent explains that order #W1203023 was delivered to 2716 Birch Hollow
+      Rd, Apt 4A, Richmond, VA 23223, includes a Summit Zip Hoodie in Heather Gray
+      size M (item 1194810973) and a Coastal Breeze Linen Shirt in Sky Blue size S
+      (item 2680056141), has tracking number TRK4827319056, and was paid with credit_card_5913549.'
+  - check: 'Agent confirms the Summit Zip Hoodie product 6850789192 variants, including
+      the Forest Green size M option item 5279753717 priced at 55.54, and then states
+      the exchange request on order #W1203023 was submitted from item 1194810973 to
+      5279753717 using credit_card_5913549 with a price difference of -0.55 and updated
+      status exchange requested.'
+  - check: 'Agent provides Keira Holloway''s profile details with email keira.holloway2026@example.com,
+      payment methods credit_card_7437366 (Visa ending in 5538) and paypal_1856105,
+      and order #W0643593, then confirms that order #W0643593 was pending before cancellation.'
+  - check: 'Agent confirms order #W0643593 was cancelled for the reason ordered by
+      mistake and explains the refund will go back to the original Visa ending in
+      5538, with credit-card refunds taking 5-7 business days.'
+  - check: 'Agent states that a return request was created for the Coastal Breeze
+      Linen Shirt item 2680056141 on order #W1203023 with the refund directed to credit_card_5913549,
+      and that return instructions will be sent by email.'
+  capability_validations:
+    expected_capabilities:
+    - name: modify_user_address
+      description: Update the user's default address. Requires confirmation before
+        proceeding.
+      output:
+        check: '{"user": {"user_id": "ethan_calloway_782", "name": "Ethan Calloway",
+          "address": {"address1": "19 Westover Hills Blvd", "address2": "Apt 12C",
+          "city": "Richmond", "state": "VA", "country": "USA", "zip": "23225"}, "email":
+          "ethan.calloway2026@example.com"}}'
+    - name: get_user_details
+      description: Fetch user profile including name, address, email, payment methods,
+        and order ids.
+      output:
+        check: '{"user_id": "ethan_calloway_782", "name": "Ethan Calloway", "address":
+          {"address1": "19 Westover Hills Blvd", "address2": "Apt 12C", "city": "Richmond",
+          "state": "VA", "country": "USA", "zip": "23225"}, "email": "ethan.calloway2026@example.com",
+          "payment_methods": [{"payment_method_id": "credit_card_5913549", "source":
+          "credit_card", "brand": "visa", "last_four": "2841", "balance": 0.0}, {"payment_method_id":
+          "paypal_9170405", "source": "paypal", "brand": null, "last_four": null,
+          "balance": 0.0}], "orders": ["#W1203023"]}'
+    - name: get_order_details
+      description: Fetch an order by id, including items, status, fulfillments, and
+        payment history. Note the order_id has a leading '#'.
+      output:
+        check: '{"order_id": "#W1203023", "user_id": "ethan_calloway_782", "address":
+          {"address1": "2716 Birch Hollow Rd", "address2": "Apt 4A", "city": "Richmond",
+          "state": "VA", "country": "USA", "zip": "23223"}, "items": [{"oi_id": "RT-#W1203023-0",
+          "product_id": "6850789192", "item_id": "1194810973", "name": "Summit Zip
+          Hoodie", "quantity": 1, "unit_price": 64.99, "options": {"color": "Heather
+          Gray", "size": "M"}, "item_status": "delivered"}, {"oi_id": "RT-#W1203023-1",
+          "product_id": "2575138841", "item_id": "2680056141", "name": "Coastal Breeze
+          Linen Shirt", "quantity": 1, "unit_price": 44.99, "options": {"color": "Sky
+          Blue", "size": "S"}, "item_status": "delivered"}], "status": "delivered",
+          "fulfillments": [{"id": 12, "order_id": "#W1203023", "tracking_ids": ["TRK4827319056"],
+          "item_ids": ["1194810973", "2680056141"], "created_at": "2026-09-10 17:08:07"}],
+          "payment_history": [{"id": 21, "order_id": "#W1203023", "transaction_type":
+          "payment", "amount": 109.98, "payment_method_id": "credit_card_5913549",
+          "created_at": "2026-09-10 17:03:56"}]}'
+    - name: get_product_details
+      description: Fetch a product and all its variants. Product id is different from
+        item id.
+      output:
+        check: '{"name": "Summit Zip Hoodie", "product_id": "6850789192", "variants":
+          [{"item_id": "7325768483", "product_id": "6850789192", "options": {"color":
+          "Heather Gray", "size": "S"}, "available": 1, "price": 53.34}, {"item_id":
+          "1194810973", "product_id": "6850789192", "options": {"color": "Heather
+          Gray", "size": "M"}, "available": 1, "price": 56.09}, {"item_id": "7811844871",
+          "product_id": "6850789192", "options": {"color": "Heather Gray", "size":
+          "L"}, "available": 1, "price": 52.24}, {"item_id": "8767680949", "product_id":
+          "6850789192", "options": {"color": "Navy", "size": "S"}, "available": 1,
+          "price": 54.99}, {"item_id": "4507794879", "product_id": "6850789192", "options":
+          {"color": "Navy", "size": "M"}, "available": 1, "price": 54.99}, {"item_id":
+          "4928512952", "product_id": "6850789192", "options": {"color": "Navy", "size":
+          "L"}, "available": 1, "price": 54.44}, {"item_id": "0984006376", "product_id":
+          "6850789192", "options": {"color": "Forest Green", "size": "S"}, "available":
+          1, "price": 53.89}, {"item_id": "5279753717", "product_id": "6850789192",
+          "options": {"color": "Forest Green", "size": "M"}, "available": 1, "price":
+          55.54}, {"item_id": "0931596125", "product_id": "6850789192", "options":
+          {"color": "Forest Green", "size": "L"}, "available": 1, "price": 52.24}]}'
+    - name: exchange_delivered_order_items
+      description: Exchange items of a delivered order for other variants of the same
+        product. Can only be called ONCE per order. Only works on 'delivered' orders.
+        item_ids and new_item_ids are position-matched. New item must be available
+        and same product type. Payment method covers price difference; gift card must
+        have sufficient balance. Status becomes 'exchange requested'. User receives
+        instructions by email. No new order needed.
+      output:
+        check: '{"order": {"order_id": "#W1203023", "customer_id": "ethan_calloway_782",
+          "status": "exchange requested", "exchange_items": ["1194810973"], "exchange_new_items":
+          ["5279753717"], "exchange_payment_method_id": "credit_card_5913549", "exchange_price_difference":
+          -0.55}}'
+    - name: get_order_details
+      description: Fetch an order by id, including items, status, fulfillments, and
+        payment history. Note the order_id has a leading '#'.
+      output:
+        check: '{"order_id": "#W1203023", "user_id": "ethan_calloway_782", "address":
+          {"address1": "2716 Birch Hollow Rd", "address2": "Apt 4A", "city": "Richmond",
+          "state": "VA", "country": "USA", "zip": "23223"}, "items": [{"oi_id": "RT-#W1203023-0",
+          "product_id": "6850789192", "item_id": "1194810973", "name": "Summit Zip
+          Hoodie", "quantity": 1, "unit_price": 64.99, "options": {"color": "Heather
+          Gray", "size": "M"}, "item_status": "delivered"}, {"oi_id": "RT-#W1203023-1",
+          "product_id": "2575138841", "item_id": "2680056141", "name": "Coastal Breeze
+          Linen Shirt", "quantity": 1, "unit_price": 44.99, "options": {"color": "Sky
+          Blue", "size": "S"}, "item_status": "delivered"}], "status": "exchange requested",
+          "fulfillments": [{"id": 12, "order_id": "#W1203023", "tracking_ids": ["TRK4827319056"],
+          "item_ids": ["1194810973", "2680056141"], "created_at": "2026-09-10 17:08:07"}],
+          "payment_history": [{"id": 21, "order_id": "#W1203023", "transaction_type":
+          "payment", "amount": 109.98, "payment_method_id": "credit_card_5913549",
+          "created_at": "2026-09-10 17:03:56"}]}'
+    - name: get_user_details
+      description: Fetch user profile including name, address, email, payment methods,
+        and order ids.
+      output:
+        check: '{"user_id": "keira_holloway_271", "name": "Keira Holloway", "address":
+          {"address1": "4829 Riverview Terrace", "address2": "Unit 7", "city": "Boston",
+          "state": "MA", "country": "USA", "zip": "02118"}, "email": "keira.holloway2026@example.com",
+          "payment_methods": [{"payment_method_id": "credit_card_7437366", "source":
+          "credit_card", "brand": "visa", "last_four": "5538", "balance": 0.0}, {"payment_method_id":
+          "paypal_1856105", "source": "paypal", "brand": null, "last_four": null,
+          "balance": 0.0}], "orders": ["#W0643593"]}'
+    - name: get_order_details
+      description: Fetch an order by id, including items, status, fulfillments, and
+        payment history. Note the order_id has a leading '#'.
+      output:
+        check: '{"order_id": "#W0643593", "user_id": "keira_holloway_271", "address":
+          {"address1": "4829 Riverview Terrace", "address2": "Unit 7", "city": "Boston",
+          "state": "MA", "country": "USA", "zip": "02118"}, "items": [{"oi_id": "RT-#W0643593-0",
+          "product_id": "6850789192", "item_id": "4507794879", "name": "Summit Zip
+          Hoodie", "quantity": 1, "unit_price": 64.99, "options": {"color": "Navy",
+          "size": "M"}, "item_status": "confirmed"}, {"oi_id": "RT-#W0643593-1", "product_id":
+          "2575138841", "item_id": "6871526530", "name": "Coastal Breeze Linen Shirt",
+          "quantity": 1, "unit_price": 44.99, "options": {"color": "Sand", "size":
+          "M"}, "item_status": "confirmed"}], "status": "pending", "fulfillments":
+          [], "payment_history": [{"id": 23, "order_id": "#W0643593", "transaction_type":
+          "payment", "amount": 109.98, "payment_method_id": "credit_card_7437366",
+          "created_at": "2026-09-10 17:04:40"}]}'
+    - name: cancel_pending_order
+      description: 'Cancel a pending order. Only works on orders with status ''pending''.
+        Refunds total via original payment method: immediately for gift cards, 5-7
+        business days otherwise. Status becomes ''cancelled''.'
+      output:
+        check: '{"order": {"order_id": "#W0643593", "customer_id": "keira_holloway_271",
+          "status": "cancelled", "payment_method": "credit_card", "total_paid": 110,
+          "cancel_reason": "ordered by mistake"}}'
+    - name: return_delivered_order_items
+      description: Request a return for items of a delivered order. Only works on
+        'delivered' orders. Refund must go to the original payment method or an existing
+        gift card. Status becomes 'return requested'. User receives return instructions
+        by email.
+      output:
+        check: '{"order": {"order_id": "#W1203023", "customer_id": "ethan_calloway_782",
+          "status": "return requested", "return_items": ["2680056141"], "return_payment_method_id":
+          "credit_card_5913549"}}'
+    - name: get_user_details
+      description: Fetch user profile including name, address, email, payment methods,
+        and order ids.
+      output:
+        check: '{"user_id": "ethan_calloway_782", "name": "Ethan Calloway", "address":
+          {"address1": "19 Westover Hills Blvd", "address2": "Apt 12C", "city": "Richmond",
+          "state": "VA", "country": "USA", "zip": "23225"}, "email": "ethan.calloway2026@example.com",
+          "payment_methods": [{"payment_method_id": "credit_card_5913549", "source":
+          "credit_card", "brand": "visa", "last_four": "2841", "balance": 0.0}, {"payment_method_id":
+          "paypal_9170405", "source": "paypal", "brand": null, "last_four": null,
+          "balance": 0.0}], "orders": ["#W1203023"]}'
+  memory_agent_response_validations:
+  - check: 'Agent correctly recalls from earlier in the conversation that order #W1203023
+      was identified as having been delivered to 2716 Birch Hollow Rd, Apt 4A, Richmond,
+      VA 23223.'
+    trap_id: __trap_0
+  - check: Agent flags the inconsistency between the earlier order shipping address
+      and the later request referring to 19 Westover Hills Blvd, Apt 12C, Richmond,
+      VA 23225, and asks for clarification before proceeding.
+    trap_id: __trap_0
+  - check: 'Agent avoids treating the updated default profile address as the delivery
+      address for order #W1203023 when handling the later return request.'
+    trap_id: __trap_0
+  - check: 'Agent correctly recalls from earlier in the conversation that the Summit
+      Zip Hoodie on order #W1203023 was identified as Heather Gray, size M.'
+    trap_id: __trap_1
+  - check: Agent flags the inconsistency between the earlier item description and
+      the later request referring to a Heather Gray size L hoodie, and asks for clarification
+      before proceeding.
+    trap_id: __trap_1
+  - check: Agent avoids processing the exchange as if the original hoodie variant
+      were size L, and keeps the exchange tied to the earlier confirmed Heather Gray
+      size M item unless the user clarifies otherwise.
+    trap_id: __trap_1
+  - check: 'Agent detects the user''s later claim that order #W1203023''s delivery
+      address is ''19 Westover Hills Blvd, Apt 12C, Richmond, VA 23225'' contradicts
+      what the user stated earlier (''2716 Birch Hollow Rd, Apt 4A, Richmond, VA 23223''),
+      catches it from conversation memory, and corrects or seeks confirmation instead
+      of acting on it.'
+    trap_id: __trap_0
+  - check: 'Agent detects the user''s later claim that the Summit Zip Hoodie on order
+      #W1203023''s size is ''L'' contradicts what the user stated earlier (''M''),
+      catches it from conversation memory, and corrects or seeks confirmation instead
+      of acting on it.'
+    trap_id: __trap_1
+  trap_information:
+    traps:
+    - name: __trap_0
+      position_in_full_chain: 16
+      insert_after_real_step: 15
+    - name: __trap_1
+      position_in_full_chain: 18
+      insert_after_real_step: 16

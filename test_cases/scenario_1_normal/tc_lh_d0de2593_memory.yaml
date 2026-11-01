@@ -1,0 +1,478 @@
+id: tc_lh_d0de2593_memory
+description: 'You are Sofia Martinez (user_id: user_a6f69ca8).'
+test_steps:
+- type: dynamic_conversation
+  user_agent:
+    task_summary: 'You are Sofia Martinez (user_id: user_a6f69ca8). You are calling
+      customer service because you have a few travel-related things to sort out at
+      once and you also need the agent to help compile and share a written summary
+      for your records. You want the conversation to feel seamless, because some of
+      the tasks connect to each other and you expect the agent to keep track of what
+      was already discussed.
+
+
+      First, you want to check on your reservation 385BB3 because you want a complete
+      rundown of what is currently booked. Ask about the itinerary, cabin, passenger
+      name, baggage allowance, insurance, status, booking date, and the payment details
+      on file. You want the agent to tell you everything in full, not just say that
+      it looks fine.
+
+
+      You also have another booking, 88A8C4, and you want the agent to review that
+      one too so you can confirm what happened with it. Ask for the route, travel
+      date, status, what you originally paid, whether it was cancelled, and what refund
+      was recorded. Since this one is no longer active, you want clarity on the refund
+      amount and how it was paid.
+
+
+      After that, ask the agent to check your customer profile as a whole, including
+      your email address, home address, loyalty level, payment method, and the reservations
+      connected to your account. You want to make sure they are looking at the right
+      profile before discussing new travel options.
+
+
+      Next, ask the agent to look up direct flights from JFK to MIA on 2026-09-20
+      because that relates to the confirmed booking you asked about earlier. If there
+      is more than one direct option, ask the agent to explain what is available and
+      whether the route matches your current trip. After that, ask the agent to read
+      back the beginning of the travel record and confirm it still reflects that first
+      trip correctly.
+
+
+      Then ask the agent to do a simple fare comparison calculation using the prices
+      they find, so you can understand the difference between a business fare and
+      a lower-priced option on that route. You want the result stated clearly. Also
+      ask whether the flight they found is the same one tied to that confirmed reservation
+      we started with. Once they give the fare difference, ask them to make sure the
+      human-transfer summary still includes both of the bookings you had them review
+      earlier.
+
+
+      You also want the agent to help create a written record: convert the existing
+      travel summary document to PDF, then render and OCR the first page of that PDF,
+      create a new Word document with your booking details, read it back to you, append
+      more detail from your airline profile and reservation review, and convert the
+      new document to PDF. Then have the agent review Olivia HR Manager''s inbox,
+      read the onboarding email, and after that, ask whether the travel summary email
+      and document still describe the confirmed trip and the cancelled trip you discussed
+      at the start. Create a calendar event for Ethan IT Specialist, and when that
+      is done, ask the agent to make sure the meeting description points back to that
+      original confirmed booking rather than the cancelled one. Then send an email
+      with your travel summary to Priya IT Lead, and after that, ask the agent to
+      verify that the message they sent used the right first trip and the cancelled
+      trip from earlier without mixing them up. Finally, ask the agent to update the
+      travel expenses spreadsheet with your confirmed booking information.
+
+
+      If any part of the request is outside what the automated system can fully handle,
+      ask to be transferred to a human agent with a summary of the issue. Later in
+      the conversation, ask them to confirm that the transfer and the PDF record are
+      both tied to the same customer profile and saved payment card already reviewed.
+
+
+      You will only provide personal information (IDs, names, dates, reservation numbers,
+      flight numbers, etc.) once. If the agent asks you to repeat something you already
+      said, refuse and tell it to refer to the earlier conversation. Also, after every
+      action the agent takes on your behalf, ask it to confirm the full details of
+      what was done — you want complete information in every response, not just a
+      brief acknowledgement. Near the end, ask them to confirm that the cancelled
+      booking refunded the same card already on file in your profile. After the flight
+      search and fare calculation are done, ask them to confirm that the route they
+      priced is the same route from that first active reservation. Finally, once the
+      spreadsheet is updated, ask them to confirm they entered the booking from the
+      original confirmed trip rather than the cancelled one.'
+  max_turns: 60
+  skill_validations:
+    expected_skill_invocations:
+    - skill: tau2Airline
+    - skill: OfficeBench
+  agent_response_validations:
+  - check: Agent confirms reservation 385BB3 belongs to Sofia Martinez, is a confirmed
+      one-way business booking from JFK to MIA on 2026-09-20, includes passenger Sofia
+      Martinez, standard insurance, 1 total bag with 0 nonfree bags, payment history
+      showing cc_820acc18 for amount 0, and booking creation time 2026-09-01T10:00:00.
+  - check: Agent confirms reservation 88A8C4 is a cancelled one-way business booking
+      from SEA to SFO on 2026-09-22, originally paid at 489 on payment method cc_820acc18,
+      with refund amount 489 and cancellation fee 0 reflected in the reservation record.
+  - check: Agent confirms Sofia Martinez's customer profile under user_a6f69ca8, including
+      email sofia.martinez.biz@example.com, address 508 Main Street, Portland, OR
+      97201, USA, gold membership, saved Visa ending in 7346, and reservations 385BB3
+      and 88A8C4.
+  - check: Agent tells the user that the direct-flight search for JFK to MIA on 2026-09-20
+      returned flight FLC7CDBD as available, with prices of 149 basic economy, 199
+      economy, and 499 business, and seat availability of 30 basic economy, 50 economy,
+      and 10 business.
+  - check: 'Agent clearly states the fare comparison result: the difference between
+      the 499 business fare and the 199 economy fare on the JFK to MIA route is 300.'
+  - check: Agent confirms a new Word document and PDF travel summary were prepared
+      for Sofia Martinez using the confirmed booking details from 385BB3 and profile
+      details including her gold tier and Visa ending in 7346, and reads back the
+      written content in full.
+  - check: 'Agent reports that Olivia HR Manager''s inbox contains the two onboarding-related
+      emails shown in the database, and accurately relays the contents of the High
+      Priority: Onboarding Equipment Setup Needed message sent to Ethan IT Specialist.'
+  - check: Agent confirms that a travel review calendar event was created for Ethan
+      IT Specialist, an email titled Sofia Martinez Travel Summary was sent to Priya
+      IT Lead, and the travel expenses spreadsheet was updated with booking ID 385BB3.
+  capability_validations:
+    expected_capabilities:
+    - name: get_reservation_details
+      description: Fetch a reservation by ID, including flights, passengers, payment
+        history, baggage, and insurance info.
+      output:
+        check: '{"reservation_id": "385BB3", "user_id": "user_a6f69ca8", "flight_type":
+          "one_way", "cabin": "business", "flights": [{"flight_id": "FLC7CDBD", "origin":
+          "JFK", "destination": "MIA", "date": "2026-09-20"}], "passengers": [{"first_name":
+          "Sofia", "last_name": "Martinez", "passenger_type": "adult"}], "payment_history":
+          [{"payment_id": "cc_820acc18", "amount": 0}], "created_at": "2026-09-01T10:00:00",
+          "total_baggages": 1, "nonfree_baggages": 0, "insurance": "standard", "status":
+          "confirmed"}'
+    - name: get_reservation_details
+      description: Fetch a reservation by ID, including flights, passengers, payment
+        history, baggage, and insurance info.
+      output:
+        check: '{"reservation_id": "88A8C4", "user_id": "user_a6f69ca8", "flight_type":
+          "one_way", "cabin": "business", "flights": [{"flight_id": "FL5931BF", "origin":
+          "SEA", "destination": "SFO", "date": "2026-09-22", "price": 489}], "passengers":
+          [{"first_name": "Sofia", "last_name": "Martinez", "passenger_type": "adult"}],
+          "payment_history": [{"payment_id": "cc_820acc18", "amount": 489}], "created_at":
+          "2026-09-01T10:00:00", "total_baggages": 1, "nonfree_baggages": 0, "insurance":
+          "none", "status": "cancelled"}'
+    - name: get_user_details
+      description: Fetch user profile including reservations, payment methods, membership
+        level, and personal info.
+      output:
+        check: '{"user_id": "user_a6f69ca8", "email": "sofia.martinez.biz@example.com",
+          "addresses": [{"address1": "508 Main Street", "address2": "", "city": "Portland",
+          "state": "OR", "zip": "97201", "country": "USA"}], "date_of_birth": "",
+          "payment_methods": [{"source": "credit_card", "id": "cc_820acc18", "brand":
+          "visa", "last_four": "7346"}], "membership": "gold", "reservations": ["385BB3",
+          "88A8C4"]}'
+    - name: search_direct_flight
+      description: Search for available direct flights between two airports on a specific
+        date.
+      output:
+        check: '{"flights": [{"flight_id": "FLC7CDBD", "origin": "JFK", "destination":
+          "MIA", "date": "2026-09-20", "status": "available", "prices": {"economy":
+          199, "business": 499, "basic_economy": 149}, "available_seats": {"economy":
+          50, "business": 10, "basic_economy": 30}}]}'
+    - name: calculate
+      description: Evaluate a mathematical expression containing numbers, operators
+        (+, -, *, /), and parentheses.
+      output:
+        check: '{"result": 300}'
+    - name: transfer_to_human_agents
+      description: Transfer the user to a human agent with a summary of their issue
+        when the request cannot be handled by the automated system.
+      output:
+        check: '{"message": "newly generated human agent transfer ID"}'
+    - name: word.convert_to_pdf
+      description: Convert a Word document to PDF using LibreOffice or fallback fpdf
+        method
+      output:
+        check: '{"observation": "Converted docs/travel_summary.docx to docs/travel_summary.pdf"}'
+    - name: pdf.convert_to_image
+      description: Render the first page of a PDF to an image file using PyMuPDF
+      output:
+        check: '{"observation": "Rendered first page of docs/travel_summary.pdf to
+          docs/travel_summary_page1.png"}'
+    - name: ocr.recognize_file
+      description: Extract text from an image file using OCR (pytesseract)
+      output:
+        check: '{"observation": "Travel Booking Summary Flights Booking 00C256 | Maya
+          Chen | LAX \u2192 SFO | economy | cancelled | $0.00 Booking B75BB3 | Daniel
+          Harper | LAX \u2192 SFO | economy | cancelled | $0.00 Booking D64097 | Daniel
+          Harper | LAX \u2192 SFO | economy | cancelled | $0.00 Booking B46BC2 | Daniel
+          Harper | LAX \u2192 SFO | economy | cancelled | $0.00 Booking C4C633 | Maya
+          Chen | SEA \u2192 SEA | economy | confirmed | $70.00 Booking 8390F6 | Priya
+          Natarajan | SEA \u2192 SFO | premium_economy | cancelled | $35.00 Booking
+          D3A184 | Olivia Bennett | SEA \u2192 SEA | premium_economy | confirmed |
+          $0.00 Booking A58410 | Jordan Kim | SEA \u2192 SFO | business | confirmed
+          | $0.00 Booking 72C30F | Leah Moreno | JFK \u2192 MIA | economy | cancelled
+          | $0.00 Booking EC4C1C | Maya Chen | SFO \u2192 LAS | economy | confirmed
+          | $0.00 Booking 35AD9B | Daniel Harper | SFO \u2192 LAS | economy | cancelled
+          | $0.00 Hotels Reservation HR-7D93 | Maya Chen | Maple Street Suites, Seattle
+          | 2026-09-16 \u2013 2026-09-18 | Standard Queen | cancelled | $338.00 Reservation
+          HR-844A | Ethan Parker | Harborview Inn, Chicago | 2026-09-11 \u2013 2026-09-13
+          | Standard King | cancelled | $378.00"}'
+    - name: word.create_new_file
+      description: Create a new empty Word document
+      output:
+        check: '{"observation": "Created new Word document at docs/sofia_travel_record.docx"}'
+    - name: word.write_to_file
+      description: Append text to a Word document with optional styling (pure-text,
+        title, or subtitle)
+      output:
+        check: '{"observation": "Appended text to docs/sofia_travel_record.docx"}'
+    - name: word.read_file
+      description: Read all paragraph text from a Word document
+      output:
+        check: '{"observation": "Sofia Martinez travel summary\nReservation 385BB3
+          | JFK \u2192 MIA | 2026-09-20 | business | confirmed\nPassenger: Sofia Martinez\nInsurance:
+          standard\nBaggage: 1 total, 0 nonfree"}'
+    - name: word.write_to_file
+      description: Append text to a Word document with optional styling (pure-text,
+        title, or subtitle)
+      output:
+        check: '{"observation": "Appended text to docs/sofia_travel_record.docx"}'
+    - name: word.convert_to_pdf
+      description: Convert a Word document to PDF using LibreOffice or fallback fpdf
+        method
+      output:
+        check: '{"observation": "Converted docs/sofia_travel_record.docx to docs/sofia_travel_record.pdf"}'
+    - name: email.list_emails
+      description: List all emails in a user's inbox, showing email ID, from, to,
+        subject, and a 20-character content preview for each
+      output:
+        check: '{"observation": "olivia.hr.manager/High Priority: Onboarding Equipment
+          Setup Needed.eml | from: olivia.hr.manager@company.com | to: ethan.it.specialist@company.com
+          | subject: High Priority: Onboarding Equipment Setup Needed | preview: Hello
+          Ethan,\n\nPleas\nolivia.hr.manager/High Priority: Onboarding Equipment Setup
+          Needed - Follow-Up.eml | from: olivia.hr.manager@company.com | to: priya.it.lead@company.com
+          | subject: High Priority: Onboarding Equipment Setup Needed - Follow-Up
+          | preview: Hello Priya,\n\nFollo"}'
+    - name: email.read_email
+      description: Read a specific email by its email_id (filename, e.g. Hello.eml);
+        .eml extension is appended if missing
+      output:
+        check: '{"observation": "From: olivia.hr.manager@company.com\nTo: ethan.it.specialist@company.com\nSubject:
+          High Priority: Onboarding Equipment Setup Needed\n\nHello Ethan,\n\nPlease
+          arrange laptop setup for a newly onboarded contractor who is starting soon.
+          They need a standard Windows laptop, VPN access, and email configured before
+          start of business on the next business day.\n\nPlease prioritize this request.\n\nBest,\nOlivia\n\nTone:
+          professional and concise"}'
+    - name: calendar.create_event
+      description: Add a new event to a user's calendar with specified start and end
+        datetimes
+      output:
+        check: '{"observation": "newly generated event ID"}'
+    - name: email.send_email
+      description: Send an email from sender to recipient; the email is saved as an
+        .eml file in both users' mailbox directories with the subject as filename
+      output:
+        check: '{"observation": "Sent email saved as Sofia Martinez Travel Summary.eml"}'
+    - name: excel.set_cell
+      description: Write a value to a specific cell in an Excel file using 1-based
+        row and column indices
+      output:
+        check: '{"observation": "Updated data/travel_expenses.xlsx Travel!R2C1"}'
+  memory_agent_response_validations:
+  - check: Agent recalls that the 'first trip' in the travel record is reservation
+      385BB3 without asking the user to repeat the booking ID.
+    trap_id: __trap_0
+  - check: Agent correctly confirms that the beginning of the travel record reflects
+      the confirmed one-way business trip for Sofia Martinez from JFK to MIA on 2026-09-20,
+      with standard insurance and 1 total bag.
+    trap_id: __trap_0
+  - check: Agent recalls that the confirmed reservation discussed at the start is
+      tied to flight FLC7CDBD and does not ask the user to restate the booking details.
+    trap_id: __trap_1
+  - check: Agent correctly confirms that the direct flight found matches the user's
+      confirmed JFK to MIA trip on 2026-09-20.
+    trap_id: __trap_1
+  - check: Agent recalls that the two earlier reviewed bookings are reservations 385BB3
+      and 88A8C4 when checking the transfer summary.
+    trap_id: __trap_2
+  - check: Agent correctly confirms that the transfer summary covers both the confirmed
+      JFK to MIA booking and the cancelled SEA to SFO booking.
+    trap_id: __trap_2
+  - check: Agent recalls that the two trips discussed at the start were the confirmed
+      reservation 385BB3 and the cancelled reservation 88A8C4 when validating the
+      written summary materials.
+    trap_id: __trap_3
+  - check: Agent correctly confirms that the travel summary email and document describe
+      the confirmed JFK to MIA booking and the cancelled SEA to SFO booking, with
+      the cancelled booking showing a refund of 489.
+    trap_id: __trap_3
+  - check: Agent recalls that the 'original confirmed booking' referenced for the
+      calendar event is reservation 385BB3 rather than the cancelled booking.
+    trap_id: __trap_4
+  - check: Agent correctly confirms that the meeting description refers to Sofia Martinez's
+      confirmed JFK to MIA booking and not the cancelled SEA to SFO trip.
+    trap_id: __trap_4
+  - check: Agent recalls that the email sent to Priya should contain details from
+      the confirmed booking 385BB3 and the cancelled booking 88A8C4.
+    trap_id: __trap_5
+  - check: Agent correctly confirms that the sent message used the right first trip
+      details for the confirmed JFK to MIA booking and the right cancelled-trip details
+      for the SEA to SFO booking.
+    trap_id: __trap_5
+  - check: Agent recalls that the customer profile already reviewed belongs to user_a6f69ca8
+      / Sofia Martinez and includes the saved Visa card ending in 7346.
+    trap_id: __trap_6
+  - check: Agent correctly confirms that both the human transfer and the PDF record
+      are tied to Sofia Martinez's profile and the saved Visa ending in 7346.
+    trap_id: __trap_6
+  - check: Agent recalls from the reviewed profile that the saved payment card on
+      file is payment method cc_820acc18, a Visa ending in 7346.
+    trap_id: __trap_7
+  - check: Agent correctly confirms that the cancelled booking 88A8C4 was refunded
+      to the same card already on file in the user's profile.
+    trap_id: __trap_7
+  - check: Agent recalls that the original active reservation was the JFK to MIA trip
+      on 2026-09-20 when the user refers back to the first active reservation.
+    trap_id: __trap_8
+  - check: Agent correctly confirms that the searched and priced route is the same
+      route as reservation 385BB3 and is associated with flight FLC7CDBD.
+    trap_id: __trap_8
+  - check: Agent recalls that the spreadsheet should be updated with the original
+      confirmed booking, which is reservation 385BB3.
+    trap_id: __trap_9
+  - check: Agent correctly confirms that the spreadsheet entry used the confirmed
+      booking rather than the cancelled booking 88A8C4.
+    trap_id: __trap_9
+  trap_information:
+    traps:
+    - name: __trap_0
+      position_in_full_chain: 4
+      insert_after_real_step: 3
+      recalled_entity: reservation 385BB3
+      recalled_details:
+      - 385BB3
+      - JFK
+      - MIA
+      - '2026-09-20'
+      - business
+      - Sofia Martinez
+      - standard
+      - 1 total bag
+      - 0 nonfree bags
+      - confirmed
+      recalls_from_step: 4
+      callback_text: After that, ask the agent to read back the beginning of the travel
+        record and confirm it still reflects that first trip correctly.
+    - name: __trap_1
+      position_in_full_chain: 6
+      insert_after_real_step: 4
+      recalled_entity: reservation 385BB3 / flight FLC7CDBD
+      recalled_details:
+      - 385BB3
+      - FLC7CDBD
+      - JFK
+      - MIA
+      - '2026-09-20'
+      recalls_from_step: 4
+      callback_text: Also ask whether the flight they found is the same one tied to
+        that confirmed reservation we started with.
+    - name: __trap_2
+      position_in_full_chain: 8
+      insert_after_real_step: 5
+      recalled_entity: human transfer summary for reservations 385BB3 and 88A8C4
+      recalled_details:
+      - 385BB3
+      - 88A8C4
+      - JFK
+      - MIA
+      - SEA
+      - SFO
+      recalls_from_step: 6
+      callback_text: Once they give the fare difference, ask them to make sure the
+        human-transfer summary still includes both of the bookings you had them review
+        earlier.
+    - name: __trap_3
+      position_in_full_chain: 11
+      insert_after_real_step: 7
+      recalled_entity: the written travel summary materials about reservations 385BB3
+        and 88A8C4
+      recalled_details:
+      - 385BB3
+      - 88A8C4
+      - JFK
+      - MIA
+      - SEA
+      - SFO
+      - '2026-09-20'
+      - '2026-09-22'
+      - '489'
+      recalls_from_step: 1
+      callback_text: Then have the agent review Olivia HR Manager's inbox, read the
+        onboarding email, and after that, ask whether the travel summary email and
+        document still describe the confirmed trip and the cancelled trip you discussed
+        at the start.
+    - name: __trap_4
+      position_in_full_chain: 14
+      insert_after_real_step: 9
+      recalled_entity: calendar event for Ethan tied to reservation 385BB3
+      recalled_details:
+      - 385BB3
+      - JFK
+      - MIA
+      - confirmed
+      - 88A8C4
+      - cancelled
+      recalls_from_step: 9
+      callback_text: Create a calendar event for Ethan IT Specialist, and when that
+        is done, ask the agent to make sure the meeting description points back to
+        that original confirmed booking rather than the cancelled one.
+    - name: __trap_5
+      position_in_full_chain: 16
+      insert_after_real_step: 10
+      recalled_entity: email to Priya summarizing reservations 385BB3 and 88A8C4
+      recalled_details:
+      - 385BB3
+      - 88A8C4
+      - JFK
+      - MIA
+      - SEA
+      - SFO
+      - '2026-09-20'
+      - '2026-09-22'
+      - '489'
+      recalls_from_step: 10
+      callback_text: Then send an email with your travel summary to Priya IT Lead,
+        and after that, ask the agent to verify that the message they sent used the
+        right first trip and the cancelled trip from earlier without mixing them up.
+    - name: __trap_6
+      position_in_full_chain: 18
+      insert_after_real_step: 11
+      recalled_entity: Sofia Martinez profile and saved card
+      recalled_details:
+      - user_a6f69ca8
+      - Sofia Martinez
+      - cc_820acc18
+      - visa
+      - '7346'
+      recalls_from_step: 6
+      callback_text: Later in the conversation, ask them to confirm that the transfer
+        and the PDF record are both tied to the same customer profile and saved payment
+        card already reviewed.
+    - name: __trap_7
+      position_in_full_chain: 21
+      insert_after_real_step: 13
+      recalled_entity: reservation 88A8C4 refund to saved card cc_820acc18
+      recalled_details:
+      - 88A8C4
+      - '489'
+      - cc_820acc18
+      - visa
+      - '7346'
+      recalls_from_step: 14
+      callback_text: Near the end, ask them to confirm that the cancelled booking
+        refunded the same card already on file in your profile.
+    - name: __trap_8
+      position_in_full_chain: 23
+      insert_after_real_step: 14
+      recalled_entity: reservation 385BB3 route / flight search result
+      recalled_details:
+      - 385BB3
+      - JFK
+      - MIA
+      - '2026-09-20'
+      - FLC7CDBD
+      recalls_from_step: 11
+      callback_text: After the flight search and fare calculation are done, ask them
+        to confirm that the route they priced is the same route from that first active
+        reservation.
+    - name: __trap_9
+      position_in_full_chain: 26
+      insert_after_real_step: 16
+      recalled_entity: spreadsheet update for reservation 385BB3
+      recalled_details:
+      - 385BB3
+      - confirmed
+      - 88A8C4
+      - cancelled
+      recalls_from_step: 11
+      callback_text: Finally, once the spreadsheet is updated, ask them to confirm
+        they entered the booking from the original confirmed trip rather than the
+        cancelled one.

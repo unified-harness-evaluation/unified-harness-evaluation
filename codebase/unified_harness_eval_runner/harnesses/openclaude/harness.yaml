@@ -1,0 +1,26 @@
+image: harness-openclaude
+turn_mode: cli
+# Harvest the full agent trajectory (tool calls, outputs, reasoning) from the
+# openclaude JSONL transcript in post_run.py and fold it into the saved trace.
+# Override per run with the HARNESS_CAPTURE_TRAJECTORY env var on the gateway process.
+capture_trajectory: true
+cmd: ["runuser", "-u", "coder", "--", "openclaude", "-p", "{task}", "--output-format", "text", "--dangerously-skip-permissions"]
+env:
+  CLAUDE_CODE_USE_OPENAI: "1"
+  OPENAI_API_KEY: "{api_key}"
+  OPENAI_BASE_URL: "{proxy_base}/v1"
+  OPENAI_MODEL: "{model}"
+  DISABLE_AUTOUPDATER: "1"
+  CLAUDE_CODE_MAX_OUTPUT_TOKENS: "4096"
+  HOME: "/home/coder"
+workdir: /workspace
+session:
+  # Session ID is fixed to avoid needing regex capture
+  turn1_flag: ["--session-id", "00000000-0000-0000-0000-000000000001"]
+  flag: ["--resume", "00000000-0000-0000-0000-000000000001"]
+  always: true
+# global dir: loads unconditionally (project dirs are trust-gated on some CLIs)
+skills_dirs:
+  - /home/coder/.openclaude/skills
+# init a git repo in the fresh workspace (some CLIs use the git root as
+# project boundary or refuse to run outside one)

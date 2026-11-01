@@ -1,0 +1,360 @@
+id: tc_lh_ff9af6fb_memory
+description: You are Olivia HR Manager, and you’re reaching out because you need to
+  clean up a small onboarding coordination mess before a contractor starts.
+test_steps:
+- type: dynamic_conversation
+  user_agent:
+    task_summary: 'You are Olivia HR Manager, and you’re reaching out because you
+      need to clean up a small onboarding coordination mess before a contractor starts.
+      You’ve been tracking equipment setup, follow-ups, and readiness meetings across
+      email, calendar, and a spreadsheet, and you want everything tightened up in
+      one conversation.
+
+
+      Start by asking the agent to update the inventory spreadsheet because there’s
+      a promo entry that should be cleared out before anyone uses it by mistake. The
+      file is data/product_inventory.xlsx, on the Inventory sheet, and the AUTUMN10
+      Cart Discount entry is in row 20; you want the product name cell cleared. After
+      that, have the agent read the spreadsheet back so you can confirm the inventory
+      details around that row and make sure the change really happened.
+
+
+      Next, you want help drafting a concise professional note based on the inventory
+      situation and the onboarding urgency, and then sending that message to Ethan.
+      Use the existing high-priority onboarding thread as context: you previously
+      sent Ethan the message with the subject High Priority: Onboarding Equipment
+      Setup Needed. After the draft is prepared, send Ethan a fresh email confirming
+      the onboarding equipment needs are still urgent.
+
+
+      Then switch to your calendar. Ask the agent to list your events so you can avoid
+      conflicts, and then review that earlier email to Ethan for the exact setup requirements.
+      Based on that, schedule a new readiness follow-up on your calendar tied to the
+      laptop, VPN, and email setup for the contractor, and send Priya a note letting
+      her know you’ve added a follow-up check. Also, before moving on, have the agent
+      confirm again which inventory row was the cleared promo line and what that row
+      still shows now.
+
+
+      After that, ask the agent to look at Priya’s calendar, then open the follow-up
+      email thread you already sent her with the subject High Priority: Onboarding
+      Equipment Setup Needed - Follow-Up. Using that context, create a new coordination
+      event on Priya’s calendar as well, and then send Ethan another update that Priya
+      has been looped in. And when you send that update, make sure it’s clear it’s
+      the same urgent onboarding request from earlier, with the same setup items,
+      without re-checking with me.
+
+
+      Before wrapping up, go back and ask the agent to list Ethan’s inbox so you can
+      confirm the thread visibility there. Then have the agent open the original Ethan
+      onboarding email again, create one more related event on your own calendar,
+      send a final email update to Priya, list your calendar one more time, and read
+      that Priya follow-up email again so you can verify the whole coordination trail
+      is consistent. After Priya’s coordination event is created, also have the agent
+      restate the exact timing and summary for the event that was added to her calendar
+      a moment earlier. And right near the end, ask it to go back to the follow-up
+      it sent Priya earlier and confirm that it’s still referring to the same contractor
+      setup requirements from before.
+
+
+      You will only provide personal information (IDs, names, dates, reservation numbers,
+      flight numbers, etc.) once. If the agent asks you to repeat something you already
+      said, refuse and tell it to refer to the earlier conversation. Also, after every
+      action the agent takes on your behalf, ask it to confirm the full details of
+      what was done — you want complete information in every response, not just a
+      brief acknowledgement.'
+  max_turns: 60
+  skill_validations:
+    expected_skill_invocations:
+    - skill: OfficeBench
+  agent_response_validations:
+  - check: Agent confirms that the product name cell for PROD-4809AA in data/product_inventory.xlsx
+      was cleared, and then reports that row 20 still shows category promotion, price
+      0.0, and In Stock Yes while the name field is now blank.
+  - check: 'Agent tells the user it prepared a professional reminder to Ethan about
+      the contractor setup and confirms an email was sent to ethan.it.specialist from
+      olivia.hr.manager with the subject High Priority: Onboarding Equipment Setup
+      Needed covering the Windows laptop, VPN access, and email configuration needed
+      before the next business day.'
+  - check: Agent reports Olivia's existing calendar includes New Hire Readiness Check
+      (Virtual) — laptop, VPN/email, day-one setup on 2026-09-08 from 10:00:00 to
+      10:30:00 and Contractor Day-One Setup Check — laptop, VPN/email, access readiness
+      on 2026-09-05 from 15:00:00 to 15:30:00.
+  - check: Agent summarizes the original Ethan email and states that it explicitly
+      requests a standard Windows laptop, VPN access, and email configured before
+      start of business on the next business day for a newly onboarded contractor.
+  - check: 'Agent confirms a new event was added to Olivia''s calendar using the New
+      Hire Readiness Check (Virtual) — laptop, VPN/email, day-one setup timing of
+      2026-09-08 10:00:00 to 2026-09-08 10:30:00, and also confirms a follow-up email
+      was sent to Priya with the subject High Priority: Onboarding Equipment Setup
+      Needed - Follow-Up.'
+  - check: Agent reports Priya's calendar currently includes Onboarding Readiness
+      Sync — laptop, VPN/email, day-one setup on 2026-09-09 from 11:00:00 to 11:30:00,
+      summarizes the earlier Priya follow-up email, and confirms a new coordination
+      event was added for Priya with that same summary and time window.
+  - check: 'Agent tells the user Ethan''s inbox contains the email ethan.it.specialist/High
+      Priority: Onboarding Equipment Setup Needed.eml from olivia.hr.manager@company.com
+      to ethan.it.specialist@company.com, and then confirms another update email was
+      sent to Ethan noting Priya had been looped in.'
+  - check: 'Agent confirms it reread the Ethan onboarding email, added another event
+      to Olivia''s calendar using Contractor Day-One Setup Check — laptop, VPN/email,
+      access readiness for 2026-09-05 15:00:00 to 15:30:00, sent a final follow-up
+      to Priya, then restated Olivia''s calendar details and reread Priya''s High
+      Priority: Onboarding Equipment Setup Needed - Follow-Up email to verify the
+      coordination trail.'
+  capability_validations:
+    expected_capabilities:
+    - name: excel.delete_cell
+      description: Clear a cell in an Excel file by setting its value to empty string
+      output:
+        check: '{"observation": "Cleared cell Inventory!R20C2 in data/product_inventory.xlsx"}'
+    - name: excel.read_file
+      description: 'Read all cell values from an Excel file, returning each cell as
+        (row, col): value format'
+      output:
+        check: '{"observation": "Inventory:R1C1=Product ID, Inventory:R1C2=Name, Inventory:R1C3=Category,
+          Inventory:R1C4=Price, Inventory:R1C5=In Stock, Inventory:R2C1=PROD-B98D14,
+          Inventory:R2C2=Anker Portable Bluetooth Speaker, Inventory:R2C3=electronics,
+          Inventory:R2C4=79.0, Inventory:R2C5=Yes, Inventory:R3C1=PROD-FA0948, Inventory:R3C2=LogiTech
+          Wireless Mouse M310, Inventory:R3C3=electronics, Inventory:R3C4=29.0, Inventory:R3C5=Yes,
+          Inventory:R4C1=PROD-2DBA15, Inventory:R4C2=Wireless Ergonomic Mouse, Inventory:R4C3=electronics,
+          Inventory:R4C4=39.0, Inventory:R4C5=Yes, Inventory:R5C1=PROD-3E35A7, Inventory:R5C2=OXO
+          SoftWorks 3-Piece Mixing Bowl Set, Inventory:R5C3=kitchen, Inventory:R5C4=42.0,
+          Inventory:R5C5=Yes, Inventory:R6C1=PROD-B416AA, Inventory:R6C2=ThermoPro
+          Digital Meat Thermometer, Inventory:R6C3=kitchen, Inventory:R6C4=26.0, Inventory:R6C5=Yes,
+          Inventory:R7C1=PROD-7C0240, Inventory:R7C2=Wireless Mouse, Inventory:R7C3=electronics,
+          Inventory:R7C4=29.0, Inventory:R7C5=Yes, Inventory:R8C1=PROD-39F904, Inventory:R8C2=Levi''s
+          Classic Cotton T-Shirt, Inventory:R8C3=clothing, Inventory:R8C4=24.0, Inventory:R8C5=Yes,
+          Inventory:R9C1=PROD-190CB7, Inventory:R9C2=OXO Good Grips Salad Spinner,
+          Inventory:R9C3=kitchen, Inventory:R9C4=38.0, Inventory:R9C5=Yes, Inventory:R10C1=PROD-73FAB4,
+          Inventory:R10C2=Aurora Smart Desk Lamp Pro, Inventory:R10C3=electronics,
+          Inventory:R10C4=88.0, Inventory:R10C5=Yes, Inventory:R11C1=PROD-7583E5,
+          Inventory:R11C2=CableCraft USB-C Organizer Strap 2-Pack, Inventory:R11C3=accessories,
+          Inventory:R11C4=16.0, Inventory:R11C5=Yes, Inventory:R12C1=PROD-4316AC,
+          Inventory:R12C2=OXO Compact Electric Milk Frother, Inventory:R12C3=kitchen,
+          Inventory:R12C4=49.0, Inventory:R12C5=Yes, Inventory:R13C1=PROD-9559B3,
+          Inventory:R13C2=Bamboo Desk Organizer Set, Inventory:R13C3=home office,
+          Inventory:R13C4=34.0, Inventory:R13C5=Yes, Inventory:R14C1=PROD-F9994E,
+          Inventory:R14C2=Harbor Cotton Crew Tee, Inventory:R14C3=Apparel, Inventory:R14C4=49.0,
+          Inventory:R14C5=Yes, Inventory:R15C1=PROD-93D48F, Inventory:R15C2=RidgeLine
+          Fleece Zip Hoodie, Inventory:R15C3=Apparel, Inventory:R15C4=89.0, Inventory:R15C5=Yes,
+          Inventory:R16C1=PROD-B7C77D, Inventory:R16C2=Metro Stretch Chino Pants,
+          Inventory:R16C3=Apparel, Inventory:R16C4=72.0, Inventory:R16C5=Yes, Inventory:R17C1=PROD-AFC284,
+          Inventory:R17C2=TrailPeak Insulated Travel Mug, Inventory:R17C3=kitchen,
+          Inventory:R17C4=72.0, Inventory:R17C5=Yes, Inventory:R18C1=PROD-FA349F,
+          Inventory:R18C2=Northline Wool Blend Throw Blanket, Inventory:R18C3=home,
+          Inventory:R18C4=34.0, Inventory:R18C5=Yes, Inventory:R19C1=PROD-4ED2E3,
+          Inventory:R19C2=Everyday Canvas Tote Bag, Inventory:R19C3=accessories, Inventory:R19C4=28.0,
+          Inventory:R19C5=Yes, Inventory:R20C1=PROD-4809AA, Inventory:R20C3=promotion,
+          Inventory:R20C4=0.0, Inventory:R20C5=Yes"}'
+    - name: llm.complete_text
+      description: Send a prompt to the configured LLM (default azure/gpt-4.1, temperature
+        0, max 512 tokens) and return the response
+      output:
+        check: '{"response": "Hello Ethan,\n\nThis is a quick reminder that the onboarding
+          equipment setup remains high priority for the newly onboarded contractor.
+          They still need a standard Windows laptop, VPN access, and email configured
+          before start of business on the next business day.\n\nPlease confirm that
+          everything is on track.\n\nBest,\nOlivia"}'
+    - name: email.send_email
+      description: Send an email from sender to recipient; the email is saved as an
+        .eml file in both users' mailbox directories with the subject as filename
+      output:
+        check: '{"observation": "Email sent successfully"}'
+    - name: calendar.list_events
+      description: List all events from a user's calendar (.ics file), showing summary,
+        start/end times, description, and location for each event
+      output:
+        check: '{"observation": "New Hire Readiness Check (Virtual) \u2014 laptop,
+          VPN/email, day-one setup | 2026-09-08 10:00:00 to 2026-09-08 10:30:00 |
+          Description:  | Location: ; Contractor Day-One Setup Check \u2014 laptop,
+          VPN/email, access readiness | 2026-09-05 15:00:00 to 2026-09-05 15:30:00
+          | Description:  | Location: "}'
+    - name: email.read_email
+      description: Read a specific email by its email_id (filename, e.g. Hello.eml);
+        .eml extension is appended if missing
+      output:
+        check: '{"observation": "From: olivia.hr.manager@company.com\nTo: ethan.it.specialist@company.com\nSubject:
+          High Priority: Onboarding Equipment Setup Needed\n\nHello Ethan,\n\nPlease
+          arrange laptop setup for a newly onboarded contractor who is starting soon.
+          They need a standard Windows laptop, VPN access, and email configured before
+          start of business on the next business day.\n\nPlease prioritize this request.\n\nBest,\nOlivia\n\nTone:
+          professional and concise"}'
+    - name: calendar.create_event
+      description: Add a new event to a user's calendar with specified start and end
+        datetimes
+      output:
+        check: '{"observation": "Created event newly generated event ID"}'
+    - name: email.send_email
+      description: Send an email from sender to recipient; the email is saved as an
+        .eml file in both users' mailbox directories with the subject as filename
+      output:
+        check: '{"observation": "Email sent successfully"}'
+    - name: calendar.list_events
+      description: List all events from a user's calendar (.ics file), showing summary,
+        start/end times, description, and location for each event
+      output:
+        check: '{"observation": "Onboarding Readiness Sync \u2014 laptop, VPN/email,
+          day-one setup | 2026-09-09 11:00:00 to 2026-09-09 11:30:00 | Description:  |
+          Location: "}'
+    - name: email.read_email
+      description: Read a specific email by its email_id (filename, e.g. Hello.eml);
+        .eml extension is appended if missing
+      output:
+        check: '{"observation": "From: olivia.hr.manager@company.com\nTo: priya.it.lead@company.com\nSubject:
+          High Priority: Onboarding Equipment Setup Needed - Follow-Up\n\nHello Priya,\n\nFollowing
+          up on a high-priority onboarding request for a newly onboarded contractor
+          starting soon. The contractor needs a standard Windows laptop, VPN access,
+          and email configured before start of business on the next business day.\n\nPlease
+          confirm that the setup ticket is being tracked.\n\nBest,\nOlivia\n\nTone:
+          professional and concise"}'
+    - name: calendar.create_event
+      description: Add a new event to a user's calendar with specified start and end
+        datetimes
+      output:
+        check: '{"observation": "Created event newly generated event ID"}'
+    - name: email.send_email
+      description: Send an email from sender to recipient; the email is saved as an
+        .eml file in both users' mailbox directories with the subject as filename
+      output:
+        check: '{"observation": "Email sent successfully"}'
+    - name: email.list_emails
+      description: List all emails in a user's inbox, showing email ID, from, to,
+        subject, and a 20-character content preview for each
+      output:
+        check: '{"observation": "ethan.it.specialist/High Priority: Onboarding Equipment
+          Setup Needed.eml | From: olivia.hr.manager@company.com | To: ethan.it.specialist@company.com
+          | Subject: High Priority: Onboarding Equipment Setup Needed | Preview: Hello
+          Ethan,\n\nPlease"}'
+    - name: email.read_email
+      description: Read a specific email by its email_id (filename, e.g. Hello.eml);
+        .eml extension is appended if missing
+      output:
+        check: '{"observation": "From: olivia.hr.manager@company.com\nTo: ethan.it.specialist@company.com\nSubject:
+          High Priority: Onboarding Equipment Setup Needed\n\nHello Ethan,\n\nPlease
+          arrange laptop setup for a newly onboarded contractor who is starting soon.
+          They need a standard Windows laptop, VPN access, and email configured before
+          start of business on the next business day.\n\nPlease prioritize this request.\n\nBest,\nOlivia\n\nTone:
+          professional and concise"}'
+    - name: calendar.create_event
+      description: Add a new event to a user's calendar with specified start and end
+        datetimes
+      output:
+        check: '{"observation": "Created event newly generated event ID"}'
+    - name: email.send_email
+      description: Send an email from sender to recipient; the email is saved as an
+        .eml file in both users' mailbox directories with the subject as filename
+      output:
+        check: '{"observation": "Email sent successfully"}'
+    - name: calendar.list_events
+      description: List all events from a user's calendar (.ics file), showing summary,
+        start/end times, description, and location for each event
+      output:
+        check: '{"observation": "New Hire Readiness Check (Virtual) \u2014 laptop,
+          VPN/email, day-one setup | 2026-09-08 10:00:00 to 2026-09-08 10:30:00 |
+          Description:  | Location: ; Contractor Day-One Setup Check \u2014 laptop,
+          VPN/email, access readiness | 2026-09-05 15:00:00 to 2026-09-05 15:30:00
+          | Description:  | Location: "}'
+    - name: email.read_email
+      description: Read a specific email by its email_id (filename, e.g. Hello.eml);
+        .eml extension is appended if missing
+      output:
+        check: '{"observation": "From: olivia.hr.manager@company.com\nTo: priya.it.lead@company.com\nSubject:
+          High Priority: Onboarding Equipment Setup Needed - Follow-Up\n\nHello Priya,\n\nFollowing
+          up on a high-priority onboarding request for a newly onboarded contractor
+          starting soon. The contractor needs a standard Windows laptop, VPN access,
+          and email configured before start of business on the next business day.\n\nPlease
+          confirm that the setup ticket is being tracked.\n\nBest,\nOlivia\n\nTone:
+          professional and concise"}'
+  memory_agent_response_validations:
+  - check: Agent recalls that the earlier cleared promo line was row 20 on the Inventory
+      sheet in data/product_inventory.xlsx, corresponding to product ID PROD-4809AA,
+      without asking the user to repeat it.
+    trap_id: __trap_0
+  - check: Agent correctly restates that the cleared inventory row now has a blank
+      product name while still showing category promotion, price 0.0, and In Stock
+      Yes.
+    trap_id: __trap_0
+  - check: 'Agent recalls that the earlier urgent onboarding request to Ethan was
+      the High Priority: Onboarding Equipment Setup Needed thread sent to ethan.it.specialist,
+      without asking for the subject or recipient again.'
+    trap_id: __trap_1
+  - check: 'Agent correctly carries forward the same setup requirements from the earlier
+      Ethan message: a standard Windows laptop, VPN access, and email configured before
+      start of business on the next business day.'
+    trap_id: __trap_1
+  - check: Agent recalls that the event just added to Priya's calendar was the Onboarding
+      Readiness Sync — laptop, VPN/email, day-one setup event, without the user restating
+      the event details.
+    trap_id: __trap_2
+  - check: Agent correctly restates the Priya coordination event timing as 2026-09-09
+      from 11:00:00 to 11:30:00 along with the exact summary.
+    trap_id: __trap_2
+  - check: 'Agent recalls that the earlier follow-up sent to Priya was the High Priority:
+      Onboarding Equipment Setup Needed - Follow-Up email, without asking the user
+      to repeat the thread details.'
+    trap_id: __trap_3
+  - check: 'Agent correctly confirms that Priya''s earlier follow-up still refers
+      to the same contractor setup requirements: standard Windows laptop, VPN access,
+      and email configured before start of business on the next business day.'
+    trap_id: __trap_3
+  trap_information:
+    traps:
+    - name: __trap_0
+      position_in_full_chain: 3
+      insert_after_real_step: 2
+      recalled_entity: the cleared promo inventory entry in row 20
+      recalled_details:
+      - data/product_inventory.xlsx
+      - Inventory sheet
+      - row 20
+      - PROD-4809AA
+      - product name cell cleared
+      - category promotion
+      - price 0.0
+      - In Stock Yes
+      recalls_from_step: 1
+      callback_text: Also, before moving on, have the agent confirm again which inventory
+        row was the cleared promo line and what that row still shows now.
+    - name: __trap_1
+      position_in_full_chain: 5
+      insert_after_real_step: 3
+      recalled_entity: the earlier urgent onboarding email to Ethan
+      recalled_details:
+      - ethan.it.specialist
+      - 'High Priority: Onboarding Equipment Setup Needed'
+      - standard Windows laptop
+      - VPN access
+      - email configured
+      - before start of business on the next business day
+      recalls_from_step: 3
+      callback_text: And when you send that update, make sure it’s clear it’s the
+        same urgent onboarding request from earlier, with the same setup items, without
+        re-checking with me.
+    - name: __trap_2
+      position_in_full_chain: 13
+      insert_after_real_step: 10
+      recalled_entity: the coordination event added to Priya's calendar
+      recalled_details:
+      - Onboarding Readiness Sync — laptop, VPN/email, day-one setup
+      - '2026-09-09 11:00:00'
+      - '2026-09-09 11:30:00'
+      recalls_from_step: 11
+      callback_text: After Priya’s coordination event is created, also have the agent
+        restate the exact timing and summary for the event that was added to her calendar
+        a moment earlier.
+    - name: __trap_3
+      position_in_full_chain: 20
+      insert_after_real_step: 16
+      recalled_entity: the earlier Priya follow-up email
+      recalled_details:
+      - 'High Priority: Onboarding Equipment Setup Needed - Follow-Up'
+      - priya.it.lead
+      - standard Windows laptop
+      - VPN access
+      - email configured
+      - before start of business on the next business day
+      recalls_from_step: 8
+      callback_text: And right near the end, ask it to go back to the follow-up it
+        sent Priya earlier and confirm that it’s still referring to the same contractor
+        setup requirements from before.

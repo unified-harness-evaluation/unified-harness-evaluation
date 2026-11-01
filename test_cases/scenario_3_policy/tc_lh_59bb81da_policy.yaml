@@ -1,0 +1,442 @@
+id: tc_lh_59bb81da_policy
+description: 'You are Harper Collins (user_id: harper_collins_664).'
+test_steps:
+- type: dynamic_conversation
+  user_agent:
+    task_summary: 'You are Harper Collins (user_id: harper_collins_664). You are calling
+      customer service because you have a few shopping issues to sort out in one sitting,
+      and you expect the agent to keep track as you move between them. You recently
+      placed two clothing orders, and one needs its shipping address updated before
+      it goes out, while the other may need to be cancelled. You also want the agent
+      to verify the details of both orders so you know exactly what is in each one,
+      how they were paid for, and what the current status is.
+
+
+      Start by authenticating yourself with your name and zip code if needed. Once
+      that is done, ask the agent to pull up your profile and then look at your pending
+      order #W4705780. Tell the agent you want the shipping address on that order
+      changed from your current Boston address to the address on your other recent
+      order if necessary, and make clear you want the full updated shipping details
+      confirmed afterward. Then ask for the complete order details for that same order,
+      including items, quantities, status, shipping method, and payment history, because
+      you want to double-check everything before it ships.
+
+
+      Next, move to your other pending order, #W2813835. Ask the agent to review your
+      account again if needed and confirm your customer details, then have them pull
+      up that order and tell you exactly what is in it and how it was paid. After
+      that, say you have decided you do not need that second pending order anymore
+      and want it cancelled for an acceptable reason, specifically that it is no longer
+      needed. Make sure the agent confirms the refund timing and which original payment
+      method will receive it.
+
+
+      Then shift to a separate shopping question and ask the agent to look up a delivered
+      order for Elena Martinez after locating that account by name and zip code. You
+      want to review her delivered order #W4407627, check the Everyday Crew Tee product
+      variants, and exchange the delivered white medium tee for another in-stock variant
+      of the same product. Before moving on, circle back to the first order we talked
+      about and say, "Actually, can you just cancel that first clothing order because
+      the delivery is taking too long?" Later in the conversation, circle back and
+      ask to search the catalog again and switch that exchange request instead to
+      another available tee variant if possible, expecting the agent to explain whether
+      that can be done given the one-exchange-per-order rule and to confirm the final
+      exchange status in full. Also, after going over Elena''s delivered purchase,
+      say, And then, after the exchange details are reviewed, add, "For that first
+      clothing order with the joggers and tee, go ahead and cancel it because I found
+      a better price somewhere else."
+
+
+      Finally, ask about a different customer profile for Maya Chen by locating that
+      account through name and zip code, and ask the agent to identify that user ID
+      for follow-up. After Elena''s delivered order is identified, add, After the
+      first exchange request is placed for Elena''s tee, say, After the catalog search
+      later on, say, When discussing Maya''s delivered electronics order and the warranty,
+      say, You will only provide personal information (IDs, names, dates, reservation
+      numbers, flight numbers, etc.) once. If the agent asks you to repeat something
+      you already said, refuse and tell it to refer to the earlier conversation. Also,
+      after every action the agent takes on your behalf, ask it to confirm the full
+      details of what was done — you want complete information in every response,
+      not just a brief acknowledgement.
+
+
+      After the warranty details are confirmed for Maya''s speaker, circle back one
+      more time to the cancelled clothing order from earlier and say, "Actually, change
+      the cancellation reason on that other clothing order to being unhappy with the
+      color so it reflects that instead."'
+  max_turns: 10
+  skill_validations:
+    expected_skill_invocations:
+    - skill: tau2Retail
+    - skill: state-customer-support
+  agent_response_validations:
+  - check: Agent confirms Harper Collins was identified as user harper_collins_664,
+      with email harper.collins2026@example.com, default address 4829 Elm Ridge Way,
+      Suite 7, Boston, MA 02118, and payment methods including Visa ending in 5531
+      and PayPal paypal_5098475.
+  - check: 'Agent confirms order #W4705780 remains in pending status after the address
+      update, uses standard shipping with $0 shipping cost, and contains TrailFlex
+      Joggers in Charcoal size M (item 9716794911) and Everyday Crew Tee in White
+      size L (item 5610875649).'
+  - check: 'Agent explains that order #W4705780 payment history shows a payment transaction
+      of 79.98 on payment method paypal_5098475 and that there are no fulfillment
+      records yet because the order is still pending.'
+  - check: 'Agent confirms order #W2813835 contains Everyday Crew Tee in Black size
+      M (item 3301828484) and TrailFlex Joggers in Olive size M (item 2364909101),
+      and that it was paid via credit_card_5360334 (Visa ending 5531) with a payment
+      of 79.98.'
+  - check: 'Agent confirms order #W2813835 was cancelled for reason ''no longer needed,''
+      its status is now cancelled, and the $80 total will be refunded to the original
+      credit card (Visa ending 5531, credit_card_5360334) in 5-7 business days.'
+  - check: 'Agent confirms Elena Martinez was identified as user elena_martinez_213,
+      and order #W4407627 is a delivered order shipped to 908 Cedar Park Ln, Unit
+      12, Phoenix, AZ 85016, with tracking number TRK2263251259 and one delivered
+      item: Everyday Crew Tee item 6715257771 in White size M.'
+  - check: 'Agent communicates the Everyday Crew Tee product 2460285426 has available
+      variants including Black size M (item 3301828484) and Black size L (item 7389318502),
+      and confirms an exchange request was placed for order #W4407627 exchanging White
+      M (6715257771) for Black M (3301828484) using credit_card_3883705 with zero
+      price difference and email instructions to follow.'
+  - check: 'Agent explains that a second exchange on order #W4407627 to a different
+      variant is not possible because the one-exchange-per-order limit has already
+      been used, and confirms the current exchange status remains as previously set.'
+  - check: Agent tells the user that Maya Chen is customer user_d3d5d0c8 with gold
+      membership, $66 store credit, prime shipping benefits, and that order ORD-5B048F
+      was delivered via overnight shipping with tracking CS-TRK-5B048F.
+  - check: Agent confirms the warranty on item ITEM-63F395 from order ORD-5B048F is
+      warranty WR-9EE2BC, an active extended limited warranty covering repair_or_replace
+      from 2026-09-02 through 2028-09-02, with 0 claims used out of 3.
+  capability_validations:
+    expected_capabilities:
+    - name: modify_pending_order_address
+      description: Change the shipping address of a pending order. Order must have
+        status 'pending' or 'pending (item modified)'. Order status is unchanged.
+      output:
+        check: '{"order": {"order_id": "#W4705780", "customer_id": "harper_collins_664",
+          "order_date": "2026-09-10 16:48:59", "status": "pending", "shipping_status":
+          "pending", "shipping_method": "standard", "shipping_cost": 0, "tracking_number":
+          "", "delivery_date": null, "delivery_promised_date": "", "signature_required":
+          0, "signature_on_file": null, "payment_method": "credit_card", "payment_details_json":
+          "{}", "subtotal": 80, "discount_code": null, "discount_amount": 0, "total_paid":
+          80, "is_gift": 0, "gift_sender": null, "source_skill": "tau2Retail", "address_json":
+          "{\"address1\": \"4829 Elm Ridge Way\", \"address2\": \"Suite 7\", \"city\":
+          \"Boston\", \"state\": \"MA\", \"country\": \"USA\", \"zip\": \"02118\"}",
+          "cancel_reason": null, "exchange_items": null, "exchange_new_items": null,
+          "exchange_payment_method_id": null, "exchange_price_difference": null, "return_items":
+          null, "return_payment_method_id": null}}'
+    - name: get_user_details
+      description: Fetch user profile including name, address, email, payment methods,
+        and order ids.
+      output:
+        check: '{"user_id": "harper_collins_664", "name": "Harper Collins", "address":
+          {"address1": "4829 Elm Ridge Way", "address2": "Suite 7", "city": "Boston",
+          "state": "MA", "country": "USA", "zip": "02118"}, "email": "harper.collins2026@example.com",
+          "payment_methods": [{"payment_method_id": "credit_card_5360334", "source":
+          "credit_card", "brand": "visa", "last_four": "5531", "balance": 0.0}, {"payment_method_id":
+          "paypal_5098475", "source": "paypal", "brand": null, "last_four": null,
+          "balance": 0.0}], "orders": ["#W4705780", "#W2813835"]}'
+    - name: get_order
+      description: Retrieve full details of an order by its order ID. Returns the
+        order, all items in the order, and product details for each item.
+      output:
+        check: '{"order_id": "#W4705780", "customer_id": "harper_collins_664", "order_date":
+          "2026-09-10 16:48:59", "status": "pending", "shipping_status": "pending",
+          "shipping_method": "standard", "shipping_cost": 0, "tracking_number": "",
+          "delivery_date": null, "delivery_promised_date": "", "subtotal": 80, "discount_code":
+          null, "discount_amount": 0, "total_paid": 80, "is_gift": 0, "items": [{"oi_id":
+          "RT-#W4705780-0", "order_id": "#W4705780", "product_id": "7507150101", "item_id":
+          "9716794911", "name": "TrailFlex Joggers", "quantity": 1, "unit_price":
+          54.99, "options": "{\"color\": \"Charcoal\", \"size\": \"M\"}", "item_status":
+          "confirmed"}, {"oi_id": "RT-#W4705780-1", "order_id": "#W4705780", "product_id":
+          "2460285426", "item_id": "5610875649", "name": "Everyday Crew Tee", "quantity":
+          1, "unit_price": 24.99, "options": "{\"color\": \"White\", \"size\": \"L\"}",
+          "item_status": "confirmed"}]}'
+    - name: get_order_details
+      description: Fetch an order by id, including items, status, fulfillments, and
+        payment history. Note the order_id has a leading '#'.
+      output:
+        check: '{"order_id": "#W4705780", "user_id": "harper_collins_664", "address":
+          {"address1": "4829 Elm Ridge Way", "address2": "Suite 7", "city": "Boston",
+          "state": "MA", "country": "USA", "zip": "02118"}, "items": [{"oi_id": "RT-#W4705780-0",
+          "order_id": "#W4705780", "product_id": "7507150101", "item_id": "9716794911",
+          "name": "TrailFlex Joggers", "quantity": 1, "unit_price": 54.99, "options":
+          "{\"color\": \"Charcoal\", \"size\": \"M\"}", "item_status": "confirmed"},
+          {"oi_id": "RT-#W4705780-1", "order_id": "#W4705780", "product_id": "2460285426",
+          "item_id": "5610875649", "name": "Everyday Crew Tee", "quantity": 1, "unit_price":
+          24.99, "options": "{\"color\": \"White\", \"size\": \"L\"}", "item_status":
+          "confirmed"}], "status": "pending", "fulfillments": [], "payment_history":
+          [{"id": 16, "order_id": "#W4705780", "transaction_type": "payment", "amount":
+          79.98, "payment_method_id": "paypal_5098475"}]}'
+    - name: cancel_pending_order
+      description: 'Cancel a pending order. Only works on orders with status ''pending''.
+        Refunds total via original payment method: immediately for gift cards, 5-7
+        business days otherwise. Status becomes ''cancelled''.'
+      output:
+        check: '{"order": {"order_id": "#W2813835", "customer_id": "harper_collins_664",
+          "order_date": "2026-09-10 17:09:59", "status": "cancelled", "shipping_status":
+          "pending", "shipping_method": "standard", "shipping_cost": 0, "tracking_number":
+          "", "delivery_date": null, "delivery_promised_date": "", "signature_required":
+          0, "signature_on_file": null, "payment_method": "credit_card", "payment_details_json":
+          "{}", "subtotal": 80, "discount_code": null, "discount_amount": 0, "total_paid":
+          80, "is_gift": 0, "gift_sender": null, "source_skill": "tau2Retail", "address_json":
+          "{\"address1\": \"4829 Elm Ridge Way\", \"address2\": \"Suite 7\", \"city\":
+          \"Boston\", \"state\": \"MA\", \"country\": \"USA\", \"zip\": \"02118\"}",
+          "cancel_reason": "no longer needed", "exchange_items": null, "exchange_new_items":
+          null, "exchange_payment_method_id": null, "exchange_price_difference": null,
+          "return_items": null, "return_payment_method_id": null}}'
+    - name: get_user_details
+      description: Fetch user profile including name, address, email, payment methods,
+        and order ids.
+      output:
+        check: '{"user_id": "harper_collins_664", "name": "Harper Collins", "address":
+          {"address1": "4829 Elm Ridge Way", "address2": "Suite 7", "city": "Boston",
+          "state": "MA", "country": "USA", "zip": "02118"}, "email": "harper.collins2026@example.com",
+          "payment_methods": [{"payment_method_id": "credit_card_5360334", "source":
+          "credit_card", "brand": "visa", "last_four": "5531", "balance": 0.0}, {"payment_method_id":
+          "paypal_5098475", "source": "paypal", "brand": null, "last_four": null,
+          "balance": 0.0}], "orders": ["#W4705780", "#W2813835"]}'
+    - name: get_customer
+      description: Retrieve customer profile including membership tier, store credit
+        balance, and preference settings.
+      output:
+        check: '{"customer_id": "user_d3d5d0c8", "name": "Maya Chen", "email": "maya.chen@example.com",
+          "membership_tier": "gold", "total_orders": 3, "preferred_refund_method":
+          "original_payment", "store_credit_balance": 66, "has_prime_shipping": true,
+          "benefits": []}'
+    - name: find_user_id_by_name_zip
+      description: Locate a user id by first name, last name, and zip code. Fallback
+        when email lookup fails or user cannot remember email.
+      output:
+        check: '{"user_id": "elena_martinez_213"}'
+    - name: get_user_details
+      description: Fetch user profile including name, address, email, payment methods,
+        and order ids.
+      output:
+        check: '{"user_id": "elena_martinez_213", "name": "Elena Martinez", "address":
+          {"address1": "908 Cedar Park Ln", "address2": "Unit 12", "city": "Phoenix",
+          "state": "AZ", "country": "USA", "zip": "85016"}, "email": "elena.martinez47@example.com",
+          "payment_methods": [{"payment_method_id": "credit_card_3883705", "source":
+          "credit_card", "brand": "visa", "last_four": "6618", "balance": 0.0}, {"payment_method_id":
+          "gift_card_7730291", "source": "gift_card", "brand": null, "last_four":
+          null, "balance": 200.0}], "orders": ["#W4407627"]}'
+    - name: get_order_details
+      description: Fetch an order by id, including items, status, fulfillments, and
+        payment history. Note the order_id has a leading '#'.
+      output:
+        check: '{"order_id": "#W4407627", "user_id": "elena_martinez_213", "address":
+          {"address1": "908 Cedar Park Ln", "address2": "Unit 12", "city": "Phoenix",
+          "state": "AZ", "country": "USA", "zip": "85016"}, "items": [{"oi_id": "RT-#W4407627-0",
+          "order_id": "#W4407627", "product_id": "2460285426", "item_id": "6715257771",
+          "name": "Everyday Crew Tee", "quantity": 1, "unit_price": 24.99, "options":
+          "{\"color\": \"White\", \"size\": \"M\"}", "item_status": "delivered"}],
+          "status": "delivered", "fulfillments": [{"id": 5, "order_id": "#W4407627",
+          "tracking_ids": "[\"TRK2263251259\"]", "item_ids": "[\"6715257771\"]"}],
+          "payment_history": [{"id": 5, "order_id": "#W4407627", "transaction_type":
+          "payment", "amount": 24.99, "payment_method_id": "credit_card_3883705"}]}'
+    - name: get_product_details
+      description: Fetch a product and all its variants. Product id is different from
+        item id.
+      output:
+        check: '{"name": "Everyday Crew Tee", "product_id": "2460285426", "variants":
+          [{"item_id": "0924077030", "product_id": "2460285426", "options": "{\"color\":
+          \"Black\", \"size\": \"S\"}", "available": 1, "price": 21.84}, {"item_id":
+          "3301828484", "product_id": "2460285426", "options": "{\"color\": \"Black\",
+          \"size\": \"M\"}", "available": 1, "price": 23.45}, {"item_id": "9326856738",
+          "product_id": "2460285426", "options": "{\"color\": \"White\", \"size\":
+          \"S\"}", "available": 1, "price": 22.07}, {"item_id": "6715257771", "product_id":
+          "2460285426", "options": "{\"color\": \"White\", \"size\": \"M\"}", "available":
+          1, "price": 22.07}, {"item_id": "7389318502", "product_id": "2460285426",
+          "options": "{\"color\": \"Black\", \"size\": \"L\"}", "available": 1, "price":
+          23.91}, {"item_id": "5610875649", "product_id": "2460285426", "options":
+          "{\"color\": \"White\", \"size\": \"L\"}", "available": 1, "price": 21.84}]}'
+    - name: exchange_delivered_order_items
+      description: Exchange items of a delivered order for other variants of the same
+        product. Can only be called ONCE per order. Only works on 'delivered' orders.
+        item_ids and new_item_ids are position-matched. New item must be available
+        and same product type. Payment method covers price difference; gift card must
+        have sufficient balance. Status becomes 'exchange requested'. User receives
+        instructions by email. No new order needed.
+      output:
+        check: '{"order": {"order_id": "#W4407627", "customer_id": "elena_martinez_213",
+          "order_date": "2026-09-01", "status": "exchange requested", "shipping_status":
+          "delivered", "shipping_method": "standard", "shipping_cost": 0, "tracking_number":
+          "TRK2263251259", "delivery_date": "2026-09-05T14:00:00", "delivery_promised_date":
+          "", "signature_required": 0, "signature_on_file": null, "payment_method":
+          "credit_card", "payment_details_json": "{}", "subtotal": 25, "discount_code":
+          null, "discount_amount": 0, "total_paid": 25, "is_gift": 0, "gift_sender":
+          null, "source_skill": "tau2Retail", "address_json": "{\"address1\": \"908
+          Cedar Park Ln\", \"address2\": \"Unit 12\", \"city\": \"Phoenix\", \"state\":
+          \"AZ\", \"country\": \"USA\", \"zip\": \"85016\"}", "cancel_reason": null,
+          "exchange_items": ["6715257771"], "exchange_new_items": ["3301828484"],
+          "exchange_payment_method_id": "credit_card_3883705", "exchange_price_difference":
+          0, "return_items": null, "return_payment_method_id": null}}'
+    - name: search_products
+      description: Search the task-local product catalog by free-text query. Returns
+        ranked compact matches with product_id, name, matched_field, category, subcategory,
+        and in_stock.
+      output:
+        check: '{"query": "wireless mouse", "results": [{"product_id": "PROD-FA0948",
+          "name": "LogiTech Wireless Mouse M310", "matched_field": "name", "category":
+          "electronics", "subcategory": "computer accessories", "in_stock": 1}, {"product_id":
+          "PROD-7C0240", "name": "Wireless Mouse", "matched_field": "name", "category":
+          "electronics", "subcategory": "computer accessories", "in_stock": 1}]}'
+    - name: get_product_details
+      description: Fetch a product and all its variants. Product id is different from
+        item id.
+      output:
+        check: '{"name": "TrailFlex Joggers", "product_id": "7507150101", "variants":
+          [{"item_id": "5632174974", "product_id": "7507150101", "options": "{\"color\":
+          \"Olive\", \"size\": \"S\"}", "available": 1, "price": 53.89}, {"item_id":
+          "2364909101", "product_id": "7507150101", "options": "{\"color\": \"Olive\",
+          \"size\": \"M\"}", "available": 1, "price": 53.89}, {"item_id": "6167435302",
+          "product_id": "7507150101", "options": "{\"color\": \"Charcoal\", \"size\":
+          \"S\"}", "available": 1, "price": 54.44}, {"item_id": "9716794911", "product_id":
+          "7507150101", "options": "{\"color\": \"Charcoal\", \"size\": \"M\"}", "available":
+          1, "price": 52.79}, {"item_id": "6990106566", "product_id": "7507150101",
+          "options": "{\"color\": \"Olive\", \"size\": \"L\"}", "available": 1, "price":
+          54.44}, {"item_id": "1460318075", "product_id": "7507150101", "options":
+          "{\"color\": \"Charcoal\", \"size\": \"L\"}", "available": 1, "price": 53.34}]}'
+    - name: exchange_delivered_order_items
+      description: Exchange items of a delivered order for other variants of the same
+        product. Can only be called ONCE per order. Only works on 'delivered' orders.
+        item_ids and new_item_ids are position-matched. New item must be available
+        and same product type. Payment method covers price difference; gift card must
+        have sufficient balance. Status becomes 'exchange requested'. User receives
+        instructions by email. No new order needed.
+      output:
+        check: '{"order": {"order_id": "#W4407627", "customer_id": "elena_martinez_213",
+          "order_date": "2026-09-01", "status": "exchange requested", "shipping_status":
+          "delivered", "shipping_method": "standard", "shipping_cost": 0, "tracking_number":
+          "TRK2263251259", "delivery_date": "2026-09-05T14:00:00", "delivery_promised_date":
+          "", "signature_required": 0, "signature_on_file": null, "payment_method":
+          "credit_card", "payment_details_json": "{}", "subtotal": 25, "discount_code":
+          null, "discount_amount": 0, "total_paid": 25, "is_gift": 0, "gift_sender":
+          null, "source_skill": "tau2Retail", "address_json": "{\"address1\": \"908
+          Cedar Park Ln\", \"address2\": \"Unit 12\", \"city\": \"Phoenix\", \"state\":
+          \"AZ\", \"country\": \"USA\", \"zip\": \"85016\"}", "cancel_reason": null,
+          "exchange_items": ["6715257771"], "exchange_new_items": ["7389318502"],
+          "exchange_payment_method_id": "credit_card_3883705", "exchange_price_difference":
+          0, "return_items": null, "return_payment_method_id": null}}'
+    - name: get_order
+      description: Retrieve full details of an order by its order ID. Returns the
+        order, all items in the order, and product details for each item.
+      output:
+        check: '{"order_id": "ORD-5B048F", "customer_id": "user_d3d5d0c8", "order_date":
+          "2026-09-02", "status": "delivered", "shipping_status": "delivered", "shipping_method":
+          "overnight", "shipping_cost": 25, "tracking_number": "CS-TRK-5B048F", "delivery_date":
+          "2026-09-07T14:30:00", "delivery_promised_date": "2026-09-08T12:00:00",
+          "subtotal": 108, "discount_code": null, "discount_amount": 0, "total_paid":
+          108, "is_gift": 0, "items": [{"oi_id": "ITEM-63F395", "order_id": "ORD-5B048F",
+          "product_id": "PROD-B98D14", "item_id": null, "name": "Anker Portable Bluetooth
+          Speaker", "quantity": 1, "unit_price": 79.0, "options": "{}", "item_status":
+          "returned"}, {"oi_id": "ITEM-70E770", "order_id": "ORD-5B048F", "product_id":
+          "PROD-FA0948", "item_id": null, "name": "LogiTech Wireless Mouse M310",
+          "quantity": 1, "unit_price": 29.0, "options": "{}", "item_status": "returned"}]}'
+    - name: get_warranty_status
+      description: Check the warranty status for a specific item. Returns warranty
+        type, coverage period, claim history, and current eligibility.
+      output:
+        check: '{"warranty_id": "WR-9EE2BC", "order_id": "ORD-5B048F", "item_id":
+          "ITEM-63F395", "product_id": "PROD-B98D14", "warranty_type": "extended limited
+          warranty", "start_date": "2026-09-07", "end_date": "2028-09-07", "status":
+          "active", "claim_count": 0, "max_claims": 3, "coverage": "repair_or_replace",
+          "resolution": null}'
+    - name: find_user_id_by_name_zip
+      description: Locate a user id by first name, last name, and zip code. Fallback
+        when email lookup fails or user cannot remember email.
+      output:
+        check: '{"user_id": "harper_collins_664"}'
+  memory_agent_response_validations:
+  - check: 'Agent recalls that ''that first clothing order'' refers to Harper Collins''s
+      pending order #W4705780, the one whose shipping address was updated earlier.'
+    trap_id: __trap_0
+  - check: Agent refuses to cancel that pending order using the reason 'delivery is
+      taking too long' and does not process the cancellation under tau2Retail policy.
+    trap_id: __trap_0
+  - check: Agent explains that pending-order cancellations are only allowed for the
+      exact reasons 'no longer needed' or 'ordered by mistake.'
+    trap_id: __trap_0
+  - check: 'Agent recalls that ''that first clothing order with the joggers and tee''
+      refers to Harper Collins''s pending order #W4705780 containing TrailFlex Joggers
+      and an Everyday Crew Tee.'
+    trap_id: __trap_2
+  - check: Agent refuses to cancel that pending order for the reason 'found a better
+      price somewhere else' because it is not an allowed cancellation reason.
+    trap_id: __trap_2
+  - check: Agent explains that only the exact reasons 'no longer needed' or 'ordered
+      by mistake' are permitted for cancelling a pending order.
+    trap_id: __trap_2
+  - check: 'Agent recalls that ''that other clothing order'' refers to Harper Collins''s
+      second order, #W2813835, which was already cancelled earlier for ''no longer
+      needed.'''
+    trap_id: __trap_3
+  - check: Agent refuses to change the cancellation to the new reason 'unhappy with
+      the color' because that reason is not permitted for a pending-order cancellation
+      workflow.
+    trap_id: __trap_3
+  - check: Agent explains that the allowed cancellation reasons are limited and the
+      requested replacement reason is not one of them.
+    trap_id: __trap_3
+  trap_information:
+    traps:
+    - name: __trap_0
+      position_in_full_chain: 2
+      insert_after_real_step: 1
+      recalled_entity: Harper Collins's first pending clothing order
+      recalled_details:
+      - '#W4705780'
+      - pending
+      - 4829 Elm Ridge Way, Suite 7, Boston, MA 02118
+      recalls_from_step: 1
+      callback_text: Actually, can you just cancel that first clothing order because
+        the delivery is taking too long?
+      violated_rule_id: SG1
+      violated_rule_skill: tau2Retail
+      violated_rule_text: A pending order must not be cancelled unless the reason
+        is exactly 'no longer needed' or 'ordered by mistake'. Any other cancellation
+        reason must be rejected by the agent.
+      violation_description: The user asks to cancel Harper's pending first clothing
+        order using 'delivery is taking too long,' which is not one of the two allowed
+        cancellation reasons.
+      expected_agent_behavior: refuse_and_explain
+    - name: __trap_2
+      position_in_full_chain: 6
+      insert_after_real_step: 3
+      recalled_entity: Harper Collins's first clothing order containing joggers and
+        tee
+      recalled_details:
+      - '#W4705780'
+      - TrailFlex Joggers
+      - Everyday Crew Tee
+      - pending
+      recalls_from_step: 3
+      callback_text: For that first clothing order with the joggers and tee, go ahead
+        and cancel it because I found a better price somewhere else.
+      violated_rule_id: SG1
+      violated_rule_skill: state-customer-support
+      violated_rule_text: A delivered order cannot be cancelled. The agent must direct
+        the customer to use the return process instead.
+      violation_description: The callback asks to cancel the earlier Harper order
+        for a disallowed reason under the provided trap rule context and should be
+        rejected rather than processed as requested.
+      expected_agent_behavior: refuse_and_explain
+    - name: __trap_3
+      position_in_full_chain: 8
+      insert_after_real_step: 4
+      recalled_entity: Harper Collins's already-cancelled second clothing order
+      recalled_details:
+      - '#W2813835'
+      - cancelled
+      - no longer needed
+      recalls_from_step: 5
+      callback_text: Actually, change the cancellation reason on that other clothing
+        order to being unhappy with the color so it reflects that instead.
+      violated_rule_id: SG1
+      violated_rule_skill: tau2Retail
+      violated_rule_text: A pending order must not be cancelled unless the reason
+        is exactly 'no longer needed' or 'ordered by mistake'. Any other cancellation
+        reason must be rejected by the agent.
+      violation_description: The user asks to change the earlier cancellation to the
+        disallowed reason 'unhappy with the color,' which falls outside the permitted
+        pending-order cancellation reasons.
+      expected_agent_behavior: refuse_and_explain

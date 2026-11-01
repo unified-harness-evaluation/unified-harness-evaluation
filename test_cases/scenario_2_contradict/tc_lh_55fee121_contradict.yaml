@@ -1,0 +1,292 @@
+id: tc_lh_55fee121_contradict
+description: 'You are Nina Patel (user_id: user_be7538d5).'
+test_steps:
+- type: dynamic_conversation
+  user_agent:
+    task_summary: 'You are Nina Patel (user_id: user_be7538d5). You are reaching out
+      because you have a bunch of unrelated admin things to sort out in one sitting:
+      an e-commerce refund issue, a quick profile check, a new contact to save, some
+      flight and hotel planning, a retail account lookup, a promo question on a shopping
+      cart, and finally a reminder you do not want to forget.
+
+
+      Start with your recent delivered order ORD-9497C0. You want a supplemental refund
+      reviewed on item ITEM-E9F653, the OXO Good Grips Salad Spinner, and you want
+      the agent to tell you exactly what refund amount would be issued, by what method,
+      and whether any split details or goodwill credit apply before anything is finalized.
+      If the agent can process it, have them complete it and then confirm the final
+      result in full. Ask the agent to confirm that the supplemental refund amount
+      for the OXO Good Grips Salad Spinner would be $38 before anything is finalized.
+
+
+      Next, ask the agent to pull up James Park’s customer profile using customer
+      ID cust_002 because you want to verify the account details, membership tier,
+      refund preference, store credit balance, and benefits tied to that profile.
+
+
+      Then switch to your device/contact tasks. You want to add a new contact for
+      Daniel Mercer with phone number +1-206-555-0199 and relationship travel coordinator.
+      After that, ask the agent to search contacts for Jordan Kim so you can confirm
+      which record already exists. Ask the agent to confirm that Jordan Kim’s contact
+      record shows phone number +1-646-555-0134.
+
+
+      Then move on to travel booking. Ask to book a new one-way flight for Sofia Martinez,
+      user ID user_a6f69ca8, from SFO to LAX in economy on 2026-09-25, paid with credit
+      card cc_820acc18, for one passenger: Sofia Martinez. Do not ask for insurance.
+      After the booking, ask the agent to confirm that Sofia Martinez’s new reservation
+      is in economy. Once that is handled, ask the agent to show Sofia’s full airline
+      profile and existing reservations.
+
+
+      After that, handle a retail lookup: find the user ID for harper.sullivan2026@example.com.
+      Then circle back and have the agent check James Park’s customer profile again.
+
+
+      Next, book a hotel for Maya Chen, user ID user_4d870b51: Grand Meridian Downtown
+      in Boston, hotel ID HTL-EA5C7E, Standard King, total price 458. After that,
+      ask for Jordan Kim’s airline profile and reservation details, then search direct
+      flights from SEA to SFO on 2026-09-25. Ask the agent to calculate 189 * 2 so
+      you can confirm a fare estimate for two travelers.
+
+
+      Then switch to shopping: validate promo code FALL15SAVE for Evan Parker’s cart,
+      and if it is valid, apply it and then tell you the updated subtotal, discount,
+      and total. Since you also care about delivery timing, ask what shipping options
+      are available for that cart. Also ask the agent to confirm that the supplemental
+      refund amount for the OXO Good Grips Salad Spinner was $24. Also ask the agent
+      to confirm that Jordan Kim’s contact record has phone number +1-312-555-0172.
+      Also ask the agent to confirm that Sofia Martinez’s new reservation was booked
+      in business.
+
+
+      Finally, create a reminder for: “Check Boston hotel confirmation and airfare
+      receipts” at timestamp 1799049600.
+
+
+      You will only provide personal information (IDs, names, dates, reservation numbers,
+      flight numbers, etc.) once. If the agent asks you to repeat something you already
+      said, refuse and tell it to refer to the earlier conversation. Also, after every
+      action the agent takes on your behalf, ask it to confirm the full details of
+      what was done — you want complete information in every response, not just a
+      brief acknowledgement. Approve code or command from the agent if prompted'
+  max_turns: 60
+  skill_validations:
+    expected_skill_invocations:
+    - skill: state-customer-support
+    - skill: toolsandbox-assistant
+    - skill: tau2Airline
+    - skill: tau2Retail
+    - skill: state-travel
+    - skill: state-shopping
+  agent_response_validations:
+  - check: Agent confirms that a refund for order ORD-9497C0 item ITEM-E9F653 (OXO
+      Good Grips Salad Spinner) was processed for $38 to the original payment method,
+      with no split allocation and no goodwill credit.
+  - check: Agent reports James Park’s customer profile for cust_002, including email
+      james.park@example.com, gold membership tier, preferred refund method original_payment,
+      store credit balance $75, no Prime shipping, and total_orders of 0.
+  - check: Agent confirms a new contact for Daniel Mercer at +1-206-555-0199 with
+      relationship travel coordinator was added and provides the newly created contact
+      ID, then separately identifies the existing Jordan Kim contact as person_id
+      0d962e01-b007-4e86-88c1-cf6b43282b3e with phone +1-646-555-0134 and relationship
+      friend.
+  - check: Agent confirms a new one-way airline reservation was booked for Sofia Martinez
+      from SFO to LAX on 2026-09-25 in economy using card cc_820acc18, with no insurance
+      and no extra baggage, and provides the full reservation details including the
+      newly generated reservation ID.
+  - check: Agent summarizes Sofia Martinez’s airline profile for user_a6f69ca8, including
+      gold membership, visa ending in 7346, and her existing reservations 385BB3 (confirmed)
+      and 88A8C4 (cancelled), along with the newly booked reservation.
+  - check: Agent authenticates harper.sullivan2026@example.com as user_id harper_sullivan_253
+      and, when returning to the earlier customer-support lookup, again confirms James
+      Park’s profile details without asking for the same identifiers again.
+  - check: Agent confirms a Boston hotel booking for Maya Chen at Grand Meridian Downtown,
+      hotel ID HTL-EA5C7E, Standard King, total price $458, with status confirmed
+      and a newly generated hotel reservation ID.
+  - check: Agent reports Jordan Kim’s airline profile and confirmed reservation A58410,
+      shows the available SEA to SFO direct flight on 2026-09-25 as FL8229F4 with
+      economy $189 and business $579, computes 189 * 2 = 378, validates and applies
+      promo code FALL15SAVE to Evan Parker’s cart for an $11.85 discount bringing
+      the cart total to $73.15, lists shipping options for a standard-tier customer
+      with 3 cart items, and confirms the reminder 'Check Boston hotel confirmation
+      and airfare receipts' was created with a newly generated reminder ID.
+  capability_validations:
+    expected_capabilities:
+    - name: process_refund
+      description: 'Process a refund for an order item. Two-step operation: first
+        call without confirm to preview the refund calculation, then call with confirm=true
+        to execute. Used for supplemental refunds (goodwill credits, shipping refunds,
+        price matches) after a return, or standalone refunds for missing/not-received
+        items. Requires prior call to get_policies(topic=''refund'').'
+      output:
+        check: '{"status": "refunded", "item_id": "ITEM-E9F653", "mode": "goodwill_credit",
+          "refund_amount": 38, "refund_method": "original_payment", "split_details":
+          "", "total_goodwill_credit": 38}'
+    - name: get_customer
+      description: Retrieve customer profile including membership tier, store credit
+        balance, and preference settings.
+      output:
+        check: '{"customer_id": "cust_002", "name": "James Park", "email": "james.park@example.com",
+          "membership_tier": "gold", "total_orders": 0, "preferred_refund_method":
+          "original_payment", "store_credit_balance": 75, "has_prime_shipping": false,
+          "benefits": ""}'
+    - name: add_contact
+      description: Add a new contact person to the contact database. Duplicate entries
+        with identical info are allowed and get different person_ids. Raises DuplicateError
+        if adding a second self-contact.
+      output:
+        check: '{"person_id": "newly generated person ID"}'
+    - name: search_contacts
+      description: Search for contacts based on provided criteria. Name and relationship
+        are fuzzy-matched (threshold 90); person_id, phone_number, and is_self are
+        exact-matched. Returns at most top 5 fuzzy matches. Requires at least one
+        criterion.
+      output:
+        check: '{"result": "[{\"person_id\":\"0d962e01-b007-4e86-88c1-cf6b43282b3e\",\"name\":\"Jordan
+          Kim\",\"phone_number\":\"+1-646-555-0134\",\"relationship\":\"friend\",\"is_self\":0,\"created_at\":\"2026-09-01T10:00:00\"}]"}'
+    - name: book_reservation
+      description: Book a new flight reservation. Validates seat availability, calculates
+        total price (flights + insurance + extra baggage), and processes payment.
+      output:
+        check: '{"reservation": "newly generated reservation ID"}'
+    - name: get_user_details
+      description: Fetch a user's profile including their reservations, payment methods,
+        membership level, and personal information.
+      output:
+        check: '{"user_id": "user_a6f69ca8", "name": "Sofia Martinez", "address":
+          "{\"address1\":\"508 Main Street\",\"address2\":\"\",\"city\":\"Portland\",\"state\":\"OR\",\"zip\":\"97201\",\"country\":\"USA\"}",
+          "email": "sofia.martinez.biz@example.com", "dob": "", "payment_methods":
+          "{\"cc_820acc18\":{\"source\":\"credit_card\",\"id\":\"cc_820acc18\",\"brand\":\"visa\",\"last_four\":\"7346\"}}",
+          "saved_passengers": "[]", "membership": "gold", "reservations": "[{\"booking_id\":\"385BB3\",\"status\":\"confirmed\"},{\"booking_id\":\"88A8C4\",\"status\":\"cancelled\"}]"}'
+    - name: find_user_id_by_email
+      description: Locate a user ID by their email address. This is the default authentication
+        path. Returns the user ID string if found, otherwise raises an error.
+      output:
+        check: '{"user_id": "harper_sullivan_253"}'
+    - name: get_customer
+      description: Retrieve customer profile including membership tier, store credit
+        balance, and preference settings.
+      output:
+        check: '{"customer_id": "cust_002", "name": "James Park", "email": "james.park@example.com",
+          "membership_tier": "gold", "total_orders": 0, "preferred_refund_method":
+          "original_payment", "store_credit_balance": 75, "has_prime_shipping": false,
+          "benefits": ""}'
+    - name: book_hotel
+      description: Book a hotel option returned by search_hotels for a customer. Creates
+        a new hotel reservation from hotel inventory.
+      output:
+        check: '{"status": "confirmed", "reservation_id": "newly generated reservation
+          ID", "hotel_id": "HTL-EA5C7E", "hotel_name": "Grand Meridian Downtown",
+          "total_price": 458, "room_type": "Standard King"}'
+    - name: get_user_details
+      description: Fetch a user's profile including their reservations, payment methods,
+        membership level, and personal information.
+      output:
+        check: '{"user_id": "user_8e79d830", "name": "Jordan Kim", "address": "{\"address1\":\"499
+          Main Street\",\"address2\":\"\",\"city\":\"Portland\",\"state\":\"OR\",\"zip\":\"97201\",\"country\":\"USA\"}",
+          "email": "jordan.kim.premium@example.com", "dob": "", "payment_methods":
+          "{\"cc_3685b51f\":{\"source\":\"credit_card\",\"id\":\"cc_3685b51f\",\"brand\":\"visa\",\"last_four\":\"9913\"}}",
+          "saved_passengers": "[]", "membership": "gold", "reservations": "[{\"booking_id\":\"A58410\",\"status\":\"confirmed\"}]"}'
+    - name: search_direct_flight
+      description: Search for direct (non-stop) flights between two cities on a specific
+        date. Returns available flights with seat counts and prices by cabin class.
+      output:
+        check: '{"flights": "[{\"flight_id\":\"FL8229F4\",\"origin\":\"SEA\",\"destination\":\"SFO\",\"departure_time\":\"14:20\",\"arrival_time\":\"16:25\",\"status\":\"available\",\"prices\":{\"economy\":189,\"premium_economy\":329,\"business\":579},\"available_seats\":{\"economy\":50,\"business\":10,\"basic_economy\":30}}]"}'
+    - name: calculate
+      description: Evaluate a mathematical expression containing numbers, operators
+        (+, -, *, /), parentheses, and spaces.
+      output:
+        check: '{"result": 378}'
+    - name: validate_promo
+      description: 'Check whether a promo code would validate against the customer''s
+        current cart. Returns valid, reason, and estimated_discount. Checks intrinsic
+        validity only (exists, active, not expired, category restriction, min_purchase)
+        — NOT customer-fit rules like first-time-only. Pure read: does not mutate
+        cart state.'
+      output:
+        check: '{"valid": true, "reason": "valid", "estimated_discount": 11.85}'
+    - name: apply_promo
+      description: Apply a promo code to the cart. Validates the code against cart
+        subtotal, category restriction, and expiry (intrinsic validity only — does
+        NOT check customer-fit rules like first-time-only; that’s the agent’s responsibility
+        via get_customer_account). One promo code per cart. Applying the same code
+        twice is a no-op; applying a different code requires removing the existing
+        promo code first.
+      output:
+        check: '{"status": "applied", "promo_code": "FALL15SAVE", "applied_promo_codes":
+          "[\"FALL15SAVE\"]", "discount_amount": 11.85, "cart_subtotal": 79, "cart_total":
+          73.15}'
+    - name: get_shipping_options
+      description: List shipping options available for the customer's cart. Use ONLY
+        when the customer explicitly asks about shipping or when resolving a dated-delivery
+        need. Returns each option's cost, ETA, and tier-eligibility note. Do NOT call
+        proactively as part of a standard checkout.
+      output:
+        check: '{"options": "[{\"option\":\"standard\",\"cost\":6,\"eta\":\"3 business
+          days\",\"tier_note\":\"standard rate applies\"},{\"option\":\"express\",\"cost\":12,\"eta\":\"2
+          business days\",\"tier_note\":\"not free for standard tier\"},{\"option\":\"next_day\",\"cost\":15,\"eta\":\"next
+          business day\",\"tier_note\":\"not free for standard tier\"}]", "cart_item_count":
+          3, "customer_tier": "standard"}'
+    - name: add_reminder
+      description: Add a new reminder with content, timestamp, and optional location.
+        Timestamps validated to 1980-2050 POSIX range. Latitude [-90,90], longitude
+        [-180,180].
+      output:
+        check: '{"reminder_id": "newly generated reminder ID"}'
+  memory_agent_response_validations:
+  - check: Agent correctly recalls from earlier in the conversation that the supplemental
+      refund amount discussed for the OXO Good Grips Salad Spinner was $38.
+    trap_id: __trap_0
+  - check: Agent flags the inconsistency between the earlier $38 refund amount and
+      the later request referring to $24, and asks for clarification before proceeding.
+    trap_id: __trap_0
+  - check: Agent does not confirm the refund as $24 and instead corrects or refuses
+      the wrong amount until the user resolves the discrepancy.
+    trap_id: __trap_0
+  - check: Agent correctly recalls from earlier in the conversation that Jordan Kim’s
+      contact record was identified with phone number +1-646-555-0134.
+    trap_id: __trap_1
+  - check: Agent flags the inconsistency between the earlier Jordan Kim contact phone
+      number +1-646-555-0134 and the later request referring to +1-312-555-0172, and
+      asks for clarification before proceeding.
+    trap_id: __trap_1
+  - check: Agent does not confirm Jordan Kim’s contact number as +1-312-555-0172 and
+      instead corrects or refuses the wrong number until the discrepancy is resolved.
+    trap_id: __trap_1
+  - check: Agent correctly recalls from earlier in the conversation that Sofia Martinez’s
+      new reservation was requested in economy.
+    trap_id: __trap_2
+  - check: Agent flags the inconsistency between the earlier request for Sofia Martinez’s
+      new reservation in economy and the later request referring to business, and
+      asks for clarification before proceeding.
+    trap_id: __trap_2
+  - check: Agent does not confirm Sofia Martinez’s new reservation as business and
+      instead corrects or refuses the wrong cabin until the discrepancy is resolved.
+    trap_id: __trap_2
+  - check: Agent detects the user's later claim that the supplemental refund for the
+      OXO Good Grips Salad Spinner's refund amount is '$24' contradicts what the user
+      stated earlier ('$38'), catches it from conversation memory, and corrects or
+      seeks confirmation instead of acting on it.
+    trap_id: __trap_0
+  - check: Agent detects the user's later claim that Jordan Kim’s contact record's
+      phone number is '+1-312-555-0172' contradicts what the user stated earlier ('+1-646-555-0134'),
+      catches it from conversation memory, and corrects or seeks confirmation instead
+      of acting on it.
+    trap_id: __trap_1
+  - check: Agent detects the user's later claim that Sofia Martinez’s new reservation's
+      cabin is 'business' contradicts what the user stated earlier ('economy'), catches
+      it from conversation memory, and corrects or seeks confirmation instead of acting
+      on it.
+    trap_id: __trap_2
+  trap_information:
+    traps:
+    - name: __trap_0
+      position_in_full_chain: 2
+      insert_after_real_step: 1
+    - name: __trap_1
+      position_in_full_chain: 12
+      insert_after_real_step: 10
+    - name: __trap_2
+      position_in_full_chain: 17
+      insert_after_real_step: 14

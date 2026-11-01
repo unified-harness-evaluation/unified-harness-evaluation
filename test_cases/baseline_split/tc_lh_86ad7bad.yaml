@@ -1,0 +1,280 @@
+id: tc_lh_86ad7bad
+description: 'You are Evan Parker (user_id: user_fbab7801).'
+test_steps:
+- type: dynamic_conversation
+  user_agent:
+    task_summary: 'You are Evan Parker (user_id: user_fbab7801). You are calling customer
+      service because you need to sort out a mix of shopping, travel, and support
+      issues in one sitting, and you expect the agent to keep track of everything
+      as the conversation moves around.
+
+
+      Start with your shopping account. You want to hear what promotions are currently
+      active, then check whether the code FALL15SAVE would work with your current
+      cart. After that, ask the agent to pull up your customer account so you can
+      confirm the email, tier, loyalty points, and purchase history it sees.
+
+
+      Next, switch to a flight question for someone else in your household: ask the
+      agent to look up reservation D3A184 for Olivia Bennett, tied to user_85c17f92.
+      You want the full details of that booking, especially the itinerary, passengers,
+      baggage count, insurance, status, and payment history. After reviewing it, ask
+      about the airline''s baggage policy so you understand what is free versus paid.
+      Then tell the agent to go back to that same reservation and add baggage. You
+      want the updated reservation fully confirmed afterward.
+
+
+      After that, move to booking a brand-new flight for Megan Carter, user_27d9adae.
+      You want a one-way economy booking from LAX to LAS on 2026-09-10 using flight
+      FL398507, for Megan Carter, paying with her travel certificate certificate_50ad4ea
+      and her credit card cc_2fcdc34b. Do not add insurance or extra baggage unless
+      the agent asks and you explicitly decline them first. Once booked, ask for the
+      complete reservation details.
+
+
+      Then shift back to shopping. Search for a wireless mouse, review one product
+      in detail, and ask for its variants even if there may not be any. After that,
+      ask about store policy on exchanges. Then switch to an existing support issue
+      and say you want to exchange the Northline Wool Blend Throw Blanket from order
+      item ITEM-4D366B for the Everyday Canvas Tote Bag, product PROD-4ED2E3. You
+      want the preview first, and if it is eligible, approve the exchange and ask
+      for the full outcome, including any price difference or store credit.
+
+
+      Finally, move to travel reservations for Elena Brooks, user_7144ff38. Ask for
+      all her reservation IDs, then ask about hotel cancellation policy, and then
+      cancel hotel reservation HR-68D9 after seeing the preview terms. Once that is
+      done, circle back one last time and ask the agent to restate the full details
+      of Olivia Bennett''s updated flight reservation so you can make sure nothing
+      was missed.
+
+
+      You will only provide personal information (IDs, names, dates, reservation numbers,
+      flight numbers, etc.) once. If the agent asks you to repeat something you already
+      said, refuse and tell it to refer to the earlier conversation. Also, after every
+      action the agent takes on your behalf, ask it to confirm the full details of
+      what was done — you want complete information in every response, not just a
+      brief acknowledgement.'
+  max_turns: 60
+  skill_validations:
+    expected_skill_invocations:
+    - skill: state-shopping
+    - skill: tau2Airline
+    - skill: state-customer-support
+    - skill: state-travel
+  agent_response_validations:
+  - check: Agent tells Evan Parker that his shopping account is standard tier under
+      evan.parker.synthetic@example.com, with 105 loyalty points and an empty purchase
+      history, and explains that FALL15SAVE is valid on his current $79 cart with
+      an estimated discount of $11.85.
+  - check: Agent confirms Olivia Bennett's reservation D3A184 is a confirmed round
+      trip with cabin premium_economy, covering FL8229F4 from SEA to SFO on 2026-09-20
+      and FLEE9223 from SFO to SEA on 2026-09-25, for passengers Olivia Bennett and
+      Noah Bennett, with standard insurance and payment history showing cc_c795a32e.
+  - check: Agent explains the baggage policy the customer asked about, including 1
+      free carry-on for all passengers, checked bag allowances by cabin and loyalty
+      tier, and the extra checked bag fee rules, then confirms that one additional
+      bag was added to D3A184 and that the updated totals are now 4 total baggages
+      and 3 nonfree baggages.
+  - check: Agent confirms Megan Carter's new one-way economy booking from LAX to LAS
+      on FL398507 for 2026-09-10 was created using certificate_50ad4ea and credit
+      card cc_2fcdc34b, with no insurance and no extra baggage, and gives the full
+      new reservation details including the newly generated reservation ID.
+  - check: Agent reports that searching for a wireless mouse returned LogiTech Wireless
+      Mouse M310 and Wireless Ergonomic Mouse, then provides full details for PROD-FA0948
+      including its $29 price, 4.9 rating, 1247 reviews, 120 units in stock, 3-day
+      shipping, gift-wrap availability, compatibility list, and that it has no variants.
+  - check: Agent cites the store exchange policy, including that exchanges must be
+      for a different product and that cheaper exchanges refund the difference as
+      store credit, then previews the exchange of ITEM-4D366B to PROD-4ED2E3 as eligible
+      with a $6 cheaper replacement and $6 store credit refund.
+  - check: Agent confirms the exchange was completed for ITEM-4D366B to Everyday Canvas
+      Tote Bag, provides the new item identifier if generated, and states the final
+      price difference, that the customer pays $0, and that $6 is returned as store
+      credit.
+  - check: Agent tells Elena Brooks that get_user_reservations shows hotel reservation
+      HR-68D9 and car rental CR-68B7, explains that HR-68D9 qualifies for free cancellation
+      under the hotel policy because it is a Standard King room cancelled 48+ hours
+      before check-in, and confirms the hotel reservation was cancelled with a $0
+      fee and $298 refund.
+  - check: Agent restates the full updated details of Olivia Bennett's reservation
+      D3A184, including the updated baggage totals of 4 total and 3 nonfree, confirming
+      nothing was missed from earlier actions in the conversation.
+  capability_validations:
+    expected_capabilities:
+    - name: get_promotions
+      description: List currently active, non-expired promotions. Optional category
+        filter restricts to promos applicable to that category.
+      output:
+        check: '{"promotions": [{"promo_code": "PROMO0F1B01", "description": "Summer
+          sale", "discount_type": "percentage", "discount_value": 20, "min_purchase":
+          0, "max_discount": 50, "category_restriction_json": "[]", "expiry_date":
+          "2027-12-31", "active": 1}, {"promo_code": "FALL15SAVE", "description":
+          "Limited-time fall savings: 15% off carts over 75", "discount_type": "percentage",
+          "discount_value": 15, "min_purchase": 75, "max_discount": 40, "category_restriction_json":
+          "[]", "expiry_date": "2026-10-15", "active": 1}, {"promo_code": "WELCOME10",
+          "description": "Welcome discount: 10% off your first order", "discount_type":
+          "percentage", "discount_value": 10, "min_purchase": 0, "max_discount": 30,
+          "category_restriction_json": "[]", "expiry_date": "2026-12-31", "active":
+          1}, {"promo_code": "SAVE20OFF", "description": "$20 off orders over $100",
+          "discount_type": "fixed", "discount_value": 20, "min_purchase": 100, "max_discount":
+          20, "category_restriction_json": "[]", "expiry_date": "2026-09-30", "active":
+          1}, {"promo_code": "ELEC15", "description": "15% off electronics (max $50)",
+          "discount_type": "percentage", "discount_value": 15, "min_purchase": 50,
+          "max_discount": 50, "category_restriction_json": "[\"electronics\"]", "expiry_date":
+          "2026-10-01", "active": 1}, {"promo_code": "KITCHEN25", "description": "$25
+          off kitchen items over $75", "discount_type": "fixed", "discount_value":
+          25, "min_purchase": 75, "max_discount": 25, "category_restriction_json":
+          "[\"kitchen\"]", "expiry_date": "2026-12-31", "active": 1}]}'
+    - name: validate_promo
+      description: 'Check whether a promo code would validate against the customer''s
+        current cart. Returns valid, reason, and estimated_discount. Checks intrinsic
+        validity only (exists, active, not expired, category restriction, min_purchase)
+        — NOT customer-fit rules like first-time-only. Pure read: does not mutate
+        cart state.'
+      output:
+        check: '{"valid": true, "reason": "Cart meets minimum purchase and promo is
+          active", "estimated_discount": 11.85}'
+    - name: get_customer_account
+      description: 'Get a customer''s account record: name, email, tier, first-time
+        status, loyalty points, and purchase_history. No stored preferences — the
+        agent must ask the customer about per-purchase decisions.'
+      output:
+        check: '{"customer_id": "user_fbab7801", "name": "Evan Parker", "email": "evan.parker.synthetic@example.com",
+          "tier": "standard", "is_first_time": false, "loyalty_points": 105, "purchase_history":
+          []}'
+    - name: book_reservation
+      description: Book a new flight reservation. Validates seat availability, calculates
+        total price (flights + insurance + extra baggage), and processes payment.
+      output:
+        check: '{"reservation": "newly generated reservation ID"}'
+    - name: get_reservation_details
+      description: Fetch the full details of a reservation by its ID, including flights,
+        passengers, payment history, baggage, and insurance.
+      output:
+        check: '{"reservation_id": "D3A184", "user_id": "user_85c17f92", "origin":
+          "SEA", "destination": "SEA", "flight_type": "round_trip", "cabin": "premium_economy",
+          "flights": [{"flight_number": "FL8229F4", "origin": "SEA", "destination":
+          "SFO", "date": "2026-09-20", "departure_time": "14:20", "arrival_time":
+          "16:25"}, {"flight_number": "FLEE9223", "origin": "SFO", "destination":
+          "SEA", "date": "2026-09-25"}], "passengers": [{"first_name": "Olivia", "last_name":
+          "Bennett", "passenger_type": "adult"}, {"first_name": "Noah", "last_name":
+          "Bennett", "passenger_type": "child"}], "payment_history": [{"payment_id":
+          "cc_c795a32e", "amount": 0}], "created_at": "2026-09-01T10:00:00", "total_baggages":
+          3, "nonfree_baggages": 2, "insurance": "standard", "status": "confirmed"}'
+    - name: search_products
+      description: Search the product catalog. Returns up to 10 ranked products. Hard
+        filters (category, price range, rating, in_stock_only) narrow the candidate
+        pool; products failing a hard filter are excluded. `query` soft-ranks survivors
+        by matching against product name, brand, subcategory, description, and spec
+        keys/values. If query matches nothing, returns no products with a note.
+      output:
+        check: '{"products": [{"product_id": "PROD-FA0948", "name": "LogiTech Wireless
+          Mouse M310", "category": "electronics", "subcategory": "computer accessories",
+          "brand": "LogiTech", "price": 29, "rating": 4.9, "in_stock": 1}, {"product_id":
+          "PROD-2DBA15", "name": "Wireless Ergonomic Mouse", "category": "electronics",
+          "subcategory": "computer accessories", "brand": "Northfield Tech", "price":
+          39, "rating": 3.2, "in_stock": 1}], "total_found": 2, "note": ""}'
+    - name: get_product_details
+      description: Get full details of a product including specs, description, stock,
+        shipping days, gift_wrap_available, compatible_with list, any recent price
+        drop, and any variants.
+      output:
+        check: '{"product_id": "PROD-FA0948", "name": "LogiTech Wireless Mouse M310",
+          "category": "electronics", "subcategory": "computer accessories", "brand":
+          "LogiTech", "price": 29, "previous_price": null, "rating": 4.9, "review_count":
+          0, "description": "Reliable wireless optical mouse with USB receiver, suitable
+          for home office and travel.", "specs": {"connectivity": "Wireless 2.4GHz",
+          "battery_type": "AA", "dpi": "1000", "compatibility": "Windows/Mac"}, "compatible_with":
+          ["PROD-B98D14", "PROD-2DBA15", "PROD-7C0240", "PROD-73FAB4"], "in_stock":
+          true, "stock_quantity": 120, "shipping_days": 3, "shipping_estimate": "3
+          days", "gift_wrap_available": true, "backorder_available": false, "variants":
+          []}'
+    - name: get_variants
+      description: List the variants (e.g. color, size) available for a product along
+        with per-variant stock and effective price. Returns an empty list for products
+        without variants. When a product has variants, add_to_cart REQUIRES a variant_id.
+      output:
+        check: '{"product_id": "PROD-FA0948", "product_name": "LogiTech Wireless Mouse
+          M310", "base_price": 29, "variants": [], "note": "No variants available"}'
+    - name: process_exchange
+      description: 'Exchange an item for a different product or variant. Two-step
+        operation: first call without confirm to preview (price difference, eligibility),
+        then call with confirm=true to execute. Requires prior call to get_policies(topic=''exchange'').'
+      output:
+        check: '{"status": "preview", "item_id": "ITEM-4D366B", "new_product_id":
+          "PROD-4ED2E3", "new_item_id": null, "price_difference": -6, "customer_pays":
+          0, "store_credit_refund": 6, "out_of_stock": false, "store_credit_amount":
+          0, "reason": "Eligible exchange within return window; cheaper replacement
+          refunds difference as store credit"}'
+    - name: search_products
+      description: Search the task-local product catalog by free-text query. Returns
+        ranked compact matches with product_id, name, matched_field, category, subcategory,
+        and in_stock. Call get_product_details with a returned product_id for price,
+        stock, warranty, and return-window details.
+      output:
+        check: '{"query": "canvas tote bag", "results": [{"product_id": "PROD-4ED2E3",
+          "name": "Everyday Canvas Tote Bag", "matched_field": "name", "category":
+          "accessories", "subcategory": "bags", "in_stock": true}]}'
+    - name: update_reservation_baggages
+      description: Add baggage to a reservation. Each additional non-free bag costs
+        $50. Bags cannot be removed.
+      output:
+        check: '{"reservation": {"reservation_id": "D3A184", "user_id": "user_85c17f92",
+          "status": "confirmed", "total_baggages": 4, "nonfree_baggages": 3}}'
+    - name: get_policies
+      description: 'Look up travel policies for a specific topic. Topics: ''cancel''
+        (flight cancellation rules), ''change'' (flight change rules), ''baggage''
+        (baggage allowance by fare class and loyalty tier), ''delay_compensation''
+        (delay/cancellation compensation), ''loyalty'' (loyalty points redemption
+        rates and rules), ''upgrade'' (cabin class upgrade eligibility and pricing),
+        ''hotel_cancel'' (hotel reservation cancellation rules), ''car_rental_cancel''
+        (car rental cancellation rules).'
+      output:
+        check: '{"topic": "baggage", "rules": ["All passengers: 1 free carry-on.",
+          "Checked bags by cabin: basic_economy=0, economy=1, business=2, first=3.",
+          "Loyalty bonus checked bags: basic=0, silver=+1, gold=+2, platinum=+3.",
+          "Extra checked bag fee: $50/bag (basic_economy), $35/bag (all others).",
+          "Oversized bag fee: $100/bag."]}'
+    - name: get_policies
+      description: Look up the store's policy for a given topic. Returns a summary
+        and a list of rules. Use when the customer's question or the scenario requires
+        citing store policy.
+      output:
+        check: '{"topic": "exchange", "summary": "Exchanges must be for a different
+          product, within the applicable return window, and cheaper exchanges refund
+          the difference as store credit.", "rules": ["Must be a different product
+          (self-swap not allowed, use process_return instead).", "Same price: no charge,
+          no refund.", "More expensive: customer pays price difference.", "Cheaper:
+          difference refunded as store credit (not original payment).", "Out of stock:
+          issue store credit for the original item, do not complete exchange.", "Must
+          be within return window (same rules as returns).", "No price protection
+          on exchanges."]}'
+    - name: cancel_hotel_reservation
+      description: 'Cancel a hotel reservation. Two-step process: first call without
+        confirm to preview cancellation terms, then call with confirm=true to execute.'
+      output:
+        check: '{"status": "preview", "reservation_id": "HR-68D9", "cancellation_fee":
+          0, "refund_amount": 298, "reason": "Standard room cancelled 48+ hours before
+          check-in qualifies for free cancellation"}'
+    - name: get_user_reservations
+      description: List all reservation IDs for a customer's flight bookings, hotel
+        reservations, and car rentals. Use get_booking, get_hotel_reservation, or
+        get_car_rental to look up details by ID.
+      output:
+        check: '{"user_id": "user_7144ff38", "booking_ids": [], "hotel_ids": ["HR-68D9"],
+          "car_rental_ids": ["CR-68B7"]}'
+    - name: get_reservation_details
+      description: Fetch the full details of a reservation by its ID, including flights,
+        passengers, payment history, baggage, and insurance.
+      output:
+        check: '{"reservation_id": "D3A184", "user_id": "user_85c17f92", "origin":
+          "SEA", "destination": "SEA", "flight_type": "round_trip", "cabin": "premium_economy",
+          "flights": [{"flight_number": "FL8229F4", "origin": "SEA", "destination":
+          "SFO", "date": "2026-09-20", "departure_time": "14:20", "arrival_time":
+          "16:25"}, {"flight_number": "FLEE9223", "origin": "SFO", "destination":
+          "SEA", "date": "2026-09-25"}], "passengers": [{"first_name": "Olivia", "last_name":
+          "Bennett", "passenger_type": "adult"}, {"first_name": "Noah", "last_name":
+          "Bennett", "passenger_type": "child"}], "payment_history": [{"payment_id":
+          "cc_c795a32e", "amount": 0}], "created_at": "2026-09-01T10:00:00", "total_baggages":
+          4, "nonfree_baggages": 3, "insurance": "standard", "status": "confirmed"}'

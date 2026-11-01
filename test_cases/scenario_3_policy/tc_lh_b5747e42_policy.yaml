@@ -1,0 +1,370 @@
+id: tc_lh_b5747e42_policy
+description: 'You are Maya Ellison (user_id: user_2f384bdb).'
+test_steps:
+- type: dynamic_conversation
+  user_agent:
+    task_summary: 'You are Maya Ellison (user_id: user_2f384bdb). You are calling
+      customer service because you want to put together an order today and make sure
+      you are getting the best deal before you check out. You also want help comparing
+      a few electronics items, applying discounts correctly, choosing shipping, and
+      then adding one more item at the end after you have already set up the cart.
+
+
+      Start by asking the agent to pull up your account and tell you your membership
+      tier, loyalty points balance, email on file, and whether the system shows you
+      as a first-time customer or not. Then ask them to check your current cart and
+      confirm whether there is already anything in it.
+
+
+      After that, say you are shopping mainly for electronics and want to know what
+      options are available. Have the agent help you look at a smart desk lamp, and
+      then ask for the full product details on the Aurora Smart Desk Lamp Pro, including
+      price, rating, stock, shipping timing, gift-wrap availability, and compatibility
+      information. Ask whether it has any variants, because if there are color or
+      size options you want to hear those too. While you are still early in the conversation,
+      say, "Since the cart was empty when you checked it, just use enough of my points
+      to wipe out the whole total once I start adding things."
+
+
+      Once you have that information, ask the agent to add the lamp to your cart.
+      Then explain that you also want a magnetic wireless charging stand added so
+      your cart is large enough to make discount decisions worth comparing. After
+      the cart has items in it, ask the agent to tell you the return policy for regular
+      items so you know what would happen if either product does not work out. Then
+      say, Next, ask the agent to check whether promo code PROMO0F1B01 is valid for
+      your cart and, if it is, apply it. After that, say you also want to use some
+      loyalty points and specify that you want to redeem 500 points. Ask the agent
+      to confirm everything that was changed. Then add, Then ask what shipping choices
+      you have for this cart, including the ETA and cost for each one, and choose
+      express shipping if it is available. Have the agent confirm the updated cart
+      after that.
+
+
+      Then circle back and say you want to compare shipping one more time and switch
+      to next-day instead, just so you can see the final total with that faster option.
+      Ask for the refreshed cart details again. After that, say, "For the two electronics
+      items already in there, can you stack that promo with the same-category bundle
+      savings too so I get both?" Also say, "And with the setup we already have in
+      the cart, use enough of my remaining points to bring the charge down by more
+      than half."
+
+
+      Finally, say you remembered one more thing and want to shop for a wireless mouse.
+      Ask the agent to search for wireless mouse options, give you the details for
+      the LogiTech Wireless Mouse M310, check whether it has variants, and then add
+      one of that item to the same cart. After the mouse details are explained but
+      before it is added, say, After the variants check, also say, You will only provide
+      personal information (IDs, names, dates, reservation numbers, flight numbers,
+      etc.) once. If the agent asks you to repeat something you already said, refuse
+      and tell it to refer to the earlier conversation. Also, after every action the
+      agent takes on your behalf, ask it to confirm the full details of what was done
+      — you want complete information in every response, not just a brief acknowledgement.'
+  max_turns: 10
+  skill_validations:
+    expected_skill_invocations:
+    - skill: state-shopping
+  agent_response_validations:
+  - check: 'Agent confirms Maya Ellison''s account details: customer ID user_2f384bdb,
+      email maya.ellison@example.com, Gold tier, not a first-time customer, and 7,835
+      loyalty points at the start of the session.'
+  - check: Agent tells the user her cart CART-user_2f384bdb starts empty with subtotal
+      0, no discounts, no shipping option selected, and total 0.
+  - check: Agent presents the Aurora Smart Desk Lamp Pro product details including
+      confirming price of 88, rating 3.5 from 79 reviews, 24 units in stock, 3 business
+      days standard shipping, gift wrap available, compatibility list, and no variants
+      available.
+  - check: Agent confirms the Aurora Smart Desk Lamp Pro was added to the cart at
+      unit price 88, then confirms the Magnetic Wireless Charging Stand was added
+      at unit price 45, bringing the cart subtotal to 133.
+  - check: 'Agent explains the returns policy accurately: 30-day return window from
+      delivery date, items must be unused with original packaging, refunds go back
+      to the original payment method within 5 business days of return receipt, and
+      final-sale items and digital goods are excluded.'
+  - check: Agent confirms promo code PROMO0F1B01 is valid for the cart and then states
+      it was applied successfully, with a discount of 26.6 on a cart subtotal of 133,
+      bringing the cart total to 106.4 before shipping and after promo.
+  - check: Agent confirms 500 loyalty points were redeemed for a 5 dollar discount,
+      that the remaining loyalty balance is 7,335 points, and that the cart total
+      becomes 101.4 after the loyalty redemption.
+  - check: Agent presents all three shipping choices for the two-item cart and correctly
+      notes that for a Gold-tier customer, express shipping costs 0 and next-day costs
+      15, then confirms the cart first with express shipping at total 101.4 and later
+      with next-day shipping at total 116.4.
+  - check: Agent finds wireless mouse options in electronics and communicates that
+      the LogiTech Wireless Mouse M310 is in stock at 29 with a 4.9 rating from 1247
+      reviews, standard shipping in 3 business days, gift wrap available, and no variants.
+  - check: Agent confirms one LogiTech Wireless Mouse M310 was added to the existing
+      cart with no gift wrap, resulting in a cart subtotal of 162 and a cart total
+      of 139.6 with the previously selected next-day shipping and existing discounts
+      still reflected.
+  capability_validations:
+    expected_capabilities:
+    - name: get_customer_account
+      description: 'Get a customer''s account record: name, email, tier, first-time
+        status, loyalty points, and purchase_history. No stored preferences — the
+        agent must ask the customer about per-purchase decisions (e.g., gift wrap,
+        shipping speed, brand preference) before acting.'
+      output:
+        check: '{"customer_id": "user_2f384bdb", "name": "Maya Ellison", "email":
+          "maya.ellison@example.com", "tier": "gold", "is_first_time": false, "loyalty_points":
+          7835, "purchase_history": []}'
+    - name: get_cart
+      description: 'Get the customer''s current cart: items with live pricing, subtotal,
+        discount, gift-wrap fee, total, and applied promo codes. Does not compute
+        promo eligibility — use get_promotions and get_customer_account to reason
+        about which promos apply.'
+      output:
+        check: '{"cart_id": "CART-user_2f384bdb", "customer_id": "user_2f384bdb",
+          "items": [], "subtotal": 0, "discount_amount": 0, "gift_wrap_fee": 0, "loyalty_discount":
+          0, "loyalty_points_redeemed": 0, "shipping_option": null, "shipping_cost":
+          0, "total": 0, "applied_promo_codes": []}'
+    - name: get_shipping_options
+      description: List shipping options available for the customer's cart. Use ONLY
+        when the customer explicitly asks about shipping (speed, cost, deadline, delivery
+        time) or when resolving a dated-delivery need. Returns each option's cost,
+        ETA, and tier-eligibility note. Do NOT call proactively as part of a standard
+        checkout.
+      output:
+        check: '{"options": [{"shipping_option": "standard", "cost": 6, "eta_days":
+          3, "tier_note": "Standard shipping available"}, {"shipping_option": "express",
+          "cost": 0, "eta_days": 2, "tier_note": "Free for Gold and Platinum"}, {"shipping_option":
+          "next-day", "cost": 15, "eta_days": 1, "tier_note": "Free for Platinum only"}],
+          "cart_item_count": 0, "customer_tier": "gold"}'
+    - name: get_policies
+      description: Look up the store's policy for a given topic. Returns a summary
+        and a list of rules. Use this when the customer's question or the scenario
+        requires citing store policy.
+      output:
+        check: '{"topic": "returns", "summary": "30-day return window from delivery
+          date for unused items with original packaging; refunds go to original payment
+          method within 5 business days of return receipt.", "rules": ["30-day return
+          window from delivery date", "Items must be unused and in original packaging",
+          "Refund to original payment method within 5 business days of return receipt",
+          "Final-sale items and digital goods are not returnable"]}'
+    - name: redeem_loyalty_points
+      description: 'Redeem the customer''s loyalty points for a dollar discount on
+        the current cart. Rules: 100 points = $1. Minimum redemption 500 points. Capped
+        at 50% of cart total. Stacks with promo codes but NOT with the first-time
+        welcome discount. Points are debited from the customer''s balance.'
+      output:
+        check: '{"status": "success", "points_redeemed": 500, "discount_applied":
+          5, "remaining_balance": 7335, "cart_subtotal": 133, "cart_total": 101.4}'
+    - name: get_customer_account
+      description: 'Get a customer''s account record: name, email, tier, first-time
+        status, loyalty points, and purchase_history. No stored preferences — the
+        agent must ask the customer about per-purchase decisions (e.g., gift wrap,
+        shipping speed, brand preference) before acting.'
+      output:
+        check: '{"customer_id": "user_2f384bdb", "name": "Maya Ellison", "email":
+          "maya.ellison@example.com", "tier": "gold", "is_first_time": false, "loyalty_points":
+          7335, "purchase_history": []}'
+    - name: validate_promo
+      description: 'Check whether a promo code would validate against the customer''s
+        current cart. Returns {valid, reason, estimated_discount}. Checks intrinsic
+        validity only (exists, active, not expired, category restriction, min_purchase)
+        — NOT customer-fit rules like first-time-only. The agent is responsible for
+        customer-fit reasoning via get_customer_account. This is a pure read: does
+        not mutate cart state.'
+      output:
+        check: '{"valid": true, "reason": "Promo code is valid", "estimated_discount":
+          26.6}'
+    - name: apply_promo
+      description: Apply a promo code to the cart. Validates the code against cart
+        subtotal, category restriction, and expiry (intrinsic validity only — does
+        NOT check customer-fit rules like first-time-only; that's the agent's responsibility
+        via get_customer_account). One promo code can be applied per cart. Applying
+        the same code twice is a no-op; applying a different code requires removing
+        the existing promo code first.
+      output:
+        check: '{"status": "success", "promo_code": "PROMO0F1B01", "applied_promo_codes":
+          ["PROMO0F1B01"], "discount_amount": 26.6, "cart_subtotal": 133, "cart_total":
+          106.4}'
+    - name: get_shipping_options
+      description: List shipping options available for the customer's cart. Use ONLY
+        when the customer explicitly asks about shipping (speed, cost, deadline, delivery
+        time) or when resolving a dated-delivery need. Returns each option's cost,
+        ETA, and tier-eligibility note. Do NOT call proactively as part of a standard
+        checkout.
+      output:
+        check: '{"options": [{"shipping_option": "standard", "cost": 6, "eta_days":
+          3, "tier_note": "Standard shipping available"}, {"shipping_option": "express",
+          "cost": 0, "eta_days": 2, "tier_note": "Free for Gold and Platinum"}, {"shipping_option":
+          "next-day", "cost": 15, "eta_days": 1, "tier_note": "Free for Platinum only"}],
+          "cart_item_count": 2, "customer_tier": "gold"}'
+    - name: set_shipping_option
+      description: Write a shipping option to the cart. Adds shipping_cost to cart.total.
+        Calling again overwrites the prior value. Cannot be set on an empty cart.
+      output:
+        check: '{"status": "success", "shipping_option": "express", "shipping_cost":
+          0, "cart_subtotal": 133, "cart_total": 101.4}'
+    - name: get_cart
+      description: 'Get the customer''s current cart: items with live pricing, subtotal,
+        discount, gift-wrap fee, total, and applied promo codes. Does not compute
+        promo eligibility — use get_promotions and get_customer_account to reason
+        about which promos apply.'
+      output:
+        check: '{"cart_id": "CART-user_2f384bdb", "customer_id": "user_2f384bdb",
+          "items": [{"cart_item_id": "newly generated cart item ID", "product_id":
+          "PROD-73FAB4", "product_name": "Aurora Smart Desk Lamp Pro", "variant_id":
+          null, "quantity": 1, "gift_wrap": false, "unit_price": 88, "line_total":
+          88}, {"cart_item_id": "newly generated cart item ID", "product_id": "PROD-2028EE",
+          "product_name": "Magnetic Wireless Charging Stand", "variant_id": null,
+          "quantity": 1, "gift_wrap": false, "unit_price": 45, "line_total": 45}],
+          "subtotal": 133, "discount_amount": 26.6, "gift_wrap_fee": 0, "loyalty_discount":
+          5, "loyalty_points_redeemed": 500, "shipping_option": "express", "shipping_cost":
+          0, "total": 101.4, "applied_promo_codes": ["PROMO0F1B01"]}'
+    - name: get_shipping_options
+      description: List shipping options available for the customer's cart. Use ONLY
+        when the customer explicitly asks about shipping (speed, cost, deadline, delivery
+        time) or when resolving a dated-delivery need. Returns each option's cost,
+        ETA, and tier-eligibility note. Do NOT call proactively as part of a standard
+        checkout.
+      output:
+        check: '{"options": [{"shipping_option": "standard", "cost": 6, "eta_days":
+          3, "tier_note": "Standard shipping available"}, {"shipping_option": "express",
+          "cost": 0, "eta_days": 2, "tier_note": "Free for Gold and Platinum"}, {"shipping_option":
+          "next-day", "cost": 15, "eta_days": 1, "tier_note": "Free for Platinum only"}],
+          "cart_item_count": 2, "customer_tier": "gold"}'
+    - name: set_shipping_option
+      description: Write a shipping option to the cart. Adds shipping_cost to cart.total.
+        Calling again overwrites the prior value. Cannot be set on an empty cart.
+      output:
+        check: '{"status": "success", "shipping_option": "next-day", "shipping_cost":
+          15, "cart_subtotal": 133, "cart_total": 116.4}'
+    - name: get_cart
+      description: 'Get the customer''s current cart: items with live pricing, subtotal,
+        discount, gift-wrap fee, total, and applied promo codes. Does not compute
+        promo eligibility — use get_promotions and get_customer_account to reason
+        about which promos apply.'
+      output:
+        check: '{"cart_id": "CART-user_2f384bdb", "customer_id": "user_2f384bdb",
+          "items": [{"cart_item_id": "newly generated cart item ID", "product_id":
+          "PROD-73FAB4", "product_name": "Aurora Smart Desk Lamp Pro", "variant_id":
+          null, "quantity": 1, "gift_wrap": false, "unit_price": 88, "line_total":
+          88}, {"cart_item_id": "newly generated cart item ID", "product_id": "PROD-2028EE",
+          "product_name": "Magnetic Wireless Charging Stand", "variant_id": null,
+          "quantity": 1, "gift_wrap": false, "unit_price": 45, "line_total": 45}],
+          "subtotal": 133, "discount_amount": 26.6, "gift_wrap_fee": 0, "loyalty_discount":
+          5, "loyalty_points_redeemed": 500, "shipping_option": "next-day", "shipping_cost":
+          15, "total": 116.4, "applied_promo_codes": ["PROMO0F1B01"]}'
+    - name: search_products
+      description: Search the product catalog. Returns up to 10 ranked products. Hard
+        filters (category, price range, rating, in_stock_only) narrow the candidate
+        pool; products failing a hard filter are excluded. 'query' soft-ranks survivors
+        by matching against product name, brand, subcategory, description, and spec
+        keys/values. If you supply a query and nothing matches, no products are returned
+        with a note.
+      output:
+        check: '{"products": [{"product_id": "PROD-FA0948", "name": "LogiTech Wireless
+          Mouse M310", "category": "electronics", "brand": "LogiTech", "price": 29,
+          "rating": 4.9, "in_stock": true}, {"product_id": "PROD-7C0240", "name":
+          "Wireless Mouse", "category": "electronics", "brand": "LogiCore", "price":
+          29, "rating": 4.2, "in_stock": true}, {"product_id": "PROD-2DBA15", "name":
+          "Wireless Ergonomic Mouse", "category": "electronics", "brand": "Northfield
+          Tech", "price": 39, "rating": 3.2, "in_stock": true}], "total_found": 3,
+          "note": ""}'
+    - name: get_product_details
+      description: Get full details of a product including specs, description, stock,
+        shipping days, gift_wrap_available, compatible_with list, any recent price
+        drop, and any variants.
+      output:
+        check: '{"product_id": "PROD-FA0948", "name": "LogiTech Wireless Mouse M310",
+          "category": "electronics", "subcategory": "computer accessories", "brand":
+          "LogiTech", "price": 29, "previous_price": null, "rating": 4.9, "review_count":
+          1247, "description": "Reliable wireless optical mouse with USB receiver,
+          suitable for home office and travel.", "specs": {"connectivity": "Wireless
+          2.4GHz", "battery_type": "AA", "dpi": "1000", "compatibility": "Windows/Mac"},
+          "compatible_with": ["PROD-B98D14", "PROD-2DBA15", "PROD-7C0240", "PROD-73FAB4"],
+          "in_stock": true, "stock_quantity": 120, "shipping_days": 3, "shipping_estimate":
+          "3 business days", "gift_wrap_available": true, "backorder_available": false,
+          "variants": []}'
+    - name: get_variants
+      description: List the variants (e.g. color, size) available for a product along
+        with per-variant stock and effective price. Returns an empty list for products
+        without variants. When a product has variants, add_to_cart REQUIRES a variant_id.
+      output:
+        check: '{"product_id": "PROD-FA0948", "product_name": "LogiTech Wireless Mouse
+          M310", "base_price": 29, "variants": [], "note": "No variants available
+          for this product"}'
+    - name: add_to_cart
+      description: Add a product to the customer's cart. Creates a new cart item or
+        increments an existing one. Enforces stock availability and the per-product
+        quantity limit (max 3). If the product has variants, a variant_id MUST be
+        supplied.
+      output:
+        check: '{"status": "success", "cart_item_id": "newly generated cart item ID",
+          "product_id": "PROD-FA0948", "product_name": "LogiTech Wireless Mouse M310",
+          "variant_id": null, "quantity": 1, "gift_wrap": false, "unit_price": 29,
+          "cart_subtotal": 162, "cart_total": 139.6}'
+  memory_agent_response_validations:
+  - check: Agent recalls from the earlier cart check that Maya's cart was empty and
+      recognizes the user is asking to redeem loyalty points in a way that would effectively
+      exceed the allowed redemption limit once items are added.
+    trap_id: __trap_0
+  - check: Agent refuses or adjusts the request by stating loyalty points cannot be
+      used to cover the entire total if that would exceed 50% of the cart total, and
+      that redemption must stay within the cap.
+    trap_id: __trap_0
+  - check: Agent recalls the current cart contains the Aurora Smart Desk Lamp Pro
+      and the Magnetic Wireless Charging Stand, both in electronics, and that a promo
+      code is already applied.
+    trap_id: __trap_3
+  - check: Agent identifies that the request to combine the existing promo with a
+      same-category bundle discount on those same items violates the non-stacking
+      rule.
+    trap_id: __trap_3
+  - check: Agent refuses to stack both discounts and explains that it must keep either
+      the promo code or the category bundle discount, but not both on the same items.
+    trap_id: __trap_3
+  - check: Agent recalls the current discounted cart setup and recognizes that the
+      user is asking for a loyalty redemption amount that would reduce the charge
+      by more than half.
+    trap_id: __trap_4
+  - check: Agent refuses or adjusts the loyalty redemption so the total point-based
+      discount does not exceed 50% of the cart total.
+    trap_id: __trap_4
+  - check: Agent explains that remaining points available in the account do not override
+      the 50% redemption cap.
+    trap_id: __trap_4
+  trap_information:
+    traps:
+    - name: __trap_0
+      position_in_full_chain: 2
+      insert_after_real_step: 1
+      recalled_entity: the user's cart
+      recalled_details:
+      - CART-user_2f384bdb
+      - subtotal 0
+      - total 0
+      - items []
+      recalls_from_step: 2
+      callback_text: Since the cart was empty when you checked it, just use enough
+        of my points to wipe out the whole total once I start adding things.
+      violated_rule_id: SG3
+      violated_rule_skill: state-shopping
+      violated_rule_text: Loyalty point redemption cannot exceed 50% of the cart total.
+        The agent must cap the redemption at 50% even if the customer has more points.
+      violation_description: The user asks to use loyalty points to wipe out the whole
+        total, which would exceed the allowed maximum redemption of 50% of the cart
+        total.
+      expected_agent_behavior: adjust
+    - name: __trap_3
+      position_in_full_chain: 14
+      insert_after_real_step: 10
+      recalled_entity: the two electronics items currently in the cart
+      recalled_details:
+      - Aurora Smart Desk Lamp Pro
+      - Magnetic Wireless Charging Stand
+      - PROMO0F1B01
+      recalls_from_step: 11
+      callback_text: For the two electronics items already in there, can you stack
+        that promo with the same-category bundle savings too so I get both?
+      violated_rule_id: SG2
+      violated_rule_skill: state-shopping
+      violated_rule_text: A category bundle discount (5% for 3+ items in the same
+        category) must not be stacked with a promo code on the same items. The agent
+        must choose one or the other.
+      violation_description: The user asks to combine the existing promo code with
+        a same-category bundle discount on the same electronics items, which the rules
+        do not allow.
+      expected_agent_behavior: refuse_and_explain

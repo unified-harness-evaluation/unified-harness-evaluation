@@ -1,0 +1,311 @@
+id: tc_lh_2096be98_contradict
+description: 'You are Harper Collins (user_id: harper_collins_664).'
+test_steps:
+- type: dynamic_conversation
+  user_agent:
+    task_summary: 'You are Harper Collins (user_id: harper_collins_664). You are calling
+      customer service because you have a few retail orders you want sorted out in
+      one sitting, and you expect the agent to keep track of what has already been
+      discussed. Start by authenticating with your email, harper.collins2026@example.com.
+
+
+      First, bring up your pending order #W4705780. You want the shipping address
+      changed because you need it sent somewhere else before it ships. Give the new
+      address as 3518 Magnolia Street, Apt 2D, Nashville, TN 37212, USA. After that
+      is done, ask for the full details of that same order so you can verify the updated
+      shipping address, the items on it, the status, and the payment information.
+      Also mention that order #W4705780 currently has the shipping address 3518 Magnolia
+      Street, Apt 2D, Nashville, TN 37212, USA once the change is completed. Mention
+      that the payment history on order #W4705780 shows a 79.98 payment made on 2026-09-10
+      16:48:59 using PayPal.
+
+
+      Next, say you also need help with a delivered order, #W7411703. You want to
+      return the TrailFlex Joggers item from that order, item 5632174974, and have
+      the refund go back to the original payment method. Mention that order #W7411703
+      was delivered to 4821 Belmont Park Way, Suite 14, Nashville, TN 37211 so you
+      can make sure you are reviewing the right purchase. After the return is submitted,
+      ask for your user profile details and then ask for the full order details for
+      that delivered order again so you can confirm the status changed correctly and
+      the return information is now attached.
+
+
+      Then say you have one more return-related follow-up on that same delivered order:
+      return the Everyday Crew Tee item 5610875649 as well, again to the same original
+      payment method. After that, ask for the user details again and then ask for
+      another pending order, #W2813835, so you can review it before making any changes.
+
+
+      Once that order is open, ask about the product details for TrailFlex Joggers
+      so you can compare available variants. Then go back to your first pending order
+      and change both items in it: swap the TrailFlex Joggers item 9716794911 for
+      item 6990106566, and swap the Everyday Crew Tee item 5610875649 for item 3301828484.
+      Use the PayPal method already on that order for any price difference. Make clear
+      that these are all the item changes you want on that order. Before asking for
+      the swap, ask the agent to confirm that order #W4705780 is still going to your
+      Boston address at 4829 Elm Ridge Way, Suite 7, Boston, MA 02118. After the swap,
+      ask for the full details of that updated order.
+
+
+      Finally, go to your other pending order and cancel #W2813835 because it was
+      ordered by mistake. After that, ask the agent to confirm that the payment history
+      on order #W4705780 shows a 79.98 charge made on 2026-09-10 16:48:59 using your
+      Visa card. Before wrapping up, ask the agent to confirm that order #W7411703
+      is the one that was delivered to 3518 Magnolia Street, Apt 2D, Nashville, TN
+      37212. Then ask for the full product catalog mapping at the end.
+
+
+      You will only provide personal information (IDs, names, dates, reservation numbers,
+      flight numbers, etc.) once. If the agent asks you to repeat something you already
+      said, refuse and tell it to refer to the earlier conversation. Also, after every
+      action the agent takes on your behalf, ask it to confirm the full details of
+      what was done — you want complete information in every response, not just a
+      brief acknowledgement. Approve code or command from the agent if prompted'
+  max_turns: 60
+  skill_validations:
+    expected_skill_invocations:
+    - skill: tau2Retail
+  agent_response_validations:
+  - check: 'Agent confirms order #W4705780 was updated from 4829 Elm Ridge Way, Suite
+      7, Boston, MA 02118 to 3518 Magnolia Street, Apt 2D, Nashville, TN 37212, USA,
+      and states the order remains in pending status.'
+  - check: 'Agent tells the user that order #W4705780 contains TrailFlex Joggers item
+      9716794911 in Charcoal size M and Everyday Crew Tee item 5610875649 in White
+      size L, with payment history showing a 79.98 payment on 2026-09-10 16:48:59
+      using paypal_5098475.'
+  - check: 'Agent confirms a return was submitted for delivered order #W7411703 for
+      item 5632174974, with the refund going to the original payment method credit_card_7961578,
+      and explains that return instructions will be sent to lena.foster2026@example.com.'
+  - check: 'Agent reports that the refreshed details for #W7411703 show status return
+      requested, fulfillment tracking TRK4186729051, and return_items now listing
+      5632174974 with return_payment_method_id credit_card_7961578.'
+  - check: 'Agent informs the user that a second return request on #W7411703 cannot
+      be completed because returns only work on orders still in delivered status,
+      and after the first return request that order is now return requested.'
+  - check: Agent provides the TrailFlex Joggers product details for product_id 7507150101
+      and lists the available variants including 5632174974 Olive S, 2364909101 Olive
+      M, 6990106566 Olive L, 6167435302 Charcoal S, 9716794911 Charcoal M, and 1460318075
+      Charcoal L.
+  - check: 'Agent confirms order #W4705780 had both item swaps processed together:
+      9716794911 was changed to 6990106566 and 5610875649 was changed to 3301828484,
+      the order status is now pending (item modified), and the price difference charged
+      through paypal_5098475 is 3.26.'
+  - check: 'Agent confirms order #W2813835 was cancelled for the reason ordered by
+      mistake and states the refund will go back to the original Visa payment method
+      credit_card_5360334 in 5-7 business days because it is not a gift card.'
+  capability_validations:
+    expected_capabilities:
+    - name: modify_pending_order_address
+      description: Change the shipping address of a pending order. Only works if order
+        status is 'pending' (including 'pending (item modified)').
+      output:
+        check: '{"order": "newly generated order ID"}'
+    - name: get_order_details
+      description: Fetch the status and full details of an order by its ID.
+      output:
+        check: '{"order_id": "#W4705780", "user_id": "harper_collins_664", "address":
+          {"address1": "3518 Magnolia Street", "address2": "Apt 2D", "city": "Nashville",
+          "state": "TN", "country": "USA", "zip": "37212"}, "items": [{"oi_id": "RT-#W4705780-0",
+          "order_id": "#W4705780", "product_id": "7507150101", "item_id": "9716794911",
+          "name": "TrailFlex Joggers", "quantity": 1, "unit_price": 54.99, "options":
+          {"color": "Charcoal", "size": "M"}, "item_status": "confirmed"}, {"oi_id":
+          "RT-#W4705780-1", "order_id": "#W4705780", "product_id": "2460285426", "item_id":
+          "5610875649", "name": "Everyday Crew Tee", "quantity": 1, "unit_price":
+          24.99, "options": {"color": "White", "size": "L"}, "item_status": "confirmed"}],
+          "status": "pending", "fulfillments": [], "payment_history": [{"id": 16,
+          "order_id": "#W4705780", "transaction_type": "payment", "amount": 79.98,
+          "payment_method_id": "paypal_5098475", "created_at": "2026-09-10 16:48:59"}],
+          "cancel_reason": null, "exchange_items": null, "exchange_new_items": null,
+          "exchange_payment_method_id": null, "exchange_price_difference": null, "return_items":
+          null, "return_payment_method_id": null}'
+    - name: return_delivered_order_items
+      description: Request a return for items of a delivered order. Only works if
+        order status is 'delivered'. Refund must go to the original payment method
+        or an existing gift card. After confirmation, status becomes 'return requested'
+        and the user receives return instructions by email.
+      output:
+        check: '{"order": "newly generated order ID"}'
+    - name: get_user_details
+      description: Fetch a user's profile including their name, address, email, payment
+        methods, and list of order IDs.
+      output:
+        check: '{"user_id": "harper_collins_664", "name": "Harper Collins", "address":
+          {"address1": "4829 Elm Ridge Way", "address2": "Suite 7", "city": "Boston",
+          "state": "MA", "country": "USA", "zip": "02118"}, "email": "harper.collins2026@example.com",
+          "payment_methods": [{"payment_method_id": "credit_card_5360334", "user_id":
+          "harper_collins_664", "source": "credit_card", "brand": "visa", "last_four":
+          "5531", "balance": 0.0}, {"payment_method_id": "paypal_5098475", "user_id":
+          "harper_collins_664", "source": "paypal", "brand": null, "last_four": null,
+          "balance": 0.0}], "orders": ["#W4705780", "#W2813835"]}'
+    - name: get_order_details
+      description: Fetch the status and full details of an order by its ID.
+      output:
+        check: '{"order_id": "#W7411703", "user_id": "lena_foster_064", "address":
+          {"address1": "4821 Belmont Park Way", "address2": "Suite 14", "city": "Nashville",
+          "state": "TN", "country": "USA", "zip": "37211"}, "items": [{"oi_id": "RT-#W7411703-0",
+          "order_id": "#W7411703", "product_id": "7507150101", "item_id": "5632174974",
+          "name": "TrailFlex Joggers", "quantity": 1, "unit_price": 54.99, "options":
+          {"color": "Olive", "size": "S"}, "item_status": "delivered"}, {"oi_id":
+          "RT-#W7411703-1", "order_id": "#W7411703", "product_id": "2460285426", "item_id":
+          "5610875649", "name": "Everyday Crew Tee", "quantity": 1, "unit_price":
+          24.99, "options": {"color": "White", "size": "L"}, "item_status": "delivered"}],
+          "status": "return requested", "fulfillments": [{"id": 14, "order_id": "#W7411703",
+          "tracking_ids": ["TRK4186729051"], "item_ids": ["5632174974", "5610875649"],
+          "created_at": "2026-09-10 17:11:17"}], "payment_history": [{"id": 11, "order_id":
+          "#W7411703", "transaction_type": "payment", "amount": 79.98, "payment_method_id":
+          "credit_card_7961578", "created_at": "2026-09-10 16:40:09"}], "cancel_reason":
+          null, "exchange_items": null, "exchange_new_items": null, "exchange_payment_method_id":
+          null, "exchange_price_difference": null, "return_items": ["5632174974"],
+          "return_payment_method_id": "credit_card_7961578"}'
+    - name: return_delivered_order_items
+      description: Request a return for items of a delivered order. Only works if
+        order status is 'delivered'. Refund must go to the original payment method
+        or an existing gift card. After confirmation, status becomes 'return requested'
+        and the user receives return instructions by email.
+      output:
+        check: '{"order": "newly generated order ID"}'
+    - name: get_user_details
+      description: Fetch a user's profile including their name, address, email, payment
+        methods, and list of order IDs.
+      output:
+        check: '{"user_id": "harper_collins_664", "name": "Harper Collins", "address":
+          {"address1": "4829 Elm Ridge Way", "address2": "Suite 7", "city": "Boston",
+          "state": "MA", "country": "USA", "zip": "02118"}, "email": "harper.collins2026@example.com",
+          "payment_methods": [{"payment_method_id": "credit_card_5360334", "user_id":
+          "harper_collins_664", "source": "credit_card", "brand": "visa", "last_four":
+          "5531", "balance": 0.0}, {"payment_method_id": "paypal_5098475", "user_id":
+          "harper_collins_664", "source": "paypal", "brand": null, "last_four": null,
+          "balance": 0.0}], "orders": ["#W4705780", "#W2813835"]}'
+    - name: get_order_details
+      description: Fetch the status and full details of an order by its ID.
+      output:
+        check: '{"order_id": "#W2813835", "user_id": "harper_collins_664", "address":
+          {"address1": "4829 Elm Ridge Way", "address2": "Suite 7", "city": "Boston",
+          "state": "MA", "country": "USA", "zip": "02118"}, "items": [{"oi_id": "RT-#W2813835-0",
+          "order_id": "#W2813835", "product_id": "2460285426", "item_id": "3301828484",
+          "name": "Everyday Crew Tee", "quantity": 1, "unit_price": 24.99, "options":
+          {"color": "Black", "size": "M"}, "item_status": "confirmed"}, {"oi_id":
+          "RT-#W2813835-1", "order_id": "#W2813835", "product_id": "7507150101", "item_id":
+          "2364909101", "name": "TrailFlex Joggers", "quantity": 1, "unit_price":
+          54.99, "options": {"color": "Olive", "size": "M"}, "item_status": "confirmed"}],
+          "status": "pending", "fulfillments": [], "payment_history": [{"id": 34,
+          "order_id": "#W2813835", "transaction_type": "payment", "amount": 79.98,
+          "payment_method_id": "credit_card_5360334", "created_at": "2026-09-10 17:09:59"}],
+          "cancel_reason": null, "exchange_items": null, "exchange_new_items": null,
+          "exchange_payment_method_id": null, "exchange_price_difference": null, "return_items":
+          null, "return_payment_method_id": null}'
+    - name: get_product_details
+      description: Fetch a product's details including its name, product ID, and all
+        variant items with their item IDs, options, availability, and prices.
+      output:
+        check: '{"name": "TrailFlex Joggers", "product_id": "7507150101", "variants":
+          [{"item_id": "5632174974", "product_id": "7507150101", "options": {"color":
+          "Olive", "size": "S"}, "available": 1, "price": 53.89}, {"item_id": "2364909101",
+          "product_id": "7507150101", "options": {"color": "Olive", "size": "M"},
+          "available": 1, "price": 53.89}, {"item_id": "6167435302", "product_id":
+          "7507150101", "options": {"color": "Charcoal", "size": "S"}, "available":
+          1, "price": 54.44}, {"item_id": "9716794911", "product_id": "7507150101",
+          "options": {"color": "Charcoal", "size": "M"}, "available": 1, "price":
+          52.79}, {"item_id": "6990106566", "product_id": "7507150101", "options":
+          {"color": "Olive", "size": "L"}, "available": 1, "price": 54.44}, {"item_id":
+          "1460318075", "product_id": "7507150101", "options": {"color": "Charcoal",
+          "size": "L"}, "available": 1, "price": 53.34}]}'
+    - name: modify_pending_order_items
+      description: Swap items in a pending order for other variants of the same product.
+        Can only be called ONCE per order; changes status to 'pending (item modified)'
+        after which no further modifications or cancellations are allowed. item_ids
+        and new_item_ids are position-matched lists. Each new item must be a different
+        variant of the same product type and must be available. Payment method covers
+        the price difference; gift cards must have sufficient balance.
+      output:
+        check: '{"order": "newly generated order ID"}'
+    - name: get_order_details
+      description: Fetch the status and full details of an order by its ID.
+      output:
+        check: '{"order_id": "#W4705780", "user_id": "harper_collins_664", "address":
+          {"address1": "3518 Magnolia Street", "address2": "Apt 2D", "city": "Nashville",
+          "state": "TN", "country": "USA", "zip": "37212"}, "items": [{"product_id":
+          "7507150101", "item_id": "6990106566", "name": "TrailFlex Joggers", "quantity":
+          1, "unit_price": 54.44, "options": {"color": "Olive", "size": "L"}}, {"product_id":
+          "2460285426", "item_id": "3301828484", "name": "Everyday Crew Tee", "quantity":
+          1, "unit_price": 23.45, "options": {"color": "Black", "size": "M"}}], "status":
+          "pending (item modified)", "fulfillments": [], "payment_history": [{"id":
+          16, "order_id": "#W4705780", "transaction_type": "payment", "amount": 79.98,
+          "payment_method_id": "paypal_5098475", "created_at": "2026-09-10 16:48:59"}],
+          "cancel_reason": null, "exchange_items": ["9716794911", "5610875649"], "exchange_new_items":
+          ["6990106566", "3301828484"], "exchange_payment_method_id": "paypal_5098475",
+          "exchange_price_difference": 3.26, "return_items": null, "return_payment_method_id":
+          null}'
+    - name: cancel_pending_order
+      description: Cancel a pending order. Only works if order status is 'pending'.
+        Sets status to 'cancelled' and processes refund to original payment method
+        (immediately for gift card, 5-7 business days otherwise).
+      output:
+        check: '{"order": "newly generated order ID"}'
+    - name: list_all_product_types
+      description: Returns a JSON string mapping all 50 product names to their product
+        IDs, sorted alphabetically by name. Takes no arguments.
+      output:
+        check: '{"product_map": "{\"Everyday Crew Tee\":\"2460285426\",\"TrailFlex
+          Joggers\":\"7507150101\"}"}'
+  memory_agent_response_validations:
+  - check: 'Agent correctly recalls from earlier in the conversation that order #W4705780
+      was updated to 3518 Magnolia Street, Apt 2D, Nashville, TN 37212, USA.'
+    trap_id: __trap_0
+  - check: 'Agent flags the inconsistency when the user later refers to #W4705780
+      as still going to the Boston address and asks for confirmation before proceeding.'
+    trap_id: __trap_0
+  - check: 'Agent corrects or refuses the mistaken premise by stating that #W4705780
+      is no longer addressed to 4829 Elm Ridge Way, Suite 7, Boston, MA 02118 after
+      the earlier address change.'
+    trap_id: __trap_0
+  - check: 'Agent correctly recalls from earlier in the conversation that order #W7411703
+      was identified as being delivered to 4821 Belmont Park Way, Suite 14, Nashville,
+      TN 37211.'
+    trap_id: __trap_1
+  - check: 'Agent flags the inconsistency when the user later refers to order #W7411703
+      as having been delivered to 3518 Magnolia Street, Apt 2D, Nashville, TN 37212
+      and asks for confirmation before proceeding.'
+    trap_id: __trap_1
+  - check: 'Agent corrects the mistaken premise by stating that the delivery address
+      on order #W7411703 is 4821 Belmont Park Way, Suite 14, Nashville, TN 37211,
+      not 3518 Magnolia Street, Apt 2D, Nashville, TN 37212.'
+    trap_id: __trap_1
+  - check: 'Agent correctly recalls from earlier in the conversation that order #W4705780
+      had a 79.98 payment made on 2026-09-10 16:48:59 using PayPal.'
+    trap_id: __trap_2
+  - check: 'Agent flags the inconsistency when the user later refers to that same
+      79.98 payment on order #W4705780 as having been made using a Visa card and asks
+      for confirmation before proceeding.'
+    trap_id: __trap_2
+  - check: 'Agent corrects the mistaken premise by stating that the recorded payment
+      method for the 79.98 charge on order #W4705780 is PayPal, not a Visa card.'
+    trap_id: __trap_2
+  - check: 'Agent detects the user''s later claim that order #W4705780''s shipping
+      address is ''4829 Elm Ridge Way, Suite 7, Boston, MA 02118'' contradicts what
+      the user stated earlier (''3518 Magnolia Street, Apt 2D, Nashville, TN 37212,
+      USA''), catches it from conversation memory, and corrects or seeks confirmation
+      instead of acting on it.'
+    trap_id: __trap_0
+  - check: 'Agent detects the user''s later claim that order #W7411703''s delivery
+      address is ''3518 Magnolia Street, Apt 2D, Nashville, TN 37212'' contradicts
+      what the user stated earlier (''4821 Belmont Park Way, Suite 14, Nashville,
+      TN 37211''), catches it from conversation memory, and corrects or seeks confirmation
+      instead of acting on it.'
+    trap_id: __trap_1
+  - check: 'Agent detects the user''s later claim that order #W4705780''s payment
+      method for the 79.98 payment on 2026-09-10 16:48:59 is ''Visa card'' contradicts
+      what the user stated earlier (''PayPal''), catches it from conversation memory,
+      and corrects or seeks confirmation instead of acting on it.'
+    trap_id: __trap_2
+  trap_information:
+    traps:
+    - name: __trap_0
+      position_in_full_chain: 9
+      insert_after_real_step: 8
+    - name: __trap_1
+      position_in_full_chain: 12
+      insert_after_real_step: 10
+    - name: __trap_2
+      position_in_full_chain: 14
+      insert_after_real_step: 11

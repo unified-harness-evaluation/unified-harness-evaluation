@@ -1,0 +1,20 @@
+image: harness-mimo-code
+turn_mode: cli
+# Harvest the full agent trajectory (tool calls, outputs, reasoning) from the
+# mimo-code SQLite session DB in post_run.py and fold it into the saved trace.
+# Override per run with the HARNESS_CAPTURE_TRAJECTORY env var on the gateway process.
+capture_trajectory: true
+cmd: ["mimo", "run", "{task}", "--model", "openai/{model}", "--pure", "--dangerously-skip-permissions"]
+env:
+  OPENAI_API_KEY: "{api_key}"
+  OPENAI_BASE_URL: "{proxy_base}/v1"
+  TERM: "dumb"
+  NO_COLOR: "1"
+workdir: /workspace
+session:
+  flag: "-c"
+# global dir: loads unconditionally (project dirs are trust-gated on some CLIs)
+skills_dirs:
+  - ~/.agents/skills
+# init a git repo in the fresh workspace (some CLIs use the git root as
+# project boundary or refuse to run outside one)

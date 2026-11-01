@@ -1,0 +1,23 @@
+image: harness-qwen-code
+turn_mode: cli
+# Harvest the full agent trajectory (tool calls, outputs, reasoning) from the
+# qwen chat JSONL in post_run.py and fold it into the saved trace. Override
+# per run with the HARNESS_CAPTURE_TRAJECTORY env var on the gateway process.
+capture_trajectory: true
+cmd: ["qwen", "-p", "{task}", "--yolo"]
+env:
+  OPENAI_API_KEY: "{api_key}"
+  OPENAI_BASE_URL: "{proxy_base}/v1"
+  # qwen-code reads the model from OPENAI_MODEL; without it the CLI falls back
+  # to its built-in default (qwen3.7-max), which the proxy no longer accepts
+  # since the litellm "*" wildcard was removed for explicit model-switching.
+  OPENAI_MODEL: "{model}"
+  QWEN_CODE_SUPPRESS_YOLO_WARNING: "1"
+workdir: /workspace
+session:
+  flag: "-c"
+# global dir: loads unconditionally (project dirs are trust-gated on some CLIs)
+skills_dirs:
+  - ~/.qwen/skills
+# init a git repo in the fresh workspace (some CLIs use the git root as
+# project boundary or refuse to run outside one)

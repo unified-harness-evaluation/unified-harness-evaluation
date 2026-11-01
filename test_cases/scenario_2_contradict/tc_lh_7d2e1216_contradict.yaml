@@ -1,0 +1,319 @@
+id: tc_lh_7d2e1216_contradict
+description: 'You are Lena Brooks (user_id: user_a1bbd117).'
+test_steps:
+- type: dynamic_conversation
+  user_agent:
+    task_summary: 'You are Lena Brooks (user_id: user_a1bbd117). You are contacting
+      customer service because you received an order with a few items that no longer
+      feel like the right fit, and you want to sort everything out in one conversation
+      instead of coming back later.
+
+
+      Start by asking the agent to pull up product details for the throw blanket from
+      your recent order, product ID PROD-FA349F. You want the full details, especially
+      the current price, whether it is in stock, the warranty length, and the return
+      window, because you are considering whether it is even worth trying to exchange.
+      Mention that the throw blanket is the Northline Wool Blend Throw Blanket so
+      the agent knows you mean the right item. Also mention that the throw blanket
+      costs $34 so they know you are referring to the item from your order. After
+      that, say you want to exchange that blanket for something else and ask the agent
+      to look into whether the exchange is possible.
+
+
+      Then ask the agent to help you find an alternative by searching for a desk organizer.
+      Once they show options, ask for full details on the Bamboo Desk Organizer Set,
+      and then go ahead with exchanging the blanket for that item if it is allowed.
+      Make sure the agent explains any price difference and the final result.
+
+
+      Next, switch to another item from the same order: ask them to search for wireless
+      mouse options because you are also thinking about changing the mouse you bought.
+      Have them show you the details for the Wireless Ergonomic Mouse, and mention
+      that your original mouse from the order is the LogiTech Wireless Mouse M310
+      so they know which item you mean. Then ask to exchange your original mouse for
+      that one if eligible.
+
+
+      After that, ask the agent to pull up your order ORD-AC715B so you can review
+      everything currently on the order, including shipping, delivery, payment, and
+      all items. Then ask them to check the warranty status for the tote bag from
+      that order, item ID ITEM-8F1B06, because you remember buying coverage on it
+      and want to know whether it is active and what it covers. While reviewing the
+      order, ask whether the throw blanket was the $39 item on that order because
+      you want to double-check the amount before everything is finalized.
+
+
+      Once that is done, go back to the tote bag and say you are thinking of exchanging
+      it for something cheaper. Ask them to search for cable organizer options, then
+      get full details for the AeroLoop Silicone Cable Organizer, and process that
+      exchange if possible. You want to know exactly what happens to the price difference.
+      Also ask them to process the exchange for the Field & Harbor tote bag if it
+      is possible.
+
+
+      Finally, ask for one more product search for an insulated travel mug, because
+      before ending the chat you want to see another in-stock option you might buy
+      separately later. Before wrapping up, ask whether the mouse you exchanged was
+      the Wireless Mouse from LogiCore, because you want to make sure they changed
+      the correct item.
+
+
+      You will only provide personal information (IDs, names, dates, reservation numbers,
+      flight numbers, etc.) once. If the agent asks you to repeat something you already
+      said, refuse and tell it to refer to the earlier conversation. Also, after every
+      action the agent takes on your behalf, ask it to confirm the full details of
+      what was done — you want complete information in every response, not just a
+      brief acknowledgement.
+
+
+      If the tote bag exchange comes up again later in the conversation, ask them
+      to handle the exchange for the Northline tote bag instead. Approve code or command
+      from the agent if prompted'
+  max_turns: 60
+  skill_validations:
+    expected_skill_invocations:
+    - skill: state-customer-support
+  agent_response_validations:
+  - check: 'Agent confirms the product details for PROD-FA349F: Northline Wool Blend
+      Throw Blanket in home/blankets, price $34, current_price null, 12-month warranty,
+      30-day return window, 0% restocking fee, and that it is currently out of stock.'
+  - check: Agent explains that exchanging ITEM-EEA343 from order ORD-AC715B into PROD-9559B3
+      (Bamboo Desk Organizer Set) is eligible, the preview shows a $0 price difference,
+      and after confirmation the exchange status is exchanged.
+  - check: Agent communicates the wireless mouse search results, including PROD-FA0948
+      LogiTech Wireless Mouse M310, PROD-2DBA15 Wireless Ergonomic Mouse, and PROD-7C0240
+      Wireless Mouse, all in stock, and confirms PROD-2DBA15 costs $39 with a 12-month
+      warranty and 30-day return window.
+  - check: Agent tells the user that previewing an exchange of ITEM-74C7E4 to PROD-2DBA15
+      is eligible and would require paying a $10 price difference because the original
+      mouse was $29 and the replacement is $39, and after confirmation the exchange
+      is executed.
+  - check: Agent summarizes order ORD-AC715B as delivered, placed on 2026-09-02, shipped
+      standard with $0 shipping cost, tracking number CS-TRK-AC715B, delivered on
+      2026-09-07T14:30:00 before the promised date of 2026-09-08T12:00:00, with subtotal
+      and total paid both $91, and items ITEM-EEA343, ITEM-8F1B06, and ITEM-74C7E4.
+  - check: Agent confirms warranty WR-NEW003 on ITEM-8F1B06 is active extended coverage
+      from 2026-09-07 through 2028-09-07, with 0 claims used out of 5 maximum, and
+      coverage listed as full_replacement.
+  - check: 'Agent states the exchange policy before writing actions: exchanges must
+      be within the product return window and eligible for return, previews show eligibility
+      and price difference, more expensive replacements require customer payment,
+      cheaper replacements issue the difference as store credit, and execution requires
+      confirmation.'
+  - check: Agent reports that exchanging ITEM-8F1B06 for PROD-FCFD98 (AeroLoop Silicone
+      Cable Organizer) is eligible with a -$14 price difference meaning $14 would
+      be issued as store credit, and after confirmation the exchange is executed;
+      the final search also identifies PROD-AFC284 TrailPeak Insulated Travel Mug
+      as an in-stock result.
+  capability_validations:
+    expected_capabilities:
+    - name: get_product_details
+      description: Retrieve full product details by exact product ID, including current
+        price, stock status, warranty terms, and return window.
+      output:
+        check: '{"product_id": "PROD-FA349F", "name": "Northline Wool Blend Throw
+          Blanket", "category": "home", "subcategory": "blankets", "price": 34, "current_price":
+          null, "warranty_months": 12, "return_window_days": 30, "restocking_fee_pct":
+          0, "weight_lbs": 0, "is_fragile": 0, "in_stock": 0}'
+    - name: process_exchange
+      description: 'Exchange an item for a different product or variant. Two-step
+        operation: first call without confirm to preview (price difference, eligibility),
+        then call with confirm=true to execute. Requires prior call to get_policies(topic=''exchange'').'
+      output:
+        check: '{"item_id": "ITEM-EEA343", "new_product_id": "PROD-9559B3", "price_difference":
+          0, "eligible": true, "status": "preview"}'
+    - name: search_products
+      description: Search the task-local product catalog by free-text query. Returns
+        ranked compact matches with product_id, name, matched_field, category, subcategory,
+        and in_stock.
+      output:
+        check: '{"query": "desk organizer", "results": [{"product_id": "PROD-9559B3",
+          "name": "Bamboo Desk Organizer Set", "matched_field": "name", "category":
+          "home_office", "subcategory": "organization", "in_stock": 1}]}'
+    - name: get_product_details
+      description: Retrieve full product details by exact product ID, including current
+        price, stock status, warranty terms, and return window.
+      output:
+        check: '{"product_id": "PROD-9559B3", "name": "Bamboo Desk Organizer Set",
+          "category": "home_office", "subcategory": "organization", "price": 34, "current_price":
+          null, "warranty_months": 12, "return_window_days": 30, "restocking_fee_pct":
+          0, "weight_lbs": 0, "is_fragile": 0, "in_stock": 1}'
+    - name: process_exchange
+      description: 'Exchange an item for a different product or variant. Two-step
+        operation: first call without confirm to preview (price difference, eligibility),
+        then call with confirm=true to execute. Requires prior call to get_policies(topic=''exchange'').'
+      output:
+        check: '{"item_id": "ITEM-EEA343", "new_product_id": "PROD-9559B3", "price_difference":
+          0, "eligible": true, "status": "exchanged"}'
+    - name: search_products
+      description: Search the task-local product catalog by free-text query. Returns
+        ranked compact matches with product_id, name, matched_field, category, subcategory,
+        and in_stock.
+      output:
+        check: '{"query": "wireless mouse", "results": [{"product_id": "PROD-FA0948",
+          "name": "LogiTech Wireless Mouse M310", "matched_field": "name", "category":
+          "electronics", "subcategory": "computer accessories", "in_stock": 1}, {"product_id":
+          "PROD-2DBA15", "name": "Wireless Ergonomic Mouse", "matched_field": "name",
+          "category": "electronics", "subcategory": "computer accessories", "in_stock":
+          1}, {"product_id": "PROD-7C0240", "name": "Wireless Mouse", "matched_field":
+          "name", "category": "electronics", "subcategory": "computer accessories",
+          "in_stock": 1}]}'
+    - name: get_product_details
+      description: Retrieve full product details by exact product ID, including current
+        price, stock status, warranty terms, and return window.
+      output:
+        check: '{"product_id": "PROD-2DBA15", "name": "Wireless Ergonomic Mouse",
+          "category": "electronics", "subcategory": "computer accessories", "price":
+          39, "current_price": null, "warranty_months": 12, "return_window_days":
+          30, "restocking_fee_pct": 0, "weight_lbs": 0, "is_fragile": 0, "in_stock":
+          1}'
+    - name: process_exchange
+      description: 'Exchange an item for a different product or variant. Two-step
+        operation: first call without confirm to preview (price difference, eligibility),
+        then call with confirm=true to execute. Requires prior call to get_policies(topic=''exchange'').'
+      output:
+        check: '{"item_id": "ITEM-74C7E4", "new_product_id": "PROD-2DBA15", "price_difference":
+          10, "eligible": true, "status": "preview"}'
+    - name: process_exchange
+      description: 'Exchange an item for a different product or variant. Two-step
+        operation: first call without confirm to preview (price difference, eligibility),
+        then call with confirm=true to execute. Requires prior call to get_policies(topic=''exchange'').'
+      output:
+        check: '{"item_id": "ITEM-74C7E4", "new_product_id": "PROD-2DBA15", "price_difference":
+          10, "eligible": true, "status": "exchanged"}'
+    - name: get_order
+      description: Retrieve full details of an order by its order ID. Returns the
+        order, all items in the order, and product details for each item.
+      output:
+        check: '{"order_id": "ORD-AC715B", "customer_id": "user_a1bbd117", "order_date":
+          "2026-09-02", "status": "delivered", "shipping_status": "delivered", "shipping_method":
+          "standard", "shipping_cost": 0, "tracking_number": "CS-TRK-AC715B", "delivery_date":
+          "2026-09-07T14:30:00", "delivery_promised_date": "2026-09-08T12:00:00",
+          "subtotal": 91, "discount_code": null, "discount_amount": 0, "total_paid":
+          91, "is_gift": 0, "items": [{"oi_id": "ITEM-EEA343", "order_id": "ORD-AC715B",
+          "product_id": "PROD-FA349F", "item_id": null, "name": "Northline Wool Blend
+          Throw Blanket", "quantity": 1, "unit_price": 34, "options": "{}", "item_status":
+          "delivered", "return_reason": null, "refund_amount": null, "refund_method":
+          null, "restocking_fee": null, "return_label_issued": 0, "replacement_item_id":
+          null, "goodwill_credit": 0, "goodwill_credit_method": null, "store_credit_only":
+          0}, {"oi_id": "ITEM-8F1B06", "order_id": "ORD-AC715B", "product_id": "PROD-4ED2E3",
+          "item_id": null, "name": "Everyday Canvas Tote Bag", "quantity": 1, "unit_price":
+          28, "options": "{}", "item_status": "delivered", "return_reason": null,
+          "refund_amount": null, "refund_method": null, "restocking_fee": null, "return_label_issued":
+          0, "replacement_item_id": null, "goodwill_credit": 0, "goodwill_credit_method":
+          null, "store_credit_only": 0}, {"oi_id": "ITEM-74C7E4", "order_id": "ORD-AC715B",
+          "product_id": "PROD-FA0948", "item_id": null, "name": "LogiTech Wireless
+          Mouse M310", "quantity": 1, "unit_price": 29, "options": "{}", "item_status":
+          "delivered", "return_reason": null, "refund_amount": null, "refund_method":
+          null, "restocking_fee": null, "return_label_issued": 0, "replacement_item_id":
+          null, "goodwill_credit": 0, "goodwill_credit_method": null, "store_credit_only":
+          0}]}'
+    - name: get_warranty_status
+      description: Check the warranty status for a specific item. Returns warranty
+        type, coverage period, claim history, and current eligibility.
+      output:
+        check: '{"warranty_id": "WR-NEW003", "order_id": "ORD-AC715B", "item_id":
+          "ITEM-8F1B06", "product_id": "PROD-4ED2E3", "warranty_type": "extended",
+          "start_date": "2026-09-07", "end_date": "2028-09-07", "status": "active",
+          "claim_count": 0, "max_claims": 5, "coverage": "full_replacement", "resolution":
+          null}'
+    - name: get_policies
+      description: Look up the company's policies for a given topic. Must be called
+        before using any write tool (process_return, process_refund, cancel_order,
+        process_exchange, process_warranty_claim).
+      output:
+        check: '{"topic": "exchange", "rules": "Exchanges require the item to be within
+          the product return window and eligible for return. A preview should show
+          whether the exchange is eligible and any price difference. If the replacement
+          item costs more, the customer pays the difference. If it costs less, the
+          difference is issued as store credit. Exchange execution requires confirmation."}'
+    - name: search_products
+      description: Search the task-local product catalog by free-text query. Returns
+        ranked compact matches with product_id, name, matched_field, category, subcategory,
+        and in_stock.
+      output:
+        check: '{"query": "cable organizer", "results": [{"product_id": "PROD-FCFD98",
+          "name": "AeroLoop Silicone Cable Organizer", "matched_field": "name", "category":
+          "accessories", "subcategory": "tech accessories", "in_stock": 1}, {"product_id":
+          "PROD-7583E5", "name": "CableCraft USB-C Organizer Strap 2-Pack", "matched_field":
+          "description", "category": "accessories", "subcategory": "cable management",
+          "in_stock": 1}]}'
+    - name: get_product_details
+      description: Retrieve full product details by exact product ID, including current
+        price, stock status, warranty terms, and return window.
+      output:
+        check: '{"product_id": "PROD-FCFD98", "name": "AeroLoop Silicone Cable Organizer",
+          "category": "accessories", "subcategory": "tech accessories", "price": 14,
+          "current_price": null, "warranty_months": 12, "return_window_days": 30,
+          "restocking_fee_pct": 0, "weight_lbs": 0, "is_fragile": 0, "in_stock": 1}'
+    - name: process_exchange
+      description: 'Exchange an item for a different product or variant. Two-step
+        operation: first call without confirm to preview (price difference, eligibility),
+        then call with confirm=true to execute. Requires prior call to get_policies(topic=''exchange'').'
+      output:
+        check: '{"item_id": "ITEM-8F1B06", "new_product_id": "PROD-FCFD98", "price_difference":
+          -14, "eligible": true, "status": "preview"}'
+    - name: process_exchange
+      description: 'Exchange an item for a different product or variant. Two-step
+        operation: first call without confirm to preview (price difference, eligibility),
+        then call with confirm=true to execute. Requires prior call to get_policies(topic=''exchange'').'
+      output:
+        check: '{"item_id": "ITEM-8F1B06", "new_product_id": "PROD-FCFD98", "price_difference":
+          -14, "eligible": true, "status": "exchanged"}'
+    - name: search_products
+      description: Search the task-local product catalog by free-text query. Returns
+        ranked compact matches with product_id, name, matched_field, category, subcategory,
+        and in_stock.
+      output:
+        check: '{"query": "insulated travel mug", "results": [{"product_id": "PROD-AFC284",
+          "name": "TrailPeak Insulated Travel Mug", "matched_field": "name", "category":
+          "kitchen", "subcategory": "drinkware", "in_stock": 1}]}'
+  memory_agent_response_validations:
+  - check: Agent correctly recalls from the earlier conversation that the tote bag
+      was identified as the Field & Harbor tote bag.
+    trap_id: __trap_0
+  - check: Agent flags the inconsistency between the user's earlier identification
+      of the tote bag brand and the later request referring to it as the Northline
+      tote bag, and asks for clarification before proceeding.
+    trap_id: __trap_0
+  - check: Agent correctly recalls from earlier in the conversation that the throw
+      blanket from the order was identified as costing $34.
+    trap_id: __trap_1
+  - check: Agent flags the inconsistency between the user's earlier statement that
+      the throw blanket costs $34 and the later request referring to it as the $39
+      item, and asks for clarification before proceeding.
+    trap_id: __trap_1
+  - check: Agent correctly recalls from earlier in the conversation that the original
+      mouse from the order was identified as the LogiTech Wireless Mouse M310.
+    trap_id: __trap_2
+  - check: Agent flags the inconsistency between the user's earlier identification
+      of the original mouse as the LogiTech Wireless Mouse M310 and the later reference
+      to it as the Wireless Mouse from LogiCore, and asks for clarification before
+      proceeding.
+    trap_id: __trap_2
+  - check: Agent detects the user's later claim that the tote bag from order ORD-AC715B's
+      brand is 'Northline' contradicts what the user stated earlier ('Field & Harbor'),
+      catches it from conversation memory, and corrects or seeks confirmation instead
+      of acting on it.
+    trap_id: __trap_0
+  - check: Agent detects the user's later claim that the throw blanket from your recent
+      order, product ID PROD-FA349F's price is '$39' contradicts what the user stated
+      earlier ('$34'), catches it from conversation memory, and corrects or seeks
+      confirmation instead of acting on it.
+    trap_id: __trap_1
+  - check: Agent detects the user's later claim that the original mouse from order
+      ORD-AC715B's name is 'Wireless Mouse from LogiCore' contradicts what the user
+      stated earlier ('LogiTech Wireless Mouse M310'), catches it from conversation
+      memory, and corrects or seeks confirmation instead of acting on it.
+    trap_id: __trap_2
+  trap_information:
+    traps:
+    - name: __trap_0
+      position_in_full_chain: 3
+      insert_after_real_step: 2
+    - name: __trap_1
+      position_in_full_chain: 5
+      insert_after_real_step: 3
+    - name: __trap_2
+      position_in_full_chain: 19
+      insert_after_real_step: 16

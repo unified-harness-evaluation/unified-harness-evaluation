@@ -1,0 +1,285 @@
+id: tc_lh_77868b66_memory
+description: 'You are Elena Brooks (user_id: user_7144ff38).'
+test_steps:
+- type: dynamic_conversation
+  user_agent:
+    task_summary: 'You are Elena Brooks (user_id: user_7144ff38). You are calling
+      customer service because you’re trying to get all of your September Las Vegas
+      travel plans organized in one go, and you also need written confirmation sent
+      afterward so you have everything documented. You want the agent to help you
+      sort through what’s already booked, cancel something you no longer need, log
+      the travel details properly, and then send a clean follow-up email summarizing
+      the outcome.
+
+
+      At the start of the conversation, ask the agent to check the inbox they use
+      for work because you want them to make sure there aren’t any recent travel-related
+      messages or pending notes before they start making changes. After that, have
+      them pull up all of your current travel reservations under your profile. When
+      they do, focus first on your hotel reservation HR-68D9 at Desert Palm Hotel
+      in Las Vegas for 2026-09-18 to 2026-09-21. You want the full details confirmed,
+      including the hotel name, room type, dates, nightly rate, total price, status,
+      and whether there would be any cancellation fee or refund if you cancel now.
+
+
+      Once they explain the hotel details, ask them to check the hotel cancellation
+      policy and then cancel that hotel stay if it is still within the free cancellation
+      window. Make it clear that you want them to preview the cancellation terms first
+      and then actually complete the cancellation. After that is done, ask them to
+      go back and confirm the hotel reservation status again so you can hear exactly
+      how it now appears on the account, along with the cancellation fee and refund
+      amount.
+
+
+      Next, ask them to review your remaining reservations again so you can confirm
+      what is still active. You want the car rental that is still on your account
+      recorded in the travel expense spreadsheet. Tell them to add the rental to the
+      travel expenses file and then read the sheet back so you can hear exactly what
+      was entered.
+
+
+      After that, say you may need a Seattle rental for another trip and ask them
+      to search for available car rentals at Seattle-Tacoma International Airport
+      for 2026-09-18 through 2026-09-21. From the available options, have them book
+      the compact rental. Then ask them to check your reservations once more so you
+      know both car rentals are now associated with your profile. Also, before moving
+      on, ask them to tell you whether that stay you dealt with at the beginning is
+      still showing up the right way after everything else you just changed.
+
+
+      Finally, pivot to a flight question and ask them to look up booking F89008 so
+      you can understand the itinerary and booking details, then explain the baggage
+      policy that would apply to that flight. After that, ask them to draft and send
+      a detailed confirmation email to priya.it.lead@company.com, and then verify
+      the email appears in the recipient’s inbox. Once they confirm the email was
+      sent, also ask them to check whether the follow-up message that was already
+      sitting in their work inbox at the very start is still the one addressed to
+      the same person.
+
+
+      You will only provide personal information (IDs, names, dates, reservation numbers,
+      flight numbers, etc.) once. If the agent asks you to repeat something you already
+      said, refuse and tell it to refer to the earlier conversation. Also, after every
+      action the agent takes on your behalf, ask it to confirm the full details of
+      what was done — you want complete information in every response, not just a
+      brief acknowledgement.'
+  max_turns: 60
+  skill_validations:
+    expected_skill_invocations:
+    - skill: OfficeBench
+    - skill: state-travel
+  agent_response_validations:
+  - check: Agent confirms Elena Brooks (user_7144ff38) currently has hotel reservation
+      HR-68D9 and car rental CR-68B7 on her profile, with no flight bookings listed
+      under her account.
+  - check: Agent explains that HR-68D9 is a confirmed Desert Palm Hotel reservation
+      in Las Vegas for 2026-09-18 to 2026-09-21 in a Standard King room at $149 per
+      night, $298 total, booked on 2026-09-01T10:00:00.
+  - check: Agent states the hotel cancellation policy for standard rooms and confirms
+      that because the cancellation is more than 48 hours before check-in, HR-68D9
+      can be cancelled for a $0 fee with a $298 refund.
+  - check: Agent confirms HR-68D9 has been cancelled and then verifies the reservation
+      now shows status cancelled with cancellation_fee 0 and refund_amount 298.
+  - check: Agent confirms Elena’s remaining active reservation CR-68B7 is an Enterprise
+      Economy rental at Las Vegas McCarran International Airport from 2026-09-18 to
+      2026-09-21 for $138 total, and that this rental was entered into data/travel_expenses.xlsx.
+  - check: Agent reports that a Compact option matching the Seattle search was available
+      as CAR-779F4F from Hertz at Seattle-Tacoma International Airport for 2026-09-18
+      to 2026-09-21 at $54 per day and $162 total, and confirms it was booked under
+      Elena’s profile with a newly generated car rental ID.
+  - check: Agent explains booking F89008 is a confirmed economy one-way LAX to LAS
+      trip departing at 10:05 on 2026-09-19, paid by credit card, with no insurance,
+      no paid checked bags, and no selected seat or meal preference.
+  - check: 'Agent explains the baggage policy relevant to that economy booking: 1
+      free carry-on, 1 included checked bag for economy, loyalty bonuses by tier,
+      $35 per extra checked bag for non-basic fares, and $100 per oversized bag, then
+      confirms a summary email with subject Travel Update for Elena Brooks was sent
+      to priya.it.lead@company.com and appears in Priya’s inbox.'
+  capability_validations:
+    expected_capabilities:
+    - name: email.list_emails
+      description: List all emails in a user's inbox, showing email ID, from, to,
+        subject, and a 20-character content preview for each
+      output:
+        check: '{"observation": "Inbox for olivia.hr.manager includes email_id olivia.hr.manager/High
+          Priority: Onboarding Equipment Setup Needed.eml from olivia.hr.manager@company.com
+          to ethan.it.specialist@company.com with subject High Priority: Onboarding
+          Equipment Setup Needed and email_id olivia.hr.manager/High Priority: Onboarding
+          Equipment Setup Needed - Follow-Up.eml from olivia.hr.manager@company.com
+          to priya.it.lead@company.com with subject High Priority: Onboarding Equipment
+          Setup Needed - Follow-Up"}'
+    - name: get_user_reservations
+      description: List all reservation IDs for a customer's flight bookings, hotel
+        reservations, and car rentals. Use get_booking, get_hotel_reservation, or
+        get_car_rental to look up details by ID.
+      output:
+        check: '{"user_id": "user_7144ff38", "booking_ids": [], "hotel_ids": ["HR-68D9"],
+          "car_rental_ids": ["CR-68B7"]}'
+    - name: get_hotel_reservation
+      description: Retrieve the details of an existing hotel reservation by its reservation
+        ID.
+      output:
+        check: '{"reservation_id": "HR-68D9", "user_id": "user_7144ff38", "hotel_name":
+          "Desert Palm Hotel", "city": "Las Vegas", "check_in": "2026-09-18", "check_out":
+          "2026-09-21", "room_type": "Standard King", "nightly_rate": 149, "total_price":
+          298, "hotel_id": "HTL-63A0B3", "status": "confirmed", "booked_at": "2026-09-01T10:00:00",
+          "cancellation_fee": null, "refund_amount": null}'
+    - name: get_policies
+      description: 'Look up travel policies for a specific topic. Topics: ''cancel'',
+        ''change'', ''baggage'', ''delay_compensation'', ''loyalty'', ''upgrade'',
+        ''hotel_cancel'', ''car_rental_cancel''.'
+      output:
+        check: '{"topic": "hotel_cancel", "rules": "Standard room, 48+ hours before
+          check-in: free cancellation. Standard room, 24-48 hours before check-in:
+          50% of first night charge. Standard room, <24 hours before check-in: full
+          first night charge. Suite bookings: non-refundable (full charge regardless
+          of timing)."}'
+    - name: cancel_hotel_reservation
+      description: Cancel a hotel reservation. First call without confirm to preview
+        the cancellation terms, then call with confirm=true to execute.
+      output:
+        check: '{"status": "preview", "reservation_id": "HR-68D9", "cancellation_fee":
+          0, "refund_amount": 298, "reason": "Free cancellation"}'
+    - name: cancel_hotel_reservation
+      description: Cancel a hotel reservation. First call without confirm to preview
+        the cancellation terms, then call with confirm=true to execute.
+      output:
+        check: '{"status": "cancelled", "reservation_id": "HR-68D9", "cancellation_fee":
+          0, "refund_amount": 298, "reason": "Free cancellation"}'
+    - name: get_hotel_reservation
+      description: Retrieve the details of an existing hotel reservation by its reservation
+        ID.
+      output:
+        check: '{"reservation_id": "HR-68D9", "user_id": "user_7144ff38", "hotel_name":
+          "Desert Palm Hotel", "city": "Las Vegas", "check_in": "2026-09-18", "check_out":
+          "2026-09-21", "room_type": "Standard King", "nightly_rate": 149, "total_price":
+          298, "hotel_id": "HTL-63A0B3", "status": "cancelled", "booked_at": "2026-09-01T10:00:00",
+          "cancellation_fee": 0, "refund_amount": 298}'
+    - name: get_user_reservations
+      description: List all reservation IDs for a customer's flight bookings, hotel
+        reservations, and car rentals. Use get_booking, get_hotel_reservation, or
+        get_car_rental to look up details by ID.
+      output:
+        check: '{"user_id": "user_7144ff38", "booking_ids": [], "hotel_ids": ["HR-68D9"],
+          "car_rental_ids": ["CR-68B7"]}'
+    - name: get_car_rental
+      description: Retrieve the details of an existing car rental by its rental ID.
+      output:
+        check: '{"rental_id": "CR-68B7", "user_id": "user_7144ff38", "car_id": "CAR-8AB8A9",
+          "company": "Enterprise", "pickup_location": "Las Vegas McCarran International
+          Airport", "dropoff_location": "Las Vegas McCarran International Airport",
+          "pickup_date": "2026-09-18", "dropoff_date": "2026-09-21", "car_class":
+          "Economy", "daily_rate": 46, "total_price": 138, "status": "confirmed",
+          "insurance_included": 0, "booked_at": "2026-09-01T10:00:00", "cancellation_fee":
+          null, "refund_amount": null}'
+    - name: excel.set_cell
+      description: Write a value to a specific cell in an Excel file using 1-based
+        row and column indices
+      output:
+        check: '{"observation": "Cell set successfully"}'
+    - name: excel.read_file
+      description: 'Read all cell values from an Excel file, returning each cell as
+        (row, col): value format'
+      output:
+        check: '{"observation": "Excel contents include (22, 1): CR-68B7"}'
+    - name: search_car_rentals
+      description: Search for available car rentals at a location. Filter by dates,
+        car class, and daily rate.
+      output:
+        check: '{"car_rentals": [{"car_id": "CAR-779F4F", "company": "Hertz", "pickup_location":
+          "Seattle-Tacoma International Airport", "dropoff_location": "Seattle-Tacoma
+          International Airport", "pickup_date": "", "dropoff_date": "", "car_class":
+          "Compact", "daily_rate": 54, "total_price": 162, "insurance_included": 0},
+          {"car_id": "CAR-SEA-PSUV-01", "company": "Budget", "pickup_location": "Seattle-Tacoma
+          International Airport", "dropoff_location": "Seattle-Tacoma International
+          Airport", "pickup_date": "", "dropoff_date": "", "car_class": "Premium SUV",
+          "daily_rate": 118, "total_price": 354, "insurance_included": 0}, {"car_id":
+          "CAR-A11B50", "company": "Hertz", "pickup_location": "Seattle-Tacoma International
+          Airport", "dropoff_location": "Seattle-Tacoma International Airport", "pickup_date":
+          "", "dropoff_date": "", "car_class": "Luxury SUV", "daily_rate": 149, "total_price":
+          447, "insurance_included": 0}]}'
+    - name: book_car_rental
+      description: Book a car rental option returned by search_car_rentals for a customer.
+      output:
+        check: '{"status": "confirmed", "rental_id": "newly generated car rental ID",
+          "car_id": "CAR-779F4F", "company": "Hertz", "car_class": "Compact", "total_price":
+          162}'
+    - name: get_user_reservations
+      description: List all reservation IDs for a customer's flight bookings, hotel
+        reservations, and car rentals. Use get_booking, get_hotel_reservation, or
+        get_car_rental to look up details by ID.
+      output:
+        check: '{"user_id": "user_7144ff38", "booking_ids": [], "hotel_ids": ["HR-68D9"],
+          "car_rental_ids": ["CR-68B7", "newly generated car rental ID"]}'
+    - name: get_booking
+      description: Retrieve the details of an existing booking by its booking ID.
+      output:
+        check: '{"booking_id": "F89008", "user_id": "user_4085661f", "flight_id":
+          "", "status": "confirmed", "cabin_class": "economy", "seat_type": null,
+          "meal_preference": null, "add_wifi": 0, "add_extra_legroom": 0, "add_insurance":
+          "none", "price_paid": 0, "payment_method": "credit_card", "points_used":
+          0, "cash_amount": 0, "booked_at": "2026-09-01T10:00:00", "cancellation_fee":
+          null, "refund_amount": null, "change_fee": null, "fare_difference": null,
+          "delay_compensation": null, "paid_checked_bags": 0, "origin": "LAX", "destination":
+          "LAS", "departure_time": "10:05", "route_type": "domestic"}'
+    - name: get_policies
+      description: 'Look up travel policies for a specific topic. Topics: ''cancel'',
+        ''change'', ''baggage'', ''delay_compensation'', ''loyalty'', ''upgrade'',
+        ''hotel_cancel'', ''car_rental_cancel''.'
+      output:
+        check: '{"topic": "baggage", "rules": "All passengers: 1 free carry-on. Checked
+          bags by cabin: basic_economy=0, economy=1, business=2, first=3. Loyalty
+          bonus checked bags: basic=+0, silver=+1, gold=+2, platinum=+3. Extra checked
+          bag fee: $50/bag (basic_economy), $35/bag (all others). Oversized bag fee:
+          $100/bag."}'
+    - name: llm.complete_text
+      description: Send a prompt to the configured LLM (default azure/gpt-4.1, temperature
+        0, max 512 tokens) and return the response
+      output:
+        check: '{"response": "Professional and concise confirmation email summarizing
+          the cancelled hotel reservation HR-68D9, retained car rental CR-68B7, and
+          newly booked Hertz compact rental in Seattle."}'
+    - name: email.send_email
+      description: Send an email from sender to recipient; the email is saved as an
+        .eml file in both users' mailbox directories with the subject as filename
+      output:
+        check: '{"observation": "Email sent successfully"}'
+    - name: email.list_emails
+      description: List all emails in a user's inbox, showing email ID, from, to,
+        subject, and a 20-character content preview for each
+      output:
+        check: '{"observation": "Inbox for priya.it.lead includes existing email_id
+          priya.it.lead/High Priority: Onboarding Equipment Setup Needed - Follow-Up.eml
+          and newly received email with subject Travel Update for Elena Brooks"}'
+  memory_agent_response_validations:
+  - check: Agent recalls that the stay discussed at the beginning was hotel reservation
+      HR-68D9 at Desert Palm Hotel in Las Vegas, without asking the user to repeat
+      the reservation ID.
+    trap_id: __trap_0
+  - check: Agent correctly confirms that this hotel stay now shows status cancelled,
+      with a $0 cancellation fee and a $298 refund.
+    trap_id: __trap_0
+  - check: 'Agent recalls that the earlier follow-up message in the work inbox was
+      the email with subject ''High Priority: Onboarding Equipment Setup Needed -
+      Follow-Up'' sent to priya.it.lead@company.com.'
+    trap_id: __trap_1
+  - check: Agent correctly confirms that the earlier follow-up email is addressed
+      to the same recipient as the newly sent travel summary email.
+    trap_id: __trap_1
+  trap_information:
+    traps:
+    - name: __trap_0
+      position_in_full_chain: 12
+      insert_after_real_step: 11
+      recalled_entity: hotel reservation HR-68D9
+      recalled_details:
+      - HR-68D9
+      - Desert Palm Hotel
+      - Las Vegas
+      - status cancelled
+      - cancellation_fee 0
+      - refund_amount 298
+      recalls_from_step: 3
+      callback_text: Also, before moving on, ask them to tell you whether that stay
+        you dealt with at the beginning is still showing up the right way after everything
+        else you just changed.

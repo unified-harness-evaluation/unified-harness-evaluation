@@ -1,0 +1,248 @@
+id: tc_lh_7fbbdabf
+description: 'You are Elena Marquez (user_id: user_59b22691).'
+test_steps:
+- type: dynamic_conversation
+  user_agent:
+    task_summary: 'You are Elena Marquez (user_id: user_59b22691). You are calling
+      customer service because you have a messy travel-and-shopping admin day and
+      want one agent to help you sort several things out in sequence, while keeping
+      track of earlier details without making you repeat yourself.
+
+
+      Start by saying you first want to understand the company’s hotel cancellation
+      rules because you may need them for planning later. Ask for the full policy
+      details, including how standard rooms and suites are treated and how timing
+      affects any fee.
+
+
+      Next, say you also need a short written trip-planning note drafted for you,
+      then saved as a Word document, and you want the agent to verify what was created
+      by reading it back. Keep this simple and professional, like a compact planning
+      summary.
+
+
+      After that, shift gears and say you want help finding a product for general
+      use — ask the agent to look up a wireless mouse and tell you what they found,
+      including key specs and whether anything stands out.
+
+
+      Then move to your travel arrangements. You want to book a hotel in Boston from
+      the available inventory and you care about the full booking details: hotel name,
+      room type, total price, and the reservation number. After that, ask the agent
+      to check the status of Olivia Bennett’s outbound flight FL8229F4 on 2026-09-20
+      because you’re coordinating plans with her and want to know whether it is still
+      available or has some other status.
+
+
+      Next, say Olivia also needs her round-trip reservation D3A184 cancelled if it
+      is eligible, and you want the agent to explain why it can be cancelled before
+      doing it, then confirm the full cancellation details and refund handling afterward.
+
+
+      After that, pivot to a refund matter for Nina Patel’s delivered order ORD-9497C0.
+      Ask for a refund on the Levi’s Classic Cotton T-Shirt from that order and make
+      the agent confirm the amount, method, and any fees or lack of fees.
+
+
+      Then return to your own travel plans and book two more hotels from the available
+      options, one after another, each time asking for the complete reservation details.
+      In between those bookings, ask the agent to check the status of Olivia’s return
+      flight FLEE9223 on 2026-09-25, and later check Erin Wallace’s flight FL398507
+      on 2026-09-19.
+
+
+      You also have one more refund task: Alicia Morgan needs a refund for the LogiTech
+      Wireless Mouse M310 from order ORD-66CC25, and you want the exact calculation
+      and refund method explained clearly.
+
+
+      Finally, ask the agent to send an email from olivia.hr.manager to ethan.it.specialist
+      about the onboarding equipment setup request, then confirm that it was sent
+      and list Ethan’s inbox so you can verify the message appears there.
+
+
+      You will only provide personal information (IDs, names, dates, reservation numbers,
+      flight numbers, etc.) once. If the agent asks you to repeat something you already
+      said, refuse and tell it to refer to the earlier conversation. Also, after every
+      action the agent takes on your behalf, ask it to confirm the full details of
+      what was done — you want complete information in every response, not just a
+      brief acknowledgement. Approve code or command from the agent if prompted'
+  max_turns: 60
+  skill_validations:
+    expected_skill_invocations:
+    - skill: state-travel
+    - skill: OfficeBench
+    - skill: state-shopping
+    - skill: tau2Airline
+    - skill: state-customer-support
+  agent_response_validations:
+  - check: 'Agent explains the hotel cancellation policy accurately: standard rooms
+      are free to cancel 48+ hours before check-in, charged 50% of the first night
+      at 24-48 hours, charged the full first night under 24 hours, and suite bookings
+      are non-refundable.'
+  - check: Agent drafts a short professional trip-planning note using the LLM, saves
+      it as a Word document (docs/elena_trip_note.docx), writes the content into it,
+      and reads the file back to verify the content for Elena.
+  - check: Agent reports that the wireless mouse search found LogiTech Wireless Mouse
+      M310 (PROD-FA0948), priced at $29, rated 4.9, in stock, with Wireless 2.4GHz
+      connectivity, AA battery, 1000 dpi, and Windows/Mac compatibility.
+  - check: Agent confirms a Boston hotel was booked for Elena Marquez using HTL-EA5C7E
+      at Grand Meridian Downtown, Standard King room, total price $458, and provides
+      the newly generated reservation ID.
+  - check: Agent states that Olivia Bennett’s flight FL8229F4 on 2026-09-20 is available,
+      then later also confirms FLEE9223 on 2026-09-25 is available and FL398507 on
+      2026-09-19 is available.
+  - check: Agent explains that reservation D3A184 is eligible for cancellation because
+      it includes standard insurance, then confirms the reservation is cancelled,
+      identifies the two passengers Olivia Bennett and Noah Bennett, and states the
+      refund goes back to the original payment method within 5-7 business days.
+  - check: Agent confirms Nina Patel’s refund for ITEM-D74F2F from order ORD-9497C0
+      was completed for $24 to the original payment method, with no fees and no goodwill
+      credit.
+  - check: Agent confirms a second hotel was booked for Elena Marquez using HTL-BD6329
+      at Harborview Inn, Standard King room, total price $378, and provides the newly
+      generated reservation ID.
+  - check: Agent confirms a third hotel was booked for Elena Marquez using HTL-099A91
+      at Bayview Business Hotel, Standard Queen room, total price $378, and provides
+      the newly generated reservation ID.
+  - check: Agent confirms Alicia Morgan’s refund for ITEM-4D9AFC from order ORD-66CC25
+      was completed for $24.96 to the original payment method, reflecting promo redistribution
+      from the $11 order discount.
+  - check: 'Agent confirms the onboarding email with subject ''High Priority: Onboarding
+      Equipment Setup Needed'' was sent from olivia.hr.manager to ethan.it.specialist
+      and then shows that Ethan’s inbox contains that message.'
+  capability_validations:
+    expected_capabilities:
+    - name: get_policies
+      description: 'Look up travel policies for a specific topic. Topics: ''cancel''
+        (flight cancellation rules), ''change'' (flight change rules), ''baggage''
+        (baggage allowance by fare class and loyalty tier), ''delay_compensation''
+        (delay/cancellation compensation), ''loyalty'' (loyalty points redemption
+        rates and rules), ''upgrade'' (cabin class upgrade eligibility and pricing),
+        ''hotel_cancel'' (hotel reservation cancellation rules), ''car_rental_cancel''
+        (car rental cancellation rules).'
+      output:
+        check: '{"topic": "hotel_cancel", "rules": "HOTEL CANCELLATION POLICY:\n-
+          Standard room, 48+ hours before check-in: free cancellation.\n- Standard
+          room, 24-48 hours before check-in: 50% of first night charge.\n- Standard
+          room, <24 hours before check-in: full first night charge.\n- Suite bookings:
+          non-refundable (full charge regardless of timing)."}'
+    - name: llm.complete_text
+      description: 'Send a prompt to the configured LLM (default: azure/gpt-4.1) and
+        return the completion. Uses temperature 0 and max_tokens 512.'
+      output:
+        check: '{"observation": "A short, professional trip-planning summary for Elena
+          Marquez covering travel coordination, hotel booking, flight status checks,
+          and refund follow-up."}'
+    - name: word.create_new_file
+      description: Create a new empty Word document. Creates parent directories if
+        needed.
+      output:
+        check: '{"observation": "Created new Word document at docs/elena_trip_note.docx"}'
+    - name: word.read_file
+      description: Read all paragraph text from a Word document.
+      output:
+        check: '{"observation": "The trip-planning summary text that was drafted by
+          the LLM and written into the document."}'
+    - name: search_products
+      description: Search the product catalog. Returns up to 10 ranked products. Hard
+        filters (category, price range, rating, in_stock_only) narrow the candidate
+        pool; products failing a hard filter are excluded. `query` soft-ranks survivors
+        by matching against product name, brand, subcategory, description, and spec
+        keys/values. If query matches nothing, returns no products with a note.
+      output:
+        check: '{"products": [{"product_id": "PROD-FA0948", "name": "LogiTech Wireless
+          Mouse M310", "category": "electronics", "subcategory": "computer accessories",
+          "brand": "LogiTech", "price": 29, "current_price": null, "previous_price":
+          null, "in_stock": 1, "stock_quantity": 120, "rating": 4.9, "description":
+          "Reliable wireless optical mouse with USB receiver, suitable for home office
+          and travel.", "specs_json": "{\"connectivity\":\"Wireless 2.4GHz\",\"battery_type\":\"AA\",\"dpi\":\"1000\",\"compatibility\":\"Windows/Mac\"}",
+          "compatible_with_json": "[\"PROD-B98D14\",\"PROD-2DBA15\",\"PROD-7C0240\",\"PROD-73FAB4\"]",
+          "shipping_days": 3, "gift_wrap_available": 1, "source_skill": "state-shopping"}],
+          "total_found": 1, "note": ""}'
+    - name: book_hotel
+      description: Book a hotel option returned by search_hotels for a customer. Creates
+        a new hotel reservation from hotel inventory.
+      output:
+        check: '{"status": "confirmed", "reservation_id": "newly generated hotel reservation
+          ID", "hotel_id": "HTL-EA5C7E", "hotel_name": "Grand Meridian Downtown",
+          "total_price": 458, "room_type": "Standard King"}'
+    - name: get_flight_status
+      description: Get the status of a flight on a specific date (e.g. 'available',
+        'delayed', 'on time', 'flying', 'landed', 'cancelled').
+      output:
+        check: '{"status": "available"}'
+    - name: cancel_reservation
+      description: Cancel an entire reservation and reverse all payments. The API
+        does NOT enforce cancellation rules — the agent must verify eligibility before
+        calling.
+      output:
+        check: '{"reservation": {"booking_id": "D3A184", "user_id": "user_85c17f92",
+          "flight_id": null, "flights_json": "[{\"flight_number\": \"FL8229F4\", \"origin\":
+          \"SEA\", \"destination\": \"SFO\", \"date\": \"2026-09-20\", \"departure_time\":
+          \"14:20\", \"arrival_time\": \"16:25\"}, {\"flight_number\": \"FLEE9223\",
+          \"origin\": \"SFO\", \"destination\": \"SEA\", \"date\": \"2026-09-25\"}]",
+          "status": "cancelled", "cabin_class": "premium_economy", "add_insurance":
+          "standard", "payment_method": "credit_card", "price_paid": 0, "flight_type":
+          "round_trip", "origin": "SEA", "destination": "SEA", "passengers_json":
+          "[{\"first_name\": \"Olivia\", \"last_name\": \"Bennett\", \"passenger_type\":
+          \"adult\"}, {\"first_name\": \"Noah\", \"last_name\": \"Bennett\", \"passenger_type\":
+          \"child\"}]", "source_skill": "tau2Airline"}}'
+    - name: process_refund
+      description: 'Process a refund for an order item. Two-step operation: first
+        call without confirm to preview the refund calculation, then call with confirm=true
+        to execute. Used for supplemental refunds (goodwill credits, shipping refunds,
+        price matches) after a return, or standalone refunds for missing/not-received
+        items. Requires prior call to get_policies(topic=''refund'').'
+      output:
+        check: '{"status": "completed", "item_id": "ITEM-D74F2F", "mode": "refund",
+          "refund_amount": 24, "refund_method": "original_payment", "split_details":
+          "", "total_goodwill_credit": 0}'
+    - name: book_hotel
+      description: Book a hotel option returned by search_hotels for a customer. Creates
+        a new hotel reservation from hotel inventory.
+      output:
+        check: '{"status": "confirmed", "reservation_id": "newly generated hotel reservation
+          ID", "hotel_id": "HTL-BD6329", "hotel_name": "Harborview Inn", "total_price":
+          378, "room_type": "Standard King"}'
+    - name: get_flight_status
+      description: Get the status of a flight on a specific date (e.g. 'available',
+        'delayed', 'on time', 'flying', 'landed', 'cancelled').
+      output:
+        check: '{"status": "available"}'
+    - name: process_refund
+      description: 'Process a refund for an order item. Two-step operation: first
+        call without confirm to preview the refund calculation, then call with confirm=true
+        to execute. Used for supplemental refunds (goodwill credits, shipping refunds,
+        price matches) after a return, or standalone refunds for missing/not-received
+        items. Requires prior call to get_policies(topic=''refund'').'
+      output:
+        check: '{"status": "completed", "item_id": "ITEM-4D9AFC", "mode": "refund",
+          "refund_amount": 24.96, "refund_method": "original_payment", "split_details":
+          "", "total_goodwill_credit": 0}'
+    - name: book_hotel
+      description: Book a hotel option returned by search_hotels for a customer. Creates
+        a new hotel reservation from hotel inventory.
+      output:
+        check: '{"status": "confirmed", "reservation_id": "newly generated hotel reservation
+          ID", "hotel_id": "HTL-099A91", "hotel_name": "Bayview Business Hotel", "total_price":
+          378, "room_type": "Standard Queen"}'
+    - name: get_flight_status
+      description: Get the status of a flight on a specific date (e.g. 'available',
+        'delayed', 'on time', 'flying', 'landed', 'cancelled').
+      output:
+        check: '{"status": "available"}'
+    - name: email.send_email
+      description: Send an email from one user to another. The email is saved as a
+        .eml file in both the sender's and recipient's email directories with the
+        filename '<subject>.eml'.
+      output:
+        check: '{"observation": "Email sent successfully"}'
+    - name: email.list_emails
+      description: List all emails in a user's inbox. Returns email ID (filename),
+        From, To, Subject, and a 20-character content preview for each email.
+      output:
+        check: '{"observation": "High Priority: Onboarding Equipment Setup Needed.eml
+          | From: olivia.hr.manager@company.com | To: ethan.it.specialist@company.com
+          | Subject: High Priority: Onboarding Equipment Setup Needed | Preview: Hello
+          Ethan,"}'

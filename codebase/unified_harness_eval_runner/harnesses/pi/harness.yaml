@@ -1,0 +1,21 @@
+image: harness-pi
+turn_mode: cli
+# Harvest the full agent trajectory (tool calls, outputs, reasoning) from pi's
+# session JSONL in post_run.py and fold it into the saved trace. Override per
+# run with the HARNESS_CAPTURE_TRAJECTORY env var on the gateway process.
+capture_trajectory: true
+# -a/--approve: project trust. Without it, --print mode silently skips the
+# trust-gated project resources (.pi/skills, .agents/skills) — pi never saw
+# workspace skills at all. ~/.pi/skills is not a discovery path; the agent
+# dir is ~/.pi/agent.
+cmd: ["pi", "--print", "-a", "--no-extensions", "--model", "litellm/{model}", "{task}"]
+env:
+  PI_OFFLINE: "1"
+workdir: /workspace
+session:
+  flag: "-c"
+# global dir: loads unconditionally (project dirs are trust-gated on some CLIs)
+skills_dirs:
+  - ~/.pi/agent/skills
+# init a git repo in the fresh workspace (some CLIs use the git root as
+# project boundary or refuse to run outside one)

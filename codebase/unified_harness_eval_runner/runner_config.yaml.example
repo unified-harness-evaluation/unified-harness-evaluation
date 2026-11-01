@@ -1,0 +1,54 @@
+# ── Global runner config ─────────────────────────────────────────────────────
+# Copy to runner_config.yaml and edit. Every key below has a default; you only
+# need to set what you want to override.
+#
+# Credentials: set AZURE_API_KEY and AZURE_API_BASE in a .env file and source
+# it before running:  export $(grep -v '^#' .env | xargs)
+
+# ── User proxy (drives the conversation with the agent) ─────────────────────
+user_proxy:
+  model: azure/gpt-5.4           # LLM that generates user-side messages
+  max_tokens: 4096                # max response tokens per proxy call
+  use_expert_agent: true          # use the expert-agent prompt strategy
+
+# ── Judge (scores agent responses after the conversation) ────────────────────
+judge:
+  model: azure/gpt-5.4            # LLM that evaluates transcripts
+  max_tokens: 4096                 # max tokens per judge call
+  num_judge_trials: 1              # how many independent judge votes per trial
+
+# ── Run settings ─────────────────────────────────────────────────────────────
+run:
+  n_trials: 1                     # trials per test case
+  concurrency: 5                  # max parallel conversations
+  base_port: 9000                 # first gateway port; harness i gets base_port+i
+  timeout_per_turn: 600           # seconds to wait for one agent turn
+  health_timeout: 60              # seconds to wait for a gateway to come up
+  strict: false                   # true = abort on setup failures instead of warning
+  harnesses:                      # harness names (subdirs of harnesses/)
+    - pi
+  tests: tc_memory.yaml           # test case file or directory
+  workspace: workspace_template   # host dir bind-mounted into /workspace
+  results_dir: experiment_results # output root; multi-harness runs get <root>/<harness>/
+
+# ── Agent model ──────────────────────────────────────────────────────────────
+agent:
+  model: claude-opus-4-6          # model name forwarded to the harness CLI
+  # To change the agent model, set this to any model_name in
+  # litellm_azure_config.yaml: claude-opus-4-6, gpt-5.4, gpt-5.6-sol,
+  # Kimi-K2.6, DeepSeek-V4-Flash, grok-4.6.
+
+# ── Skills (workspace skills copied into harness skill dirs) ─────────────────
+skills:
+  enabled: true                   # false = no skills copied; harness runs without them
+  # path: path/to/skills          # explicit skills source dir; default: auto-detect
+                                  # from workspace/.pi/skills or workspace/skills
+  # enabled_skills:               # optional allowlist of skill names (= skill
+  #   - state-shopping            # directory names in the workspace); all other
+  #   - tau2Airline               # skills get their SKILL.md renamed to .off
+
+# ── Server / infrastructure ─────────────────────────────────────────────────
+server:
+  litellm_port: 4001              # port the litellm sidecar listens on
+  log_dir: container_logs         # per-container stderr logs written here
+  max_workspace_wait: 30          # seconds to wait for Docker bind-mount sync

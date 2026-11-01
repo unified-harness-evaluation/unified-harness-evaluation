@@ -1,0 +1,26 @@
+image: harness-codewhale
+turn_mode: cli
+# Harvest the full agent trajectory (tool calls, inputs, outputs, reasoning) from
+# the codewhale session JSON ($HOME/.codewhale/sessions/<uuid>.json) in
+# post_run.py and fold it into the saved trace. Override per run with the
+# HARNESS_CAPTURE_TRAJECTORY env var on the gateway process.
+capture_trajectory: true
+# stream-json is the only mode that persists sessions (--continue resumes them);
+# the engine reassembles the answer from type:"content" token events.
+cmd: ["codewhale", "--provider", "openai", "--model", "{model}", "--api-key", "{api_key}", "--base-url", "{proxy_base}/v1", "exec", "--auto", "--output-format", "stream-json", "{task}"]
+json_extract_final: true
+env:
+  OPENAI_API_KEY: "{api_key}"
+  OPENAI_BASE_URL: "{proxy_base}/v1"
+  CODEWHALE_ALLOW_INSECURE_HTTP: "1"
+  OPENAI_USE_RESPONSES: "false"
+workdir: /workspace
+session:
+  flag: "--continue"
+  flag_before_task: true
+# Project skills (.agents/skills) are trust-gated and exec --auto cannot grant
+# trust, so they are silently skipped; the global dir loads unconditionally.
+skills_dirs:
+  - ~/.codewhale/skills
+# init a git repo in the fresh workspace (some CLIs use the git root as
+# project boundary or refuse to run outside one)

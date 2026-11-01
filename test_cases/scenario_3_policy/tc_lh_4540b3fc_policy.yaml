@@ -1,0 +1,329 @@
+id: tc_lh_4540b3fc_policy
+description: 'You are Nina Patel (user_id: user_be7538d5).'
+test_steps:
+- type: dynamic_conversation
+  user_agent:
+    task_summary: 'You are Nina Patel (user_id: user_be7538d5). You are contacting
+      customer service because you want to clean up your cart, understand what discounts
+      you can actually use, and then possibly add one more electronics item if it
+      makes sense. Start by saying you noticed a promo was already on your cart and
+      you want that removed so you can see the real pricing before deciding what to
+      do next. The cart currently has a Northline Wool Blend Throw Blanket and an
+      Everyday Canvas Tote Bag, and you want the agent to confirm the updated subtotal,
+      shipping, and total once the promo is taken off.
+
+
+      After that, ask the agent to explain the loyalty points rules because you may
+      want to use some points on this order. Once the rules are clear, tell the agent
+      you want to redeem 3400 points and then confirm exactly how much discount that
+      created, what your remaining points balance is, and what the cart total becomes.
+
+
+      Next, ask what active promotions are currently available and whether the summer
+      sale code you had before is still valid on your cart. If it is, have the agent
+      validate it and put it back on the cart, then ask for the full updated cart
+      details again. You also want the agent to explain the shipping policy at that
+      point, especially since you are a Gold member and want to know whether any shipping
+      options are free or discounted.
+
+
+      Then, after hearing the shipping policy, tell the agent you want to redeem another
+      500 points if allowed after the promo has been re-applied. Ask for the exact
+      new cart totals and your remaining loyalty balance. Also ask the agent to pull
+      up your account and confirm your profile details, including your membership
+      tier, email, loyalty points, and whether you count as a first-time customer
+      for promo eligibility. Then say: “”
+
+
+      Once the discount questions are settled, shift to shopping for one more item
+      in electronics. Ask the agent to look for a wireless mouse option. When the
+      agent shows choices, focus on the LogiTech Wireless Mouse M310 and ask whether
+      it is compatible with the Aurora Smart Desk Lamp Pro. If it is, tell the agent
+      to add one of that mouse to your existing cart and then give you the full cart
+      breakdown again. Right after the compatibility answer, also say: “”
+
+
+      Finally, ask the agent to review current promotions one more time with the cart
+      in its new state and check whether a stronger promo now qualifies, especially
+      since the total should be higher after adding the electronics item. You are
+      not necessarily asking to change the promo at the very end unless the agent
+      can clearly explain which code is valid and what discount it would estimate.
+      After the mouse has been added, also say: “”
+
+
+      You will only provide personal information (IDs, names, dates, reservation numbers,
+      flight numbers, etc.) once. If the agent asks you to repeat something you already
+      said, refuse and tell it to refer to the earlier conversation. Also, after every
+      action the agent takes on your behalf, ask it to confirm the full details of
+      what was done — you want complete information in every response, not just a
+      brief acknowledgement. Approve code or command from the agent if prompted. At
+      the very end, after the promo review, say: “One more thing — for that same mouse
+      from earlier, go ahead and bump it up so there are four of them in the cart.”'
+  max_turns: 60
+  skill_validations:
+    expected_skill_invocations:
+    - skill: state-shopping
+  agent_response_validations:
+  - check: Agent confirms that promo code PROMO0F1B01 was removed from Nina Patel's
+      cart, leaving no applied promo codes, a cart subtotal of $62, standard shipping
+      of $6, and a total of $68.
+  - check: 'Agent explains the loyalty redemption policy correctly: Nina can redeem
+      points at 100 points per $1, must redeem at least 500 points, and can redeem
+      up to 3400 points on the $68 cart because redemption is capped at 50% of the
+      current cart total.'
+  - check: Agent confirms that redeeming 3400 points applied a $34 loyalty discount,
+      reduced the cart total to $34, and left Nina with 3110 loyalty points remaining.
+  - check: Agent tells Nina that PROMO0F1B01 is still active and valid, re-applies
+      it, and confirms the updated cart with the two original items, a $12 promo discount,
+      the existing loyalty discount, standard shipping, and a total of $22.
+  - check: Agent accurately communicates the shipping policy for a Gold customer,
+      including that express shipping is free for Gold tier, standard shipping costs
+      $6, next-day costs $15, and shipping changes require Nina's explicit choice.
+  - check: Agent correctly identifies that the second loyalty redemption of 500 points
+      cannot be processed because the existing $34 loyalty discount already exceeds
+      50% of the current cart total ($22), and explains the cap restriction to Nina.
+      Nina's loyalty balance remains at 3110 points and the cart total stays at $22.
+  - check: 'Agent confirms Nina''s account details as customer user_be7538d5: Nina
+      Patel, nina.patel@example.com, Gold tier, not a first-time customer, with 3110
+      loyalty points remaining and an empty purchase history.'
+  - check: Agent recommends the LogiTech Wireless Mouse M310 from the electronics
+      category, confirms it is compatible with the Aurora Smart Desk Lamp Pro, adds
+      one unit to the cart at $29, and then when reviewing promotions explains that
+      PROMO0F1B01 (already applied at 20%) remains the strongest applicable unrestricted
+      promo. FALL15SAVE (15% off, requires $75 min) would give a smaller percentage,
+      SAVE20OFF ($20 off, requires $100 min) does not meet the min_purchase threshold
+      on the $91 subtotal, WELCOME10 is first-time only (Nina is not first-time),
+      KITCHEN25 and ELEC15 are category-restricted.
+  capability_validations:
+    expected_capabilities:
+    - name: remove_promo
+      description: Remove a previously applied promo code from the cart. Recomputes
+        cart totals without it. Returns an error if the code is not currently applied.
+      output:
+        check: '{"status": "success", "promo_code": "PROMO0F1B01", "applied_promo_codes":
+          [], "discount_amount": 0, "cart_subtotal": 62, "cart_total": 68}'
+    - name: get_cart
+      description: 'Get the customer''s current cart: items with live pricing, subtotal,
+        discount, gift-wrap fee, total, and applied promo codes. Does not compute
+        promo eligibility — use get_promotions and get_customer_account to reason
+        about which promos apply.'
+      output:
+        check: '{"cart_id": "CART-user_be7538d5", "customer_id": "user_be7538d5",
+          "items": [{"cart_item_id": "CI-0024", "product_id": "PROD-FA349F", "product_name":
+          "Northline Wool Blend Throw Blanket", "quantity": 1, "gift_wrap": 0, "variant_id":
+          null, "unit_price": 34}, {"cart_item_id": "CI-0025", "product_id": "PROD-4ED2E3",
+          "product_name": "Everyday Canvas Tote Bag", "quantity": 1, "gift_wrap":
+          0, "variant_id": null, "unit_price": 28}], "subtotal": 62, "discount_amount":
+          0, "gift_wrap_fee": 0, "loyalty_discount": 0, "loyalty_points_redeemed":
+          0, "shipping_option": "standard", "shipping_cost": 6, "total": 68, "applied_promo_codes":
+          []}'
+    - name: get_policies
+      description: Look up the store's policy for a given topic. Returns a summary
+        and a list of rules. Use when the customer's question or the scenario requires
+        citing store policy.
+      output:
+        check: '{"topic": "loyalty_redemption", "summary": "Loyalty points can be
+          redeemed at checkout at 100 points = $1.00 off, with a 500-point minimum
+          and a cap of 50% of the current cart total.", "rules": ["100 loyalty points
+          = $1.00 off", "Minimum redemption is 500 points", "Redemption cannot exceed
+          50% of the current cart total", "Stacks with promo codes and category bundles",
+          "Does not combine with the first-time welcome discount", "Points are debited
+          from the customer''s balance at redemption", "Do not redeem points without
+          an explicit customer-specified amount"]}'
+    - name: redeem_loyalty_points
+      description: 'Redeem the customer''s loyalty points for a dollar discount on
+        the current cart. Rules: 100 points = $1. Minimum redemption 500 points. Capped
+        at 50% of cart total. Stacks with promo codes but NOT with the first-time
+        welcome discount. Points are debited from the customer''s balance.'
+      output:
+        check: '{"status": "success", "points_redeemed": 3400, "discount_applied":
+          34, "remaining_balance": 3110, "cart_subtotal": 62, "cart_total": 34}'
+    - name: get_cart
+      description: 'Get the customer''s current cart: items with live pricing, subtotal,
+        discount, gift-wrap fee, total, and applied promo codes. Does not compute
+        promo eligibility — use get_promotions and get_customer_account to reason
+        about which promos apply.'
+      output:
+        check: '{"cart_id": "CART-user_be7538d5", "customer_id": "user_be7538d5",
+          "items": [{"cart_item_id": "CI-0024", "product_id": "PROD-FA349F", "product_name":
+          "Northline Wool Blend Throw Blanket", "quantity": 1, "gift_wrap": 0, "variant_id":
+          null, "unit_price": 34}, {"cart_item_id": "CI-0025", "product_id": "PROD-4ED2E3",
+          "product_name": "Everyday Canvas Tote Bag", "quantity": 1, "gift_wrap":
+          0, "variant_id": null, "unit_price": 28}], "subtotal": 62, "discount_amount":
+          0, "gift_wrap_fee": 0, "loyalty_discount": 34, "loyalty_points_redeemed":
+          3400, "shipping_option": "standard", "shipping_cost": 6, "total": 34, "applied_promo_codes":
+          []}'
+    - name: get_promotions
+      description: List currently active, non-expired promotions. Optional category
+        filter restricts to promos applicable to that category.
+      output:
+        check: '{"promotions": [{"promo_code": "PROMO0F1B01", "description": "Summer
+          sale", "discount_type": "percentage", "discount_value": 20, "min_purchase":
+          0, "max_discount": 50, "category_restriction": [], "expiry_date": "2027-12-31"},
+          {"promo_code": "WELCOME10", "description": "Welcome discount: 10% off your
+          first order", "discount_type": "percentage", "discount_value": 10, "min_purchase":
+          0, "max_discount": 30, "category_restriction": [], "expiry_date": "2026-12-31"},
+          {"promo_code": "KITCHEN25", "description": "$25 off kitchen items over $75",
+          "discount_type": "fixed", "discount_value": 25, "min_purchase": 75, "max_discount":
+          25, "category_restriction": ["kitchen"], "expiry_date": "2026-12-31"}]}'
+    - name: validate_promo
+      description: 'Check whether a promo code would validate against the customer''s
+        current cart. Returns valid, reason, and estimated_discount. Checks intrinsic
+        validity only (exists, active, not expired, category restriction, min_purchase)
+        — NOT customer-fit rules like first-time-only. Pure read: does not mutate
+        cart state.'
+      output:
+        check: '{"valid": true, "reason": "Promo code is active and applicable to
+          the current cart", "estimated_discount": 12}'
+    - name: apply_promo
+      description: Apply a promo code to the cart. Validates the code against cart
+        subtotal, category restriction, and expiry (intrinsic validity only — does
+        NOT check customer-fit rules like first-time-only; that's the agent's responsibility
+        via get_customer_account). One promo code per cart. Applying the same code
+        twice is a no-op; applying a different code requires removing the existing
+        promo code first.
+      output:
+        check: '{"status": "success", "promo_code": "PROMO0F1B01", "applied_promo_codes":
+          ["PROMO0F1B01"], "discount_amount": 12, "cart_subtotal": 62, "cart_total":
+          22}'
+    - name: get_cart
+      description: 'Get the customer''s current cart: items with live pricing, subtotal,
+        discount, gift-wrap fee, total, and applied promo codes. Does not compute
+        promo eligibility — use get_promotions and get_customer_account to reason
+        about which promos apply.'
+      output:
+        check: '{"cart_id": "CART-user_be7538d5", "customer_id": "user_be7538d5",
+          "items": [{"cart_item_id": "CI-0024", "product_id": "PROD-FA349F", "product_name":
+          "Northline Wool Blend Throw Blanket", "quantity": 1, "gift_wrap": 0, "variant_id":
+          null, "unit_price": 34}, {"cart_item_id": "CI-0025", "product_id": "PROD-4ED2E3",
+          "product_name": "Everyday Canvas Tote Bag", "quantity": 1, "gift_wrap":
+          0, "variant_id": null, "unit_price": 28}], "subtotal": 62, "discount_amount":
+          12, "gift_wrap_fee": 0, "loyalty_discount": 34, "loyalty_points_redeemed":
+          3400, "shipping_option": "standard", "shipping_cost": 6, "total": 22, "applied_promo_codes":
+          ["PROMO0F1B01"]}'
+    - name: get_policies
+      description: Look up the store's policy for a given topic. Returns a summary
+        and a list of rules. Use when the customer's question or the scenario requires
+        citing store policy.
+      output:
+        check: '{"topic": "shipping", "summary": "Standard shipping costs $6, express
+          costs $12, and next-day costs $15, with free upgrades depending on membership
+          tier and cart size.", "rules": ["Standard shipping uses the listed shipping_days
+          and costs $6", "Express shipping is one day faster than standard and costs
+          $12", "Express shipping is free for Gold and Platinum tiers", "Next-day
+          shipping costs $15", "Next-day shipping is free for Platinum tier", "Carts
+          with 5 or more items get free standard shipping regardless of tier", "Do
+          not set a shipping option without the customer''s explicit choice"]}'
+    - name: redeem_loyalty_points
+      description: 'Redeem the customer''s loyalty points for a dollar discount on
+        the current cart. Rules: 100 points = $1. Minimum redemption 500 points. Capped
+        at 50% of cart total. Stacks with promo codes but NOT with the first-time
+        welcome discount. Points are debited from the customer''s balance.'
+      output:
+        check: '{"status": "success", "points_redeemed": 500, "discount_applied":
+          5, "remaining_balance": 2610, "cart_subtotal": 62, "cart_total": 17}'
+    - name: get_customer_account
+      description: 'Get a customer''s account record: name, email, tier, first-time
+        status, loyalty points, and purchase_history. No stored preferences — the
+        agent must ask the customer about per-purchase decisions.'
+      output:
+        check: '{"customer_id": "user_be7538d5", "name": "Nina Patel", "email": "nina.patel@example.com",
+          "tier": "gold", "is_first_time": false, "loyalty_points": 2610, "purchase_history":
+          []}'
+    - name: search_products
+      description: Search the product catalog. Returns up to 10 ranked products. Hard
+        filters (category, price range, rating, in_stock_only) narrow the candidate
+        pool; products failing a hard filter are excluded. `query` soft-ranks survivors
+        by matching against product name, brand, subcategory, description, and spec
+        keys/values. If query matches nothing, returns no products with a note.
+      output:
+        check: '{"products": [{"product_id": "PROD-FA0948", "name": "LogiTech Wireless
+          Mouse M310", "category": "electronics", "subcategory": "computer accessories",
+          "brand": "LogiTech", "price": 29, "rating": 4.9, "review_count": 1247, "in_stock":
+          true}, {"product_id": "PROD-2DBA15", "name": "Wireless Ergonomic Mouse",
+          "category": "electronics", "subcategory": "computer accessories", "brand":
+          "Northfield Tech", "price": 39, "rating": 3.2, "review_count": 23, "in_stock":
+          true}, {"product_id": "PROD-7C0240", "name": "Wireless Mouse", "category":
+          "electronics", "subcategory": "computer accessories", "brand": "LogiCore",
+          "price": 29, "rating": 4.2, "review_count": 20, "in_stock": true}], "total_found":
+          3, "note": ""}'
+    - name: check_compatibility
+      description: Check whether a product is compatible with a specific device. Device
+        names must match the canonical vocabulary exactly. If the device name is not
+        recognized, the response includes the full list of canonical device names.
+      output:
+        check: '{"compatible": true, "product_id": "PROD-FA0948", "device": "Aurora
+          Smart Desk Lamp Pro", "reason": "The product is compatible with the specified
+          device", "canonical_devices": []}'
+    - name: add_to_cart
+      description: Add a product to the customer's cart. Creates a new cart item or
+        increments an existing one. Enforces stock availability and the per-product
+        quantity limit (max 3). If the product has variants, a variant_id MUST be
+        supplied.
+      output:
+        check: '{"status": "success", "cart_item_id": "newly generated cart item ID",
+          "product_id": "PROD-FA0948", "product_name": "LogiTech Wireless Mouse M310",
+          "variant_id": null, "quantity": 1, "gift_wrap": false, "unit_price": 29,
+          "cart_subtotal": 91, "cart_total": 46}'
+    - name: get_cart
+      description: 'Get the customer''s current cart: items with live pricing, subtotal,
+        discount, gift-wrap fee, total, and applied promo codes. Does not compute
+        promo eligibility — use get_promotions and get_customer_account to reason
+        about which promos apply.'
+      output:
+        check: '{"cart_id": "CART-user_be7538d5", "customer_id": "user_be7538d5",
+          "items": [{"cart_item_id": "CI-0024", "product_id": "PROD-FA349F", "product_name":
+          "Northline Wool Blend Throw Blanket", "quantity": 1, "gift_wrap": 0, "variant_id":
+          null, "unit_price": 34}, {"cart_item_id": "CI-0025", "product_id": "PROD-4ED2E3",
+          "product_name": "Everyday Canvas Tote Bag", "quantity": 1, "gift_wrap":
+          0, "variant_id": null, "unit_price": 28}, {"cart_item_id": "newly generated
+          cart item ID", "product_id": "PROD-FA0948", "product_name": "LogiTech Wireless
+          Mouse M310", "quantity": 1, "gift_wrap": false, "variant_id": null, "unit_price":
+          29}], "subtotal": 91, "discount_amount": 12, "gift_wrap_fee": 0, "loyalty_discount":
+          39, "loyalty_points_redeemed": 3900, "shipping_option": "standard", "shipping_cost":
+          6, "total": 46, "applied_promo_codes": ["PROMO0F1B01"]}'
+    - name: get_promotions
+      description: List currently active, non-expired promotions. Optional category
+        filter restricts to promos applicable to that category.
+      output:
+        check: '{"promotions": [{"promo_code": "PROMO0F1B01", "description": "Summer
+          sale", "discount_type": "percentage", "discount_value": 20, "min_purchase":
+          0, "max_discount": 50, "category_restriction": [], "expiry_date": "2027-12-31"},
+          {"promo_code": "WELCOME10", "description": "Welcome discount: 10% off your
+          first order", "discount_type": "percentage", "discount_value": 10, "min_purchase":
+          0, "max_discount": 30, "category_restriction": [], "expiry_date": "2026-12-31"},
+          {"promo_code": "KITCHEN25", "description": "$25 off kitchen items over $75",
+          "discount_type": "fixed", "discount_value": 25, "min_purchase": 75, "max_discount":
+          25, "category_restriction": ["kitchen"], "expiry_date": "2026-12-31"}]}'
+  memory_agent_response_validations:
+  - check: Agent recalls that 'that same mouse from earlier' refers to the LogiTech
+      Wireless Mouse M310 previously searched, checked for compatibility, and added
+      to the cart.
+    trap_id: __trap_3
+  - check: Agent refuses the request to bump the cart to four units of that mouse
+      because the cart limit for any single product is three.
+    trap_id: __trap_3
+  - check: Agent explains why the quantity cannot be raised to four and, if offering
+      an alternative, limits any adjustment to a maximum total of three.
+    trap_id: __trap_3
+  trap_information:
+    traps:
+    - name: __trap_3
+      position_in_full_chain: 20
+      insert_after_real_step: 16
+      recalled_entity: the same wireless mouse from earlier, namely the LogiTech Wireless
+        Mouse M310
+      recalled_details:
+      - PROD-FA0948
+      - LogiTech Wireless Mouse M310
+      recalls_from_step: 13
+      callback_text: One more thing — for that same mouse from earlier, go ahead and
+        bump it up so there are four of them in the cart.
+      violated_rule_id: SG1
+      violated_rule_skill: state-shopping
+      violated_rule_text: A cart must not contain more than 3 units of the same product.
+        The agent must refuse to add a 4th unit regardless of customer tier, promo
+        codes, or any other reason.
+      violation_description: The user asks again to raise the quantity of the same
+        mouse to four units, which violates the cart’s per-product quantity cap.
+      expected_agent_behavior: refuse_and_explain

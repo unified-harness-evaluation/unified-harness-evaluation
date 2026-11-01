@@ -1,0 +1,19 @@
+image: harness-deepseek-reasonix
+turn_mode: cli
+# Harvest the full agent trajectory (tool calls, outputs, reasoning) from the
+# reasonix session JSONL in post_run.py and fold it into the saved trace.
+# Override per run with the HARNESS_CAPTURE_TRAJECTORY env var on the gateway.
+capture_trajectory: true
+cmd: ["reasonix", "-p", "{task}", "--model", "openai-proxy", "--permission-mode", "bypassPermissions"]
+env:
+  OPENAI_API_KEY: "{api_key}"
+  OPENAI_BASE_URL: "{proxy_base}/v1"
+  DEEPSEEK_API_KEY: "{api_key}"
+workdir: /workspace
+session:
+  flag: "-c"
+# global dir: loads unconditionally (project dirs are trust-gated on some CLIs)
+skills_dirs:
+  - ~/.agents/skills
+# init a git repo in the fresh workspace (some CLIs use the git root as
+# project boundary or refuse to run outside one)

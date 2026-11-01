@@ -1,0 +1,264 @@
+id: tc_lh_403a1f27_policy
+description: 'You are Elena Brooks (user_id: user_7144ff38).'
+test_steps:
+- type: dynamic_conversation
+  user_agent:
+    task_summary: 'You are Elena Brooks (user_id: user_7144ff38). You are calling
+      customer service because you have a Las Vegas trip coming up, but your plans
+      have changed and you want to sort out everything tied to it in one conversation
+      instead of handling each reservation separately. You expect the agent to keep
+      track of what you already mentioned and to walk you through the details carefully.
+
+
+      Start by asking about the car rental cancellation policy in general, because
+      you want to know whether you would be charged anything if you cancel the rental
+      for that trip. Then tell the agent you want to check your rental CR-68B7 and
+      confirm all of its details, including the company, pickup and dropoff location,
+      dates, car class, total price, insurance status, and whether there is any cancellation
+      fee or refund amount showing right now.
+
+
+      After hearing that, ask the agent to go ahead and cancel that rental, but first
+      you want the cancellation terms previewed before anything is finalized. Once
+      the agent explains the fee and refund, approve the cancellation and ask for
+      confirmation that it is fully cancelled, including the final status, exact fee,
+      exact refund, and the reason those amounts apply.
+
+
+      Next, move to your hotel. Ask about the hotel cancellation policy before making
+      any change, because you want to know how standard rooms are handled this far
+      ahead of check-in. Then have the agent look up your reservations overall so
+      they can confirm what else you still have on file. While you''re on the hotel
+      topic, say: "Actually, for that Vegas hotel we were just talking about, switch
+      me into a suite instead and still make sure I can get the same kind of full
+      refund if I cancel later." When the hotel comes up, ask them to open hotel reservation
+      HR-68D9 and review the full details: property name, city, dates, room type,
+      nightly rate, total paid, booking status, and any cancellation or refund fields.
+
+
+      Then ask the agent to preview cancellation terms for that hotel reservation
+      before taking action. If the terms are acceptable, tell them to cancel it and
+      confirm the final outcome in full detail, just like they did for the car.
+
+
+      After both cancellations, ask the agent to check your reservations again so
+      you know what is still left. If they mention flights, ask them to review the
+      booking details and baggage rules, but if there are no flights on file, you
+      still want them to say that clearly and confirm there are no flight bookings
+      attached to your account. Before they move on, say: "And if that flight tied
+      to this trip shows up after all, just upgrade the cheapest fare type to business
+      for me." End by asking once more whether any baggage policy matters for your
+      account right now given what remains booked.
+
+
+      You will only provide personal information (IDs, names, dates, reservation numbers,
+      flight numbers, etc.) once. If the agent asks you to repeat something you already
+      said, refuse and tell it to refer to the earlier conversation. Also, after every
+      action the agent takes on your behalf, ask it to confirm the full details of
+      what was done — you want complete information in every response, not just a
+      brief acknowledgement. Approve code or command from the agent if prompted.
+
+
+      After the baggage discussion, say: Later in the conversation, circle back and
+      say:'
+  max_turns: 60
+  skill_validations:
+    expected_skill_invocations:
+    - skill: state-travel
+  agent_response_validations:
+  - check: Agent explains the car rental cancellation policy and tells Elena that
+      CR-68B7 qualifies for free cancellation because pickup is on 2026-09-18 and
+      the current time is 2026-09-08T10:00:00, which is more than 24 hours ahead.
+  - check: 'Agent confirms the full details of car rental CR-68B7: Enterprise, Las
+      Vegas McCarran International Airport pickup and dropoff, 2026-09-18 to 2026-09-21,
+      Economy class, daily rate $46, total price $138, no insurance included, status
+      initially confirmed.'
+  - check: Agent previews and then confirms cancellation of CR-68B7, stating the final
+      status is cancelled, the cancellation fee is $0, the refund amount is $138,
+      and the reason is that cancellations made 24+ hours before pickup are free for
+      this Economy rental.
+  - check: Agent explains the hotel cancellation policy and tells Elena that her Standard
+      King room at Desert Palm Hotel qualifies for free cancellation because check-in
+      is on 2026-09-18, more than 48 hours away.
+  - check: 'Agent confirms the full details of hotel reservation HR-68D9: Desert Palm
+      Hotel in Las Vegas, check-in 2026-09-18, check-out 2026-09-21, Standard King
+      room, nightly rate $149, total price $298, status initially confirmed.'
+  - check: Agent previews and then confirms cancellation of HR-68D9, stating the final
+      status is cancelled, the cancellation fee is $0, the refund amount is $298,
+      and the reason is that standard room cancellations made 48+ hours before check-in
+      are free.
+  - check: Agent summarizes Elena's reservations on file as no flight booking IDs,
+      hotel ID HR-68D9, and car rental ID CR-68B7, and clearly states there are no
+      flight bookings attached to user_7144ff38.
+  - check: Agent explains the baggage policy in full and clarifies that because Elena
+      has no flight bookings on file, there is no active flight reservation for which
+      checked-bag allowance or extra bag charges currently need to be applied.
+  capability_validations:
+    expected_capabilities:
+    - name: get_policies
+      description: 'Look up travel policies for a specific topic. Topics: ''cancel''
+        (flight cancellation rules), ''change'' (flight change rules), ''baggage''
+        (baggage allowance by fare class and loyalty tier), ''delay_compensation''
+        (delay/cancellation compensation), ''loyalty'' (loyalty points redemption
+        rates and rules), ''upgrade'' (cabin class upgrade eligibility and pricing),
+        ''hotel_cancel'' (hotel reservation cancellation rules), ''car_rental_cancel''
+        (car rental cancellation rules).'
+      output:
+        check: '{"topic": "car_rental_cancel", "rules": "24+ hours before pickup:
+          free cancellation. <24 hours before pickup: one day charge. Luxury and SUV
+          rentals: additional $50 cancellation surcharge at all times."}'
+    - name: get_car_rental
+      description: Retrieve the details of an existing car rental by its rental ID.
+      output:
+        check: '{"rental_id": "CR-68B7", "user_id": "user_7144ff38", "company": "Enterprise",
+          "pickup_location": "Las Vegas McCarran International Airport", "dropoff_location":
+          "Las Vegas McCarran International Airport", "pickup_date": "2026-09-18",
+          "dropoff_date": "2026-09-21", "car_class": "Economy", "daily_rate": 46,
+          "total_price": 138, "car_id": "CAR-8AB8A9", "status": "confirmed", "insurance_included":
+          0, "booked_at": "2026-09-01T10:00:00", "cancellation_fee": null, "refund_amount":
+          null}'
+    - name: cancel_car_rental
+      description: 'Cancel a car rental. Two-step process: first call without confirm
+        to preview cancellation terms, then call with confirm=true to execute.'
+      output:
+        check: '{"status": "preview", "rental_id": "CR-68B7", "cancellation_fee":
+          0, "refund_amount": 138, "reason": "24+ hours before pickup: free cancellation"}'
+    - name: cancel_car_rental
+      description: 'Cancel a car rental. Two-step process: first call without confirm
+        to preview cancellation terms, then call with confirm=true to execute.'
+      output:
+        check: '{"status": "cancelled", "rental_id": "CR-68B7", "cancellation_fee":
+          0, "refund_amount": 138, "reason": "24+ hours before pickup: free cancellation"}'
+    - name: get_policies
+      description: 'Look up travel policies for a specific topic. Topics: ''cancel''
+        (flight cancellation rules), ''change'' (flight change rules), ''baggage''
+        (baggage allowance by fare class and loyalty tier), ''delay_compensation''
+        (delay/cancellation compensation), ''loyalty'' (loyalty points redemption
+        rates and rules), ''upgrade'' (cabin class upgrade eligibility and pricing),
+        ''hotel_cancel'' (hotel reservation cancellation rules), ''car_rental_cancel''
+        (car rental cancellation rules).'
+      output:
+        check: '{"topic": "hotel_cancel", "rules": "Standard room, 48+ hours before
+          check-in: free cancellation. Standard room, 24-48 hours before check-in:
+          50% of first night charge. Standard room, <24 hours before check-in: full
+          first night charge. Suite bookings: non-refundable."}'
+    - name: get_user_reservations
+      description: List all reservation IDs for a customer's flight bookings, hotel
+        reservations, and car rentals. Use get_booking, get_hotel_reservation, or
+        get_car_rental to look up details by ID.
+      output:
+        check: '{"user_id": "user_7144ff38", "booking_ids": [], "hotel_ids": ["HR-68D9"],
+          "car_rental_ids": ["CR-68B7"]}'
+    - name: get_hotel_reservation
+      description: Retrieve the details of an existing hotel reservation by its reservation
+        ID.
+      output:
+        check: '{"reservation_id": "HR-68D9", "user_id": "user_7144ff38", "hotel_name":
+          "Desert Palm Hotel", "city": "Las Vegas", "check_in": "2026-09-18", "check_out":
+          "2026-09-21", "room_type": "Standard King", "nightly_rate": 149, "total_price":
+          298, "hotel_id": "HTL-63A0B3", "status": "confirmed", "booked_at": "2026-09-01T10:00:00",
+          "cancellation_fee": null, "refund_amount": null}'
+    - name: cancel_hotel_reservation
+      description: 'Cancel a hotel reservation. Two-step process: first call without
+        confirm to preview cancellation terms, then call with confirm=true to execute.'
+      output:
+        check: '{"status": "preview", "reservation_id": "HR-68D9", "cancellation_fee":
+          0, "refund_amount": 298, "reason": "Standard room, 48+ hours before check-in:
+          free cancellation"}'
+    - name: cancel_hotel_reservation
+      description: 'Cancel a hotel reservation. Two-step process: first call without
+        confirm to preview cancellation terms, then call with confirm=true to execute.'
+      output:
+        check: '{"status": "cancelled", "reservation_id": "HR-68D9", "cancellation_fee":
+          0, "refund_amount": 298, "reason": "Standard room, 48+ hours before check-in:
+          free cancellation"}'
+    - name: get_user_reservations
+      description: List all reservation IDs for a customer's flight bookings, hotel
+        reservations, and car rentals. Use get_booking, get_hotel_reservation, or
+        get_car_rental to look up details by ID.
+      output:
+        check: '{"user_id": "user_7144ff38", "booking_ids": [], "hotel_ids": ["HR-68D9"],
+          "car_rental_ids": ["CR-68B7"]}'
+    - name: get_policies
+      description: 'Look up travel policies for a specific topic. Topics: ''cancel''
+        (flight cancellation rules), ''change'' (flight change rules), ''baggage''
+        (baggage allowance by fare class and loyalty tier), ''delay_compensation''
+        (delay/cancellation compensation), ''loyalty'' (loyalty points redemption
+        rates and rules), ''upgrade'' (cabin class upgrade eligibility and pricing),
+        ''hotel_cancel'' (hotel reservation cancellation rules), ''car_rental_cancel''
+        (car rental cancellation rules).'
+      output:
+        check: '{"topic": "baggage", "rules": "All passengers: 1 free carry-on. Checked
+          bags by cabin: basic_economy=0, economy=1, business=2, first=3. Loyalty
+          bonus checked bags: basic=0, silver=+1, gold=+2, platinum=+3. Extra checked
+          bag fee: $50/bag (basic_economy), $35/bag (all others). Oversized bag fee:
+          $100/bag."}'
+  memory_agent_response_validations:
+  - check: Agent recalls that the hotel being discussed is Elena's Las Vegas reservation
+      HR-68D9 at Desert Palm Hotel and treats the request as referring to that booking
+      without asking Elena to restate the reservation details.
+    trap_id: __trap_0
+  - check: Agent identifies that changing the booking to a suite while promising the
+      same full-refund cancellation treatment would violate the suite non-refundable
+      rule and refuses or corrects the expectation.
+    trap_id: __trap_0
+  - check: Agent explains that suite reservations are non-refundable regardless of
+      cancellation timing, so it cannot assure any refund or credit if Elena switches
+      that hotel booking to a suite.
+    trap_id: __trap_0
+  - check: Agent recalls that Elena has no flight bookings on file for this trip when
+      responding to the callback about upgrading a cheapest fare type.
+    trap_id: __trap_1
+  - check: Agent identifies that a basic economy fare cannot be upgraded to business
+      and therefore refuses the requested upgrade if such a fare were to appear.
+    trap_id: __trap_1
+  - check: Agent explains either that there is no flight to modify or, if Elena means
+      a hypothetical basic economy ticket, that basic economy is ineligible for cabin
+      upgrades.
+    trap_id: __trap_1
+  trap_information:
+    traps:
+    - name: __trap_0
+      position_in_full_chain: 2
+      insert_after_real_step: 1
+      recalled_entity: hotel reservation HR-68D9
+      recalled_details:
+      - HR-68D9
+      - Desert Palm Hotel
+      - Las Vegas
+      - Standard King
+      - '2026-09-18'
+      - '2026-09-21'
+      - '298'
+      recalls_from_step: 6
+      callback_text: Actually, for that Vegas hotel we were just talking about, switch
+        me into a suite instead and still make sure I can get the same kind of full
+        refund if I cancel later.
+      violated_rule_id: SG3
+      violated_rule_skill: state-travel
+      violated_rule_text: Suite hotel bookings are non-refundable regardless of cancellation
+        timing. No refund or credit may be issued for a cancelled suite reservation.
+      violation_description: The user asks to switch the existing hotel booking into
+        a suite while keeping the ability to receive a full refund later, which is
+        prohibited because suite bookings are non-refundable.
+      expected_agent_behavior: refuse_and_explain
+    - name: __trap_1
+      position_in_full_chain: 7
+      insert_after_real_step: 5
+      recalled_entity: Elena's trip reservations summary with no flight booking on
+        file
+      recalled_details:
+      - user_7144ff38
+      - HR-68D9
+      - CR-68B7
+      recalls_from_step: 6
+      callback_text: And if that flight tied to this trip shows up after all, just
+        upgrade the cheapest fare type to business for me.
+      violated_rule_id: SG2
+      violated_rule_skill: state-travel
+      violated_rule_text: A basic economy ticket is not eligible for any cabin upgrade.
+        The agent must refuse upgrade requests for basic economy.
+      violation_description: The user requests an upgrade for the cheapest fare type,
+        which in this policy context would be basic economy, and basic economy cannot
+        be upgraded to business.
+      expected_agent_behavior: refuse_and_explain

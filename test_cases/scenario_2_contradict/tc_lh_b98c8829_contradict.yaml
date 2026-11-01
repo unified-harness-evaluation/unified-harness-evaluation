@@ -1,0 +1,304 @@
+id: tc_lh_b98c8829_contradict
+description: 'You are Elena Brooks (user_id: user_7144ff38).'
+test_steps:
+- type: dynamic_conversation
+  user_agent:
+    task_summary: 'You are Elena Brooks (user_id: user_7144ff38). You are calling
+      customer service because you want to straighten out everything tied to a Las
+      Vegas trip you may no longer take, and you want a clear accounting of what reservations
+      you still have on file, what can be cancelled, and exactly how much money would
+      come back to you.
+
+
+      Start by asking the agent to pull up your overall travel reservations under
+      your profile so you can see everything connected to this trip. Once they do
+      that, ask them to check whether you have any flight booking on file as part
+      of the same travel plans, because you thought there might have been an airfare
+      reservation connected to your account and you want the full booking details
+      if one exists, including itinerary, status, cabin, baggage allowance, payment
+      method, and any cancellation terms. If there is no flight on file, ask them
+      to be explicit about that rather than giving a vague answer.
+
+
+      Then move on to your car rental, CR-68B7. Mention that you remember the pickup
+      location for that rental as Las Vegas McCarran International Airport. Tell the
+      agent you want the full rental details first: company, car class, pickup and
+      dropoff location, dates, total price, whether insurance is included, current
+      status, and what the cancellation terms would be if you cancelled now. Ask them
+      to check the applicable cancellation policy and explain any fee or refund in
+      plain language. If it is cancellable, ask them to cancel it, and after they
+      do, ask them to confirm the final status, cancellation fee, refund amount, and
+      the reason attached to the cancellation result.
+
+
+      After that, ask the agent to go through your hotel reservation, HR-68D9. Mention
+      that you have the Desert Palm Hotel booked in a Standard King room in Las Vegas.
+      You want the full reservation details for the Desert Palm Hotel in Las Vegas,
+      including room type, stay dates, nightly rate, total paid, status, and the cancellation
+      terms that apply right now. Ask them to review the hotel cancellation policy
+      and tell you exactly whether there is any penalty. If the terms are favorable,
+      have them cancel that hotel stay too, and then confirm the final status, fee,
+      refund amount, and reason.
+
+
+      Before ending the call, ask the agent to check your reservations list again
+      and tell you what, if anything, remains active under your account after the
+      cancellations. If they earlier checked for a flight, circle back and ask them
+      to remind you whether any flight booking was ever found at all.
+
+
+      You will only provide personal information (IDs, names, dates, reservation numbers,
+      flight numbers, etc.) once. If the agent asks you to repeat something you already
+      said, refuse and tell it to refer to the earlier conversation. Also, after every
+      action the agent takes on your behalf, ask it to confirm the full details of
+      what was done — you want complete information in every response, not just a
+      brief acknowledgement.
+
+
+      After the car rental has been handled and the agent has moved on, ask them to
+      note that you thought the rental was supposed to be picked up downtown rather
+      than at the airport, and ask them to clarify that part of the record before
+      wrapping up the remaining reservation review.
+
+
+      Once the hotel cancellation is complete and the agent rechecks what remains
+      active, ask them to confirm whether the Desert Palm reservation they just cancelled
+      was the suite booking you had in mind, because that is how you are remembering
+      the room now. Approve code or command from the agent if prompted'
+  max_turns: 60
+  skill_validations:
+    expected_skill_invocations:
+    - skill: state-travel
+  agent_response_validations:
+  - check: Agent explains that Elena Brooks (user_7144ff38) has no flight bookings
+      on file, and the reservations list shows booking_ids as empty while hotel_ids
+      contains HR-68D9 and car_rental_ids contains CR-68B7.
+  - check: Agent clearly states that no flight cancellation can be processed because
+      there is no existing flight booking associated with Elena's account in the system.
+  - check: Agent confirms the car rental CR-68B7 is with Enterprise, for an Economy
+      car at Las Vegas McCarran International Airport from 2026-09-18 to 2026-09-21,
+      total price $138, insurance not included, and current status confirmed before
+      cancellation.
+  - check: Agent communicates that under the car_rental_cancel policy, cancelling
+      CR-68B7 on 2026-06-15 is free because it is more than 24 hours before the 2026-09-18
+      pickup, so the cancellation fee is $0 and the refund amount is $138.
+  - check: Agent confirms CR-68B7 has been cancelled successfully, with final status
+      cancelled, cancellation fee $0, refund amount $138, and reason 'Cancelled successfully.'
+  - check: Agent confirms the hotel reservation HR-68D9 is for Desert Palm Hotel in
+      Las Vegas, room type Standard King, check-in 2026-09-18, check-out 2026-09-21,
+      nightly rate $149, total price $298, and status confirmed before cancellation.
+  - check: Agent communicates that under the hotel_cancel policy, HR-68D9 qualifies
+      for free cancellation because it is a Standard room and the cancellation is
+      being made more than 48 hours before the 2026-09-18 check-in, so the fee is
+      $0 and the refund is $298.
+  - check: 'Agent confirms HR-68D9 has been cancelled successfully, and after rechecking
+      the account, Elena has no remaining active reservations: booking_ids, hotel_ids,
+      and car_rental_ids are all empty.'
+  capability_validations:
+    expected_capabilities:
+    - name: get_booking
+      description: Retrieve the details of an existing booking by its booking ID.
+      output:
+        check: '{"booking_id": null, "user_id": null, "flight_id": null, "status":
+          null, "cabin_class": null, "seat_type": null, "meal_preference": null, "add_wifi":
+          null, "add_extra_legroom": null, "add_insurance": null, "price_paid": null,
+          "payment_method": null, "points_used": null, "cash_amount": null, "booked_at":
+          null, "cancellation_fee": null, "refund_amount": null, "change_fee": null,
+          "fare_difference": null, "delay_compensation": null, "paid_checked_bags":
+          null, "origin": null, "destination": null, "departure_time": null, "route_type":
+          null}'
+    - name: get_policies
+      description: 'Look up travel policies for a specific topic. Topics: ''cancel'',
+        ''change'', ''baggage'', ''delay_compensation'', ''loyalty'', ''upgrade'',
+        ''hotel_cancel'', ''car_rental_cancel''.'
+      output:
+        check: '{"topic": "cancel", "rules": "Free cancellation window: full refund
+          within 24 hours (domestic) or 48 hours (international) of booking. basic_economy:
+          not cancellable after free window (unless insured). economy domestic: cancellation
+          fee = max($50, 15% of ticket price). economy international: cancellation
+          fee = max($75, 20% of ticket price). business domestic: cancellation fee
+          = 5% of ticket price. business international: cancellation fee = 8% of ticket
+          price. first class: free cancellation always. Travel insurance covers cancellation
+          regardless of cabin class (full refund). Airline-initiated cancellation
+          or delay >= 240 min: full refund regardless. Fees differ by route type (domestic
+          vs international)."}'
+    - name: get_user_reservations
+      description: List all reservation IDs for a customer's flight bookings, hotel
+        reservations, and car rentals. Use get_booking, get_hotel_reservation, or
+        get_car_rental to look up details by ID.
+      output:
+        check: '{"user_id": "user_7144ff38", "booking_ids": [], "hotel_ids": ["HR-68D9"],
+          "car_rental_ids": ["CR-68B7"]}'
+    - name: get_booking
+      description: Retrieve the details of an existing booking by its booking ID.
+      output:
+        check: '{"booking_id": null, "user_id": null, "flight_id": null, "status":
+          null, "cabin_class": null, "seat_type": null, "meal_preference": null, "add_wifi":
+          null, "add_extra_legroom": null, "add_insurance": null, "price_paid": null,
+          "payment_method": null, "points_used": null, "cash_amount": null, "booked_at":
+          null, "cancellation_fee": null, "refund_amount": null, "change_fee": null,
+          "fare_difference": null, "delay_compensation": null, "paid_checked_bags":
+          null, "origin": null, "destination": null, "departure_time": null, "route_type":
+          null}'
+    - name: get_policies
+      description: 'Look up travel policies for a specific topic. Topics: ''cancel'',
+        ''change'', ''baggage'', ''delay_compensation'', ''loyalty'', ''upgrade'',
+        ''hotel_cancel'', ''car_rental_cancel''.'
+      output:
+        check: '{"topic": "cancel", "rules": "Free cancellation window: full refund
+          within 24 hours (domestic) or 48 hours (international) of booking. basic_economy:
+          not cancellable after free window (unless insured). economy domestic: cancellation
+          fee = max($50, 15% of ticket price). economy international: cancellation
+          fee = max($75, 20% of ticket price). business domestic: cancellation fee
+          = 5% of ticket price. business international: cancellation fee = 8% of ticket
+          price. first class: free cancellation always. Travel insurance covers cancellation
+          regardless of cabin class (full refund). Airline-initiated cancellation
+          or delay >= 240 min: full refund regardless. Fees differ by route type (domestic
+          vs international)."}'
+    - name: cancel_booking
+      description: Cancel an existing booking. First call without confirm to preview
+        the cancellation terms, then call with confirm=true to execute.
+      output:
+        check: '{"status": null, "booking_id": null, "cancellation_fee": null, "refund_amount":
+          null, "reason": null}'
+    - name: get_booking
+      description: Retrieve the details of an existing booking by its booking ID.
+      output:
+        check: '{"booking_id": null, "user_id": null, "flight_id": null, "status":
+          null, "cabin_class": null, "seat_type": null, "meal_preference": null, "add_wifi":
+          null, "add_extra_legroom": null, "add_insurance": null, "price_paid": null,
+          "payment_method": null, "points_used": null, "cash_amount": null, "booked_at":
+          null, "cancellation_fee": null, "refund_amount": null, "change_fee": null,
+          "fare_difference": null, "delay_compensation": null, "paid_checked_bags":
+          null, "origin": null, "destination": null, "departure_time": null, "route_type":
+          null}'
+    - name: get_policies
+      description: 'Look up travel policies for a specific topic. Topics: ''cancel'',
+        ''change'', ''baggage'', ''delay_compensation'', ''loyalty'', ''upgrade'',
+        ''hotel_cancel'', ''car_rental_cancel''.'
+      output:
+        check: '{"topic": "cancel", "rules": "Free cancellation window: full refund
+          within 24 hours (domestic) or 48 hours (international) of booking. basic_economy:
+          not cancellable after free window (unless insured). economy domestic: cancellation
+          fee = max($50, 15% of ticket price). economy international: cancellation
+          fee = max($75, 20% of ticket price). business domestic: cancellation fee
+          = 5% of ticket price. business international: cancellation fee = 8% of ticket
+          price. first class: free cancellation always. Travel insurance covers cancellation
+          regardless of cabin class (full refund). Airline-initiated cancellation
+          or delay >= 240 min: full refund regardless. Fees differ by route type (domestic
+          vs international)."}'
+    - name: get_user_reservations
+      description: List all reservation IDs for a customer's flight bookings, hotel
+        reservations, and car rentals. Use get_booking, get_hotel_reservation, or
+        get_car_rental to look up details by ID.
+      output:
+        check: '{"user_id": "user_7144ff38", "booking_ids": [], "hotel_ids": ["HR-68D9"],
+          "car_rental_ids": ["CR-68B7"]}'
+    - name: get_car_rental
+      description: Retrieve the details of an existing car rental by its rental ID.
+      output:
+        check: '{"rental_id": "CR-68B7", "user_id": "user_7144ff38", "company": "Enterprise",
+          "pickup_location": "Las Vegas McCarran International Airport", "dropoff_location":
+          "Las Vegas McCarran International Airport", "pickup_date": "2026-09-18",
+          "dropoff_date": "2026-09-21", "car_class": "Economy", "daily_rate": 46,
+          "total_price": 138, "car_id": "CAR-8AB8A9", "status": "confirmed", "insurance_included":
+          0, "booked_at": "2026-09-01T10:00:00", "cancellation_fee": null, "refund_amount":
+          null}'
+    - name: get_policies
+      description: 'Look up travel policies for a specific topic. Topics: ''cancel'',
+        ''change'', ''baggage'', ''delay_compensation'', ''loyalty'', ''upgrade'',
+        ''hotel_cancel'', ''car_rental_cancel''.'
+      output:
+        check: '{"topic": "car_rental_cancel", "rules": "24+ hours before pickup:
+          free cancellation. <24 hours before pickup: one day charge. Luxury and SUV
+          rentals: additional $50 cancellation surcharge at all times."}'
+    - name: cancel_car_rental
+      description: Cancel a car rental. First call without confirm to preview the
+        cancellation terms, then call with confirm=true to execute.
+      output:
+        check: '{"status": "cancelled", "rental_id": "CR-68B7", "cancellation_fee":
+          0, "refund_amount": 138, "reason": "Cancelled successfully"}'
+    - name: get_car_rental
+      description: Retrieve the details of an existing car rental by its rental ID.
+      output:
+        check: '{"rental_id": "CR-68B7", "user_id": "user_7144ff38", "company": "Enterprise",
+          "pickup_location": "Las Vegas McCarran International Airport", "dropoff_location":
+          "Las Vegas McCarran International Airport", "pickup_date": "2026-09-18",
+          "dropoff_date": "2026-09-21", "car_class": "Economy", "daily_rate": 46,
+          "total_price": 138, "car_id": "CAR-8AB8A9", "status": "cancelled", "insurance_included":
+          0, "booked_at": "2026-09-01T10:00:00", "cancellation_fee": 0, "refund_amount":
+          138}'
+    - name: get_user_reservations
+      description: List all reservation IDs for a customer's flight bookings, hotel
+        reservations, and car rentals. Use get_booking, get_hotel_reservation, or
+        get_car_rental to look up details by ID.
+      output:
+        check: '{"user_id": "user_7144ff38", "booking_ids": [], "hotel_ids": ["HR-68D9"],
+          "car_rental_ids": []}'
+    - name: get_hotel_reservation
+      description: Retrieve the details of an existing hotel reservation by its reservation
+        ID.
+      output:
+        check: '{"reservation_id": "HR-68D9", "user_id": "user_7144ff38", "hotel_name":
+          "Desert Palm Hotel", "city": "Las Vegas", "check_in": "2026-09-18", "check_out":
+          "2026-09-21", "room_type": "Standard King", "nightly_rate": 149, "total_price":
+          298, "hotel_id": "HTL-63A0B3", "status": "confirmed", "booked_at": "2026-09-01T10:00:00",
+          "cancellation_fee": null, "refund_amount": null}'
+    - name: get_policies
+      description: 'Look up travel policies for a specific topic. Topics: ''cancel'',
+        ''change'', ''baggage'', ''delay_compensation'', ''loyalty'', ''upgrade'',
+        ''hotel_cancel'', ''car_rental_cancel''.'
+      output:
+        check: '{"topic": "hotel_cancel", "rules": "Standard room, 48+ hours before
+          check-in: free cancellation. Standard room, 24-48 hours before check-in:
+          50% of first night charge. Standard room, <24 hours before check-in: full
+          first night charge. Suite bookings: non-refundable (full charge regardless
+          of timing)."}'
+    - name: cancel_hotel_reservation
+      description: Cancel a hotel reservation. First call without confirm to preview
+        the cancellation terms, then call with confirm=true to execute.
+      output:
+        check: '{"status": "cancelled", "reservation_id": "HR-68D9", "cancellation_fee":
+          0, "refund_amount": 298, "reason": "Cancelled successfully"}'
+    - name: get_user_reservations
+      description: List all reservation IDs for a customer's flight bookings, hotel
+        reservations, and car rentals. Use get_booking, get_hotel_reservation, or
+        get_car_rental to look up details by ID.
+      output:
+        check: '{"user_id": "user_7144ff38", "booking_ids": [], "hotel_ids": [], "car_rental_ids":
+          []}'
+  memory_agent_response_validations:
+  - check: Agent correctly recalls that earlier in the conversation the user identified
+      the car rental pickup location for CR-68B7 as Las Vegas McCarran International
+      Airport.
+    trap_id: __trap_0
+  - check: Agent flags the inconsistency between the user's earlier statement that
+      the rental pickup was at Las Vegas McCarran International Airport and the later
+      statement that it was downtown, and asks for clarification rather than silently
+      accepting the changed location.
+    trap_id: __trap_0
+  - check: Agent correctly recalls that earlier in the conversation the user identified
+      the Desert Palm Hotel reservation HR-68D9 as a Standard King room.
+    trap_id: __trap_1
+  - check: Agent catches the inconsistency between the user's earlier Standard King
+      description and the later reference to a suite, and makes clear that the cancelled
+      reservation on file was not a suite.
+    trap_id: __trap_1
+  - check: Agent detects the user's later claim that car rental CR-68B7's pickup location
+      is 'downtown' contradicts what the user stated earlier ('Las Vegas McCarran
+      International Airport'), catches it from conversation memory, and corrects or
+      seeks confirmation instead of acting on it.
+    trap_id: __trap_0
+  - check: Agent detects the user's later claim that hotel reservation HR-68D9's room
+      type is 'suite' contradicts what the user stated earlier ('Standard King'),
+      catches it from conversation memory, and corrects or seeks confirmation instead
+      of acting on it.
+    trap_id: __trap_1
+  trap_information:
+    traps:
+    - name: __trap_0
+      position_in_full_chain: 8
+      insert_after_real_step: 7
+    - name: __trap_1
+      position_in_full_chain: 18
+      insert_after_real_step: 16

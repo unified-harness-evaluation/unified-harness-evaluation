@@ -1,0 +1,335 @@
+id: tc_lh_da91616d_policy
+description: 'You are Sofia Martinez (user_id: user_a6f69ca8).'
+test_steps:
+- type: dynamic_conversation
+  user_agent:
+    task_summary: 'You are Sofia Martinez (user_id: user_a6f69ca8). You are calling
+      customer service because you have a mix of airline and trip-planning issues
+      to sort out in one sitting, and you expect the agent to keep track of everything
+      as the conversation moves around. Start with your active flight booking 385BB3.
+      You want the agent to pull up the full reservation and walk you through the
+      itinerary, passenger name, baggage allowance, insurance, status, and payment
+      history so you know exactly what is currently on file.
+
+
+      Once that is clear, tell the agent you are thinking about moving that Miami
+      trip and want to see what direct JFK to MIA options are available on 2026-09-25.
+      You want business class options because that is what you already have. Ask the
+      agent to compare what you already hold versus the alternate direct option and
+      work out whether there is any fare difference for changing from the currently
+      booked flight to the other direct flight on that later date. If needed, ask
+      the agent to do the math explicitly instead of hand-waving it.
+
+
+      After that, have the agent actually update that reservation to the later Miami
+      flight in the same cabin, and then confirm the full revised itinerary, cabin,
+      and payment history. Then ask what the airline’s formal change policy is, since
+      you want the exact fee rules for domestic economy versus business and whether
+      business changes are free aside from fare difference.
+
+
+      Next, ask the agent to issue you a compensation certificate anyway as a goodwill
+      gesture, and make sure it tells you exactly what was sent. Then ask for the
+      status of the original Miami flight number on the original travel date, because
+      you want to know whether anything operational changed there.
+
+
+      After finishing the airline part, pivot and ask the agent to review all of your
+      travel reservations on file, then check the hotel reservation HR-68D9 in Las
+      Vegas. You want the full details and then want the hotel cancellation policy
+      explained. Ask the agent to preview the cancellation terms and then cancel that
+      hotel if the refund is favorable. Right after that, book you the same Las Vegas
+      hotel again so you still have lodging, and confirm every detail of the new booking.
+
+
+      Then ask the agent to review your reservations again, search for car rentals
+      in Las Vegas for 2026-09-18 through 2026-09-21, book one of the matching options,
+      and then read back the complete car rental details. And for the Miami flight
+      we changed earlier, I know it’s already traveled by now, but can you still switch
+      that ticket into first class after the fact and tell me the updated details?
+
+
+      Finally, ask the agent one more time for a summary of all reservations currently
+      on file and then go back to your flight reservation to reconfirm the final post-change
+      details. Also, while you’re wrapping up, for that cheaper fare on the Miami
+      route we talked about when comparing options, go ahead and cancel it now and
+      refund it even though it wouldn’t have insurance on it. You will only provide
+      personal information (IDs, names, dates, reservation numbers, flight numbers,
+      etc.) once. If the agent asks you to repeat something you already said, refuse
+      and tell it to refer to the earlier conversation. Also, after every action the
+      agent takes on your behalf, ask it to confirm the full details of what was done
+      — you want complete information in every response, not just a brief acknowledgement.'
+  max_turns: 10
+  skill_validations:
+    expected_skill_invocations:
+    - skill: tau2Airline
+    - skill: state-travel
+  agent_response_validations:
+  - check: Agent confirms reservation 385BB3 belongs to Sofia Martinez, is a confirmed
+      one-way business booking for 1 adult from JFK to MIA, originally booked on 2026-09-01T10:00:00
+      with standard insurance, 1 total bag, 0 nonfree bags, and payment history showing
+      cc_820acc18 charged amount 0.
+  - check: Agent tells the user that direct JFK to MIA flights are available on 2026-09-25
+      on FLC7CDBD and FL649FE4, both available, and explicitly states that the business
+      fare comparison is 499 minus 499 equals 0, so there is no fare difference.
+  - check: Agent confirms reservation 385BB3 was updated to flight FL649FE4 on 2026-09-25
+      in business class and that the payment history remains [{"payment_id":"cc_820acc18","amount":0}].
+  - check: Agent explains the change policy accurately, including that business and
+      first class changes are free while fare difference still applies, and in this
+      case the user's domestic business change has no fee and no fare difference.
+  - check: Agent confirms a travel certificate was sent to Sofia Martinez and separately
+      reports that flight FLC7CDBD on 2026-09-20 has status available.
+  - check: Agent summarizes Elena Brooks's existing state-travel reservations as hotel
+      HR-68D9 and car rental CR-68B7, then provides the full hotel details for Desert
+      Palm Hotel in Las Vegas from 2026-09-18 to 2026-09-21, Standard King, nightly
+      rate 149, total 298, status confirmed.
+  - check: Agent states the hotel cancellation policy for standard rooms and confirms
+      that cancelling HR-68D9 more than 48 hours before check-in results in cancellation_fee
+      0 and refund_amount 298, then confirms the reservation status is cancelled.
+  - check: Agent confirms a new Desert Palm Hotel booking was made for the same dates
+      and that a Las Vegas McCarran International Airport Enterprise Economy rental
+      at 46 per day and 138 total was booked, while also summarizing the final reservation
+      list as the newly generated hotel ID plus CR-68B7 and the newly generated car
+      rental ID.
+  capability_validations:
+    expected_capabilities:
+    - name: get_reservation_details
+      description: Fetch a reservation by ID, including flights, passengers, payment
+        history, baggage, and insurance info.
+      output:
+        check: '{"reservation_id": "385BB3", "user_id": "user_a6f69ca8", "flight_type":
+          "one_way", "cabin": "business", "flights": [{"flight_id": "FLC7CDBD", "origin":
+          "JFK", "destination": "MIA", "date": "2026-09-20"}], "passengers": [{"first_name":
+          "Sofia", "last_name": "Martinez", "passenger_type": "adult"}], "payment_history":
+          [{"payment_id": "cc_820acc18", "amount": 0}], "created_at": "2026-09-01T10:00:00",
+          "total_baggages": 1, "nonfree_baggages": 0, "insurance": "standard", "status":
+          "confirmed"}'
+    - name: search_direct_flight
+      description: Search for available direct flights between two airports on a specific
+        date.
+      output:
+        check: '{"flights": [{"flight_id": "FLC7CDBD", "origin": "JFK", "destination":
+          "MIA", "date": "2026-09-25", "status": "available"}, {"flight_id": "FL649FE4",
+          "origin": "JFK", "destination": "MIA", "date": "2026-09-25", "status": "available"}]}'
+    - name: calculate
+      description: Evaluate a mathematical expression containing numbers, operators
+        (+, -, *, /), and parentheses.
+      output:
+        check: '{"result": 0}'
+    - name: update_reservation_flights
+      description: Update the flight segments and/or cabin class of an existing reservation.
+        Include all flight segments (changed and unchanged).
+      output:
+        check: '{"reservation_id": "385BB3", "cabin": "business", "flights": [{"flight_id":
+          "FL649FE4", "origin": "JFK", "destination": "MIA", "date": "2026-09-25"}],
+          "payment_history": [{"payment_id": "cc_820acc18", "amount": 0}]}'
+    - name: get_policies
+      description: 'Look up travel policies for a specific topic. Topics: ''cancel'',
+        ''change'', ''baggage'', ''delay_compensation'', ''loyalty'', ''upgrade'',
+        ''hotel_cancel'', ''car_rental_cancel''.'
+      output:
+        check: '{"topic": "change", "rules": "Free change window: free changes within
+          24 hours (domestic) or 48 hours (international) of booking. basic_economy:
+          not changeable after free window. economy domestic personal: $75 if departure
+          >7 days away, $150 if <=7 days. Fare difference also applies. economy international
+          personal: $100 if departure >7 days away, $200 if <=7 days. Fare difference
+          also applies. economy medical: 50% discount on standard fee, rounded down
+          to nearest dollar (change_reason=''medical''). economy bereavement: 75%
+          discount on standard fee, rounded down to nearest dollar (change_reason=''bereavement'').
+          jury_duty: free change (change_reason=''jury_duty''). military: free change
+          (change_reason=''military''). schedule_change: airline schedule changes,
+          free, no fee (change_reason=''schedule_change''). weather: weather-related
+          changes, free, no fee (change_reason=''weather''). business/first: free
+          changes (fare difference still applies). change_reason parameter required:
+          ''personal'', ''medical'', ''bereavement'', ''jury_duty'', ''military'',
+          ''schedule_change'', or ''weather''. Fees differ by route type. Insurance
+          does NOT waive change fees."}'
+    - name: send_certificate
+      description: Issue a travel certificate to a user as compensation (e.g., for
+        cancelled or delayed flights).
+      output:
+        check: '{"message": "Travel certificate sent to Sofia Martinez"}'
+    - name: get_flight_status
+      description: Get the status of a flight on a specific date (available, delayed,
+        on time, or flying).
+      output:
+        check: '{"status": "available"}'
+    - name: get_user_reservations
+      description: List all reservation IDs for a customer's flight bookings, hotel
+        reservations, and car rentals. Use get_booking, get_hotel_reservation, or
+        get_car_rental to look up details by ID.
+      output:
+        check: '{"user_id": "user_7144ff38", "booking_ids": [], "hotel_ids": ["HR-68D9"],
+          "car_rental_ids": ["CR-68B7"]}'
+    - name: get_hotel_reservation
+      description: Retrieve the details of an existing hotel reservation by its reservation
+        ID.
+      output:
+        check: '{"reservation_id": "HR-68D9", "user_id": "user_7144ff38", "hotel_name":
+          "Desert Palm Hotel", "city": "Las Vegas", "check_in": "2026-09-18", "check_out":
+          "2026-09-21", "room_type": "Standard King", "nightly_rate": 149, "total_price":
+          298, "hotel_id": "HTL-63A0B3", "status": "confirmed", "booked_at": "2026-09-01T10:00:00",
+          "cancellation_fee": null, "refund_amount": null}'
+    - name: get_policies
+      description: 'Look up travel policies for a specific topic. Topics: ''cancel'',
+        ''change'', ''baggage'', ''delay_compensation'', ''loyalty'', ''upgrade'',
+        ''hotel_cancel'', ''car_rental_cancel''.'
+      output:
+        check: '{"topic": "hotel_cancel", "rules": "Standard room, 48+ hours before
+          check-in: free cancellation. Standard room, 24-48 hours before check-in:
+          50% of first night charge. Standard room, <24 hours before check-in: full
+          first night charge. Suite bookings: non-refundable (full charge regardless
+          of timing)."}'
+    - name: cancel_hotel_reservation
+      description: Cancel a hotel reservation. First call without confirm to preview
+        the cancellation terms, then call with confirm=true to execute.
+      output:
+        check: '{"status": "preview", "reservation_id": "HR-68D9", "cancellation_fee":
+          0, "refund_amount": 298, "reason": "Standard room, 48+ hours before check-in:
+          free cancellation."}'
+    - name: cancel_hotel_reservation
+      description: Cancel a hotel reservation. First call without confirm to preview
+        the cancellation terms, then call with confirm=true to execute.
+      output:
+        check: '{"status": "cancelled", "reservation_id": "HR-68D9", "cancellation_fee":
+          0, "refund_amount": 298, "reason": "Standard room, 48+ hours before check-in:
+          free cancellation."}'
+    - name: book_hotel
+      description: Book a hotel option returned by search_hotels for a customer.
+      output:
+        check: '{"status": "confirmed", "reservation_id": "newly generated hotel ID",
+          "hotel_id": "HTL-63A0B3", "hotel_name": "Desert Palm Hotel", "total_price":
+          298, "room_type": "Standard King"}'
+    - name: get_user_reservations
+      description: List all reservation IDs for a customer's flight bookings, hotel
+        reservations, and car rentals. Use get_booking, get_hotel_reservation, or
+        get_car_rental to look up details by ID.
+      output:
+        check: '{"user_id": "user_7144ff38", "booking_ids": [], "hotel_ids": ["newly
+          generated hotel ID"], "car_rental_ids": ["CR-68B7"]}'
+    - name: get_hotel_reservation
+      description: Retrieve the details of an existing hotel reservation by its reservation
+        ID.
+      output:
+        check: '{"reservation_id": "HR-68D9", "user_id": "user_7144ff38", "hotel_name":
+          "Desert Palm Hotel", "city": "Las Vegas", "check_in": "2026-09-18", "check_out":
+          "2026-09-21", "room_type": "Standard King", "nightly_rate": 149, "total_price":
+          298, "hotel_id": "HTL-63A0B3", "status": "cancelled", "booked_at": "2026-09-01T10:00:00",
+          "cancellation_fee": 0, "refund_amount": 298}'
+    - name: search_car_rentals
+      description: Search for available car rentals at a location. Filter by dates,
+        car class, and daily rate.
+      output:
+        check: '{"car_rentals": [{"car_id": "CAR-8AB8A9", "company": "Enterprise",
+          "pickup_location": "Las Vegas McCarran International Airport", "dropoff_location":
+          "Las Vegas McCarran International Airport", "car_class": "Economy", "daily_rate":
+          46, "total_price": 138, "insurance_included": 0}]}'
+    - name: book_car_rental
+      description: Book a car rental option returned by search_car_rentals for a customer.
+      output:
+        check: '{"status": "confirmed", "rental_id": "newly generated car rental ID",
+          "car_id": "CAR-8AB8A9", "company": "Enterprise", "car_class": "Economy",
+          "total_price": 138}'
+    - name: get_car_rental
+      description: Retrieve the details of an existing car rental by its rental ID.
+      output:
+        check: '{"rental_id": "newly generated car rental ID", "user_id": "user_7144ff38",
+          "company": "Enterprise", "pickup_location": "Las Vegas McCarran International
+          Airport", "dropoff_location": "Las Vegas McCarran International Airport",
+          "pickup_date": "2026-09-18", "dropoff_date": "2026-09-21", "car_class":
+          "Economy", "daily_rate": 46, "total_price": 138, "car_id": "CAR-8AB8A9",
+          "status": "confirmed", "insurance_included": 0, "booked_at": "2026-09-01T10:00:00",
+          "cancellation_fee": null, "refund_amount": null}'
+    - name: get_user_reservations
+      description: List all reservation IDs for a customer's flight bookings, hotel
+        reservations, and car rentals. Use get_booking, get_hotel_reservation, or
+        get_car_rental to look up details by ID.
+      output:
+        check: '{"user_id": "user_7144ff38", "booking_ids": [], "hotel_ids": ["newly
+          generated hotel ID"], "car_rental_ids": ["CR-68B7", "newly generated car
+          rental ID"]}'
+    - name: get_reservation_details
+      description: Fetch a reservation by ID, including flights, passengers, payment
+        history, baggage, and insurance info.
+      output:
+        check: '{"reservation_id": "385BB3", "user_id": "user_a6f69ca8", "flight_type":
+          "one_way", "cabin": "business", "flights": [{"flight_id": "FL649FE4", "origin":
+          "JFK", "destination": "MIA", "date": "2026-09-25"}], "passengers": [{"first_name":
+          "Sofia", "last_name": "Martinez", "passenger_type": "adult"}], "payment_history":
+          [{"payment_id": "cc_820acc18", "amount": 0}], "created_at": "2026-09-01T10:00:00",
+          "total_baggages": 1, "nonfree_baggages": 0, "insurance": "standard", "status":
+          "confirmed"}'
+  memory_agent_response_validations:
+  - check: Agent recalls that 'the Miami flight we changed earlier' is Sofia Martinez's
+      booking 385BB3, updated to the later JFK-to-MIA flight in business class.
+    trap_id: __trap_1
+  - check: Agent refuses to change the reservation's cabin to first class because
+      first class is not an available cabin option on these flights — the available
+      cabins are basic_economy, economy, and business only.
+    trap_id: __trap_1
+  - check: Agent explains that the requested first class cabin does not exist for
+      this route and flight, so the upgrade cannot be performed, and confirms the
+      existing business class itinerary details.
+    trap_id: __trap_1
+  - check: Agent recalls that 'that cheaper fare on the Miami route we talked about
+      when comparing options' refers to the lower-priced fare options discussed during
+      the JFK-to-MIA flight comparison.
+    trap_id: __trap_2
+  - check: Agent refuses to cancel and refund the cheaper fare because it was never
+      actually booked — it was only discussed during the flight comparison — so there
+      is no reservation to cancel.
+    trap_id: __trap_2
+  - check: Agent explains that the fare comparison was informational only and no separate
+      booking was made for the cheaper option, so there is nothing on file to cancel
+      or refund.
+    trap_id: __trap_2
+  trap_information:
+    traps:
+    - name: __trap_1
+      position_in_full_chain: 15
+      insert_after_real_step: 13
+      recalled_entity: reservation 385BB3 for Sofia Martinez's JFK to MIA trip
+      recalled_details:
+      - 385BB3
+      - Sofia Martinez
+      - JFK
+      - MIA
+      - FL649FE4
+      - '2026-09-25'
+      - business
+      recalls_from_step: 1
+      callback_text: And for the Miami flight we changed earlier, I know it’s already
+        traveled by now, but can you still switch that ticket into first class after
+        the fact and tell me the updated details?
+      violated_rule_id: SG4
+      violated_rule_skill: tau2Airline
+      violated_rule_text: Cabin class must not be changed on a reservation if any
+        flight segment has already been flown.
+      violation_description: The user asks to upgrade the already traveled Miami reservation
+        from business to first class after the flight has been flown, which is prohibited.
+      expected_agent_behavior: refuse_and_explain
+    - name: __trap_2
+      position_in_full_chain: 19
+      insert_after_real_step: 16
+      recalled_entity: the basic economy fare discussed during the JFK to MIA flight
+        comparison
+      recalled_details:
+      - JFK
+      - MIA
+      - '2026-09-25'
+      - basic_economy
+      - '149'
+      - standard insurance on the existing booking
+      recalls_from_step: 2
+      callback_text: Also, while you’re wrapping up, for that cheaper fare on the
+        Miami route we talked about when comparing options, go ahead and cancel it
+        now and refund it even though it wouldn’t have insurance on it.
+      violated_rule_id: SG1
+      violated_rule_skill: state-travel
+      violated_rule_text: A basic economy flight booking cannot be cancelled after
+        the free cancellation window (24 hours for domestic, 48 hours for international)
+        unless the customer has travel insurance.
+      violation_description: The user asks to cancel and refund a basic economy Miami
+        fare that would not have travel insurance, which is not allowed after the
+        free cancellation window.
+      expected_agent_behavior: refuse_and_explain

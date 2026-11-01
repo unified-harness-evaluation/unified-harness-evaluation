@@ -1,0 +1,238 @@
+id: tc_lh_024caeac
+description: 'You are Maya Chen (user_id: user_fa209a3f).'
+test_steps:
+- type: dynamic_conversation
+  user_agent:
+    task_summary: 'You are Maya Chen (user_id: user_fa209a3f). You are calling customer
+      service because you have a whole cluster of travel and shopping-related things
+      to sort out in one session, and you expect the agent to keep track of everything
+      as the conversation moves around.
+
+
+      Start by mentioning that you also have a pending retail order under a different
+      account you use for store purchases, tied to the email tessa.coleman2026@example.com.
+      You want help with that order first: it is order #W3916708, and you want to
+      swap both items before it ships. Change the Summit Zip Hoodie from the Forest
+      Green medium to the Heather Gray medium, and change the Coastal Breeze Linen
+      Shirt from the Sky Blue medium to the White medium. Use the Visa ending in 2284
+      for any price difference. Once that is done, ask for the updated full order
+      details so you can verify the status, items, shipping address, and payment history.
+
+
+      Next, shift to a separate support issue and say you also need a refund handled
+      for an older delivered order item: item ITEM-E9F653 from order ORD-9497C0. You
+      want the agent to process the refund and tell you the amount, method, and any
+      breakdown clearly.
+
+
+      After that, go back to your airline account and ask for a travel certificate
+      to be issued as compensation. Then ask the agent to look up direct flights from
+      LAX to SFO on 2026-09-20 so you can compare options. Once they give you the
+      choices, have them total up a simple fare calculation and then book that LAX
+      to SFO trip in economy for you using your saved payment methods, for one passenger:
+      Maya Chen, date of birth 1991-04-18. Decline insurance unless asked directly,
+      and do not request extra baggage during booking. After booking, ask for the
+      full reservation details.
+
+
+      Then pivot to shopping and say you want the agent to search for a wireless mouse,
+      and later also search for OXO kitchen items. In between those searches, you
+      want three hotel-related actions handled: first book the Seattle option at Maple
+      Street Suites, then pull up your existing San Francisco hotel reservation HR-54D4
+      so you can confirm its dates and price, then book the Chicago option at Harborview
+      Inn, and later also book the Las Vegas option at Desert Palm Hotel. After the
+      hotel work, ask the agent to pull your airline profile and then your shopping
+      customer profile so you can confirm what payment methods, membership, balances,
+      and reservations are currently on file.
+
+
+      You will only provide personal information (IDs, names, dates, reservation numbers,
+      flight numbers, etc.) once. If the agent asks you to repeat something you already
+      said, refuse and tell it to refer to the earlier conversation. Also, after every
+      action the agent takes on your behalf, ask it to confirm the full details of
+      what was done — you want complete information in every response, not just a
+      brief acknowledgement.'
+  max_turns: 60
+  skill_validations:
+    expected_skill_invocations:
+    - skill: tau2Retail
+    - skill: state-customer-support
+    - skill: tau2Airline
+    - skill: state-shopping
+    - skill: state-travel
+  agent_response_validations:
+  - check: 'Agent confirms retail order #W3916708 was updated by swapping the Summit
+      Zip Hoodie from item 5279753717 to item 1194810973 and the Coastal Breeze Linen
+      Shirt from item 9814539410 to item 6584401102, and explains the order status
+      is now pending (item modified), meaning no further item modifications or cancellation
+      are allowed.'
+  - check: 'Agent gives the full updated order details for #W3916708, including user
+      tessa_coleman_829, shipping address at 1189 Red Clover Way Apt 7, Madison, WI
+      53703, the revised items, and payment history showing the original payment of
+      109.98 on credit_card_7464593.'
+  - check: Agent confirms a refund was processed for order ORD-9497C0 item ITEM-E9F653
+      in the amount of 38 to the original payment method, with no goodwill credit
+      added.
+  - check: 'Agent tells Maya a travel certificate for 100 was issued to user_fa209a3f
+      and then reports the direct LAX to SFO option on 2026-09-20: flight FLD3D594
+      departing 09:15 and arriving 10:35, with economy at 129 and business at 329.'
+  - check: Agent confirms the fare calculation result of 129 and then states a new
+      one-way economy reservation from LAX to SFO on FLD3D594 for Maya Chen on 2026-09-20
+      was booked using cc_2402ef91, with no insurance and no extra baggage.
+  - check: Agent provides full details of the newly booked airline reservation, including
+      reservation ID, user_id user_fa209a3f, one-way LAX to SFO itinerary on 2026-09-20,
+      passenger Maya Chen, payment history showing 129 charged to cc_2402ef91, baggage
+      totals of 0, insurance none, and status confirmed.
+  - check: Agent reports shopping search results for wireless mouse and OXO kitchen
+      items, specifically surfacing LogiTech Wireless Mouse M310 for 29 and Wireless
+      Ergonomic Mouse for 39, then OXO SoftWorks 3-Piece Mixing Bowl Set for 42 and
+      OXO Good Grips Salad Spinner for 38.
+  - check: 'Agent confirms three hotel actions and two profile lookups: booking Maple
+      Street Suites in Seattle for 338, retrieving existing reservation HR-54D4 at
+      Bayview Business Hotel in San Francisco for 2026-09-12 to 2026-09-14 at 378,
+      booking Harborview Inn in Chicago for 378, booking Desert Palm Hotel in Las
+      Vegas for 298, then summarizing Maya Chen''s airline profile with silver membership
+      and payment methods cc_2402ef91 and certificate_b70bc18, and Monica Graves''s
+      customer profile with gold membership and zero store credit.'
+  capability_validations:
+    expected_capabilities:
+    - name: modify_pending_order_items
+      description: Swap items in a pending order for other variants of the same product.
+        Can only be called ONCE per order; changes status to 'pending (item modified)'
+        after which no further modifications or cancellations are allowed. item_ids
+        and new_item_ids are position-matched lists. Each new item must be a different
+        variant of the same product type and must be available. Payment method covers
+        the price difference; gift cards must have sufficient balance.
+      output:
+        check: '{"order": "updated order #W3916708 with status pending (item modified)"}'
+    - name: get_order_details
+      description: Fetch the status and full details of an order by its ID.
+      output:
+        check: '{"order_id": "#W3916708", "user_id": "tessa_coleman_829", "address":
+          {"address1": "1189 Red Clover Way", "address2": "Apt 7", "city": "Madison",
+          "state": "WI", "country": "USA", "zip": "53703"}, "items": ["updated items
+          reflecting 1194810973 and 6584401102"], "status": "pending (item modified)",
+          "fulfillments": [], "payment_history": [{"payment_method_id": "credit_card_7464593",
+          "amount": 109.98, "transaction_type": "payment", "created_at": "2026-09-10
+          17:09:28"}], "cancel_reason": null, "exchange_items": [], "exchange_new_items":
+          [], "exchange_payment_method_id": null, "exchange_price_difference": null,
+          "return_items": [], "return_payment_method_id": null}'
+    - name: process_refund
+      description: 'Process a refund for an order item. Two-step operation: first
+        call without confirm to preview the refund calculation, then call with confirm=true
+        to execute. Used for supplemental refunds (goodwill credits, shipping refunds,
+        price matches) after a return, or standalone refunds for missing/not-received
+        items. Requires prior call to get_policies(topic=''refund'').'
+      output:
+        check: '{"status": "completed", "item_id": "ITEM-E9F653", "mode": "executed",
+          "refund_amount": 38, "refund_method": "original_payment", "split_details":
+          [], "total_goodwill_credit": 0}'
+    - name: send_certificate
+      description: Issue a travel certificate to a user as compensation. The certificate
+        is added to the user's payment methods and can be used for future bookings.
+      output:
+        check: '{"message": "travel certificate issued to user_fa209a3f"}'
+    - name: search_direct_flight
+      description: Search for direct (non-stop) flights between two cities on a specific
+        date. Returns available flights with seat counts and prices by cabin class.
+      output:
+        check: '{"flights": [{"flight_number": "FLD3D594", "origin": "LAX", "destination":
+          "SFO", "date": "2026-09-20", "departure_time": "09:15", "arrival_time":
+          "10:35", "prices": {"economy": 129, "business": 329}, "available_seats":
+          {"economy": 50, "business": 10, "basic_economy": 30}}]}'
+    - name: calculate
+      description: Evaluate a mathematical expression containing numbers, operators
+        (+, -, *, /), parentheses, and spaces.
+      output:
+        check: '{"result": 129}'
+    - name: book_reservation
+      description: Book a new flight reservation. Validates seat availability, calculates
+        total price (flights + insurance + extra baggage), and processes payment.
+      output:
+        check: '{"reservation": "newly generated reservation ID"}'
+    - name: get_reservation_details
+      description: Fetch the full details of a reservation by its ID, including flights,
+        passengers, payment history, baggage, and insurance.
+      output:
+        check: '{"reservation_id": "newly generated reservation ID", "user_id": "user_fa209a3f",
+          "origin": "LAX", "destination": "SFO", "flight_type": "one_way", "cabin":
+          "economy", "flights": [{"flight_number": "FLD3D594", "origin": "LAX", "destination":
+          "SFO", "date": "2026-09-20", "departure_time": "09:15", "arrival_time":
+          "10:35"}], "passengers": [{"first_name": "Maya", "last_name": "Chen", "date_of_birth":
+          "1991-04-18"}], "payment_history": [{"payment_id": "cc_2402ef91", "amount":
+          129}], "created_at": "new booking timestamp", "total_baggages": 0, "nonfree_baggages":
+          0, "insurance": "none", "status": "confirmed"}'
+    - name: search_products
+      description: Search the product catalog. Returns up to 10 ranked products. Hard
+        filters (category, price range, rating, in_stock_only) narrow the candidate
+        pool; products failing a hard filter are excluded. `query` soft-ranks survivors
+        by matching against product name, brand, subcategory, description, and spec
+        keys/values. If query matches nothing, returns no products with a note.
+      output:
+        check: '{"products": [{"product_id": "PROD-FA0948", "name": "LogiTech Wireless
+          Mouse M310", "category": "electronics", "brand": "LogiTech", "price": 29,
+          "rating": 4.9}, {"product_id": "PROD-2DBA15", "name": "Wireless Ergonomic
+          Mouse", "category": "electronics", "brand": "Northfield Tech", "price":
+          39, "rating": 3.2}], "total_found": 2, "note": ""}'
+    - name: book_hotel
+      description: Book a hotel option returned by search_hotels for a customer. Creates
+        a new hotel reservation from hotel inventory.
+      output:
+        check: '{"status": "confirmed", "reservation_id": "newly generated hotel reservation
+          ID", "hotel_id": "HTL-F6EF82", "hotel_name": "Maple Street Suites", "total_price":
+          338, "room_type": "Standard Queen"}'
+    - name: get_hotel_reservation
+      description: Retrieve the details of an existing hotel reservation by its reservation
+        ID.
+      output:
+        check: '{"reservation_id": "HR-54D4", "user_id": "user_cc1013c0", "hotel_name":
+          "Bayview Business Hotel", "city": "San Francisco", "check_in": "2026-09-12",
+          "check_out": "2026-09-14", "room_type": "Standard Queen", "nightly_rate":
+          189, "total_price": 378, "hotel_id": "HTL-099A91", "status": "confirmed",
+          "booked_at": "2026-09-01T10:00:00", "cancellation_fee": null, "refund_amount":
+          null}'
+    - name: search_products
+      description: Search the product catalog. Returns up to 10 ranked products. Hard
+        filters (category, price range, rating, in_stock_only) narrow the candidate
+        pool; products failing a hard filter are excluded. `query` soft-ranks survivors
+        by matching against product name, brand, subcategory, description, and spec
+        keys/values. If query matches nothing, returns no products with a note.
+      output:
+        check: '{"products": [{"product_id": "PROD-3E35A7", "name": "OXO SoftWorks
+          3-Piece Mixing Bowl Set", "category": "kitchen", "brand": "OXO", "price":
+          42, "rating": 4.2}, {"product_id": "PROD-190CB7", "name": "OXO Good Grips
+          Salad Spinner", "category": "kitchen", "brand": "OXO", "price": 38, "rating":
+          3.9}], "total_found": 2, "note": ""}'
+    - name: book_hotel
+      description: Book a hotel option returned by search_hotels for a customer. Creates
+        a new hotel reservation from hotel inventory.
+      output:
+        check: '{"status": "confirmed", "reservation_id": "newly generated hotel reservation
+          ID", "hotel_id": "HTL-BD6329", "hotel_name": "Harborview Inn", "total_price":
+          378, "room_type": "Standard King"}'
+    - name: get_user_details
+      description: Fetch a user's profile including their reservations, payment methods,
+        membership level, and personal information.
+      output:
+        check: '{"user_id": "user_fa209a3f", "name": "Maya Chen", "address": {"address1":
+          "538 Main Street", "address2": "", "city": "Portland", "state": "OR", "zip":
+          "97201", "country": "USA"}, "email": "user_fa209a3f@example.com", "dob":
+          "", "payment_methods": [{"source": "credit_card", "id": "cc_2402ef91", "brand":
+          "mastercard", "last_four": "9834"}, {"source": "certificate", "id": "certificate_b70bc18",
+          "amount": 100}], "saved_passengers": [], "membership": "silver", "reservations":
+          ["C4C633", "EC4C1C", "A2CBB0", "newly generated reservation ID"]}'
+    - name: get_customer
+      description: Retrieve customer profile including membership tier, store credit
+        balance, and preference settings.
+      output:
+        check: '{"customer_id": "user_9789432e", "name": "Monica Graves", "email":
+          "monica.graves@example.com", "membership_tier": "gold", "total_orders":
+          1, "preferred_refund_method": "original_payment", "store_credit_balance":
+          0, "has_prime_shipping": false, "benefits": ["gold membership"]}'
+    - name: book_hotel
+      description: Book a hotel option returned by search_hotels for a customer. Creates
+        a new hotel reservation from hotel inventory.
+      output:
+        check: '{"status": "confirmed", "reservation_id": "newly generated hotel reservation
+          ID", "hotel_id": "HTL-63A0B3", "hotel_name": "Desert Palm Hotel", "total_price":
+          298, "room_type": "Standard King"}'

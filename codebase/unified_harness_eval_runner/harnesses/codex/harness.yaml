@@ -1,0 +1,19 @@
+image: harness-codex
+turn_mode: cli
+# Harvest the full agent trajectory (tool calls, outputs, reasoning) from the
+# codex rollout JSONL in post_run.py and fold it into the saved trace. Override
+# per run with the HARNESS_CAPTURE_TRAJECTORY env var on the gateway process.
+capture_trajectory: true
+cmd: ["codex", "exec", "{task}", "-m", "{model}", "--dangerously-bypass-approvals-and-sandbox", "--skip-git-repo-check"]
+env:
+  OPENAI_API_KEY: "{api_key}"
+  OPENAI_USE_RESPONSES: "false"
+workdir: /workspace
+# resume_cmd on turn 2+ not yet wired; codex session continuation uses --last flag
+session:
+  resume_cmd: ["codex", "exec", "resume", "--last", "{task}", "-m", "{model}", "--dangerously-bypass-approvals-and-sandbox", "--skip-git-repo-check"]
+# global dir: loads unconditionally (project dirs are trust-gated on some CLIs)
+skills_dirs:
+  - ~/.agents/skills
+# init a git repo in the fresh workspace (some CLIs use the git root as
+# project boundary or refuse to run outside one)

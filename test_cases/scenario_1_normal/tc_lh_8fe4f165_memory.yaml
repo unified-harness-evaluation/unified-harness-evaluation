@@ -1,0 +1,403 @@
+id: tc_lh_8fe4f165_memory
+description: 'You are Maya Bennett (user_id: 2886d614-b329-4b5b-9bae-aedf8a1fff0d),
+  and you are reaching out because you want to get your personal reminders organized
+  around several people and errands you already have on your device.'
+test_steps:
+- type: dynamic_conversation
+  user_agent:
+    task_summary: 'You are Maya Bennett (user_id: 2886d614-b329-4b5b-9bae-aedf8a1fff0d),
+      and you are reaching out because you want to get your personal reminders organized
+      around several people and errands you already have on your device. You are in
+      San Francisco right now, and you want the assistant to help you create a series
+      of location-aware reminders tied to different contacts and existing plans, while
+      also checking that each one was actually saved correctly.
+
+
+      Start with the lunch plan you already have with Jordan Kim at +1-646-555-0134.
+      You want the assistant to work from your current location in San Francisco and
+      calculate the distance to Jordan’s city, then create a reminder about that lunch
+      using the existing lunch timing context you already have, and verify it by searching
+      for it afterward.
+
+
+      Next, move on to Emily Carter at +1-312-555-0172. You want another distance-based
+      reminder related to leaving in time for lunch with Emily, again using your current
+      location as the starting point and then confirming the reminder can be found
+      once it’s added.
+
+
+      After that, take care of Sofia Ramirez at +1-917-555-0148. You want a reminder
+      connected to following up with her about coffee, and you want it handled the
+      same way: calculate the distance first, add the reminder, then search and confirm
+      the saved details.
+
+
+      Then do the same for Monica Reyes at Northstar Facilities, whose main number
+      is +1-415-555-0186. This one should relate to the vendor escalation follow-up
+      already reflected in your reminders. Make sure the assistant confirms exactly
+      what reminder was added and what search result matched it. Before moving on,
+      tell the assistant to quickly restate the details for that first lunch reminder
+      it already handled so you can make sure it still has the right one in view.
+      Also, after adding the next lunch reminder, ask it to confirm that the one from
+      the start still shows the same saved details and matching result.
+
+
+      After Monica, handle Daniel Ortiz at +1-347-555-0169. You want a reminder tied
+      to the apartment cleaning arrival note, again using a distance calculation first
+      and then creating and verifying the reminder. Once the coffee follow-up has
+      been added, have the assistant say which lunch reminder was the one tied to
+      the other city from earlier and give you its saved timestamp and location details
+      again. Right after that, ask it to identify the coffee reminder you just created
+      by referring to it only as that coffee one and confirm the exact saved record
+      it found. After the search for that coffee item, ask the assistant to compare
+      it with the very first reminder from earlier and restate the earlier one’s distance
+      result and matched reminder details.
+
+
+      Finally, circle back to your own plans involving Maya, meaning the follow-up
+      reminder if she’s not there by 6:30 PM. Even though that one is about you, you
+      still want it handled as another location-aware reminder from your current San
+      Francisco position and then searched so you can be sure it exists. Before doing
+      your own follow-up item, ask the assistant to go back to the apartment-cleaning
+      reminder from just before and confirm exactly which contact it was for, plus
+      the saved timestamp and coordinates. Then, once the self-distance has been calculated,
+      have it also restate the details of the very first lunch reminder from the beginning.
+      After it adds your self follow-up, ask it to confirm that your own reminder
+      is the self one and then also restate the exact content and saved details for
+      the original lunch reminder before running the final search.
+
+
+      Throughout the conversation, keep asking the assistant to confirm the exact
+      distance result it used, the reminder content, the reminder timestamp, any latitude
+      and longitude attached, and the identifier or matching results returned after
+      each search. You will only provide personal information (IDs, names, dates,
+      reservation numbers, flight numbers, etc.) once. If the agent asks you to repeat
+      something you already said, refuse and tell it to refer to the earlier conversation.
+      Also, after every action the agent takes on your behalf, ask it to confirm the
+      full details of what was done — you want complete information in every response,
+      not just a brief acknowledgement.'
+  max_turns: 60
+  skill_validations:
+    expected_skill_invocations:
+    - skill: toolsandbox-assistant
+  agent_response_validations:
+  - check: Agent confirms Maya Bennett is the self contact with person_id 2886d614-b329-4b5b-9bae-aedf8a1fff0d
+      and current device location is 37.7749, -122.4194 in San Francisco.
+  - check: Agent communicates the calculated distance from San Francisco (37.7749,
+      -122.4194) to New York City (40.7128, -74.006) for Jordan Kim and then confirms
+      a new location-tagged reminder was added for "Lunch with Jordan tomorrow at
+      12:30" at timestamp 1788260400.0 with latitude 37.7749 and longitude -122.4194.
+  - check: Agent confirms a matching reminder can be found for "Leave for lunch with
+      Emily by 12:15" at timestamp 1788351300.0 with the San Francisco location attached,
+      after reporting the distance from San Francisco to Chicago (41.8781, -87.6298).
+  - check: Agent reports the New York distance calculation again for Sofia Ramirez
+      and confirms a new reminder matching "Follow up with Sofia if she hasn't replied
+      about coffee by 4:30 PM today." was saved and returned by search with timestamp
+      1788276600.0 and location 37.7749, -122.4194.
+  - check: Agent explains that the distance from San Francisco to the Monica Reyes
+      follow-up location is 0.0 km because both coordinate pairs are 37.7749, -122.4194,
+      and confirms the reminder about vendor escalation status with Monica Reyes at
+      Northstar Facilities was added and found at timestamp 1788253200.0.
+  - check: 'Agent confirms the Daniel Ortiz apartment cleaning reminder was created
+      with content "Reminder: Daniel Ortiz may arrive tomorrow around 2 PM for apartment
+      cleaning — be home and leave the entry instructions by the door.", timestamp
+      1788310800.0, and San Francisco coordinates, and that search returned the newly
+      created reminder.'
+  - check: Agent goes back to the Maya follow-up item, states the self-referential
+      distance is 0.0 km at the same San Francisco coordinates, and confirms a new
+      reminder for "Follow up with Maya if she's not there by 6:30 PM." was added
+      at timestamp 1788269400.0 and successfully located in search results.
+  capability_validations:
+    expected_capabilities:
+    - name: calculate_lat_lon_distance
+      description: Calculate the geodesic distance in kilometers between two latitude/longitude
+        coordinate pairs (via geopy).
+      output:
+        check: '{"result": 4139.145472017721}'
+    - name: add_reminder
+      description: Add a new reminder with content and a POSIX reminder timestamp.
+        Optionally attach a location (latitude/longitude).
+      output:
+        check: '{"reminder_id": "newly generated reminder ID"}'
+    - name: search_reminder
+      description: Search for reminders by any combination of fields. content is fuzzy-matched
+        (threshold 50); latitude and longitude are exact-matched; timestamps are range
+        bounds. Requires at least one criterion.
+      output:
+        check: '{"result": [{"reminder_id": "newly generated reminder ID", "content":
+          "Lunch with Jordan tomorrow at 12:30", "reminder_timestamp": 1788260400.0,
+          "latitude": 37.7749, "longitude": -122.4194}]}'
+    - name: calculate_lat_lon_distance
+      description: Calculate the geodesic distance in kilometers between two latitude/longitude
+        coordinate pairs (via geopy).
+      output:
+        check: '{"result": 2992.048008848794}'
+    - name: add_reminder
+      description: Add a new reminder with content and a POSIX reminder timestamp.
+        Optionally attach a location (latitude/longitude).
+      output:
+        check: '{"reminder_id": "newly generated reminder ID"}'
+    - name: search_reminder
+      description: Search for reminders by any combination of fields. content is fuzzy-matched
+        (threshold 50); latitude and longitude are exact-matched; timestamps are range
+        bounds. Requires at least one criterion.
+      output:
+        check: '{"result": [{"reminder_id": "newly generated reminder ID", "content":
+          "Leave for lunch with Emily by 12:15", "reminder_timestamp": 1788351300.0,
+          "latitude": 37.7749, "longitude": -122.4194}]}'
+    - name: calculate_lat_lon_distance
+      description: Calculate the geodesic distance in kilometers between two latitude/longitude
+        coordinate pairs (via geopy).
+      output:
+        check: '{"result": 4139.145472017721}'
+    - name: add_reminder
+      description: Add a new reminder with content and a POSIX reminder timestamp.
+        Optionally attach a location (latitude/longitude).
+      output:
+        check: '{"reminder_id": "newly generated reminder ID"}'
+    - name: search_reminder
+      description: Search for reminders by any combination of fields. content is fuzzy-matched
+        (threshold 50); latitude and longitude are exact-matched; timestamps are range
+        bounds. Requires at least one criterion.
+      output:
+        check: '{"result": [{"reminder_id": "newly generated reminder ID", "content":
+          "Follow up with Sofia if she hasn''t replied about coffee by 4:30 PM today.",
+          "reminder_timestamp": 1788276600.0, "latitude": 37.7749, "longitude": -122.4194}]}'
+    - name: calculate_lat_lon_distance
+      description: Calculate the geodesic distance in kilometers between two latitude/longitude
+        coordinate pairs (via geopy).
+      output:
+        check: '{"result": 0.0}'
+    - name: add_reminder
+      description: Add a new reminder with content and a POSIX reminder timestamp.
+        Optionally attach a location (latitude/longitude).
+      output:
+        check: '{"reminder_id": "newly generated reminder ID"}'
+    - name: search_reminder
+      description: Search for reminders by any combination of fields. content is fuzzy-matched
+        (threshold 50); latitude and longitude are exact-matched; timestamps are range
+        bounds. Requires at least one criterion.
+      output:
+        check: '{"result": [{"reminder_id": "newly generated reminder ID", "content":
+          "Operational follow-up: check vendor escalation status with Monica Reyes
+          at Northstar Facilities and confirm receipt of pending documents.", "reminder_timestamp":
+          1788253200.0, "latitude": 37.7749, "longitude": -122.4194}]}'
+    - name: calculate_lat_lon_distance
+      description: Calculate the geodesic distance in kilometers between two latitude/longitude
+        coordinate pairs (via geopy).
+      output:
+        check: '{"result": 4139.145472017721}'
+    - name: add_reminder
+      description: Add a new reminder with content and a POSIX reminder timestamp.
+        Optionally attach a location (latitude/longitude).
+      output:
+        check: '{"reminder_id": "newly generated reminder ID"}'
+    - name: search_reminder
+      description: Search for reminders by any combination of fields. content is fuzzy-matched
+        (threshold 50); latitude and longitude are exact-matched; timestamps are range
+        bounds. Requires at least one criterion.
+      output:
+        check: '{"result": [{"reminder_id": "newly generated reminder ID", "content":
+          "Reminder: Daniel Ortiz may arrive tomorrow around 2 PM for apartment cleaning
+          \u2014 be home and leave the entry instructions by the door.", "reminder_timestamp":
+          1788310800.0, "latitude": 37.7749, "longitude": -122.4194}]}'
+    - name: calculate_lat_lon_distance
+      description: Calculate the geodesic distance in kilometers between two latitude/longitude
+        coordinate pairs (via geopy).
+      output:
+        check: '{"result": 0.0}'
+    - name: add_reminder
+      description: Add a new reminder with content and a POSIX reminder timestamp.
+        Optionally attach a location (latitude/longitude).
+      output:
+        check: '{"reminder_id": "newly generated reminder ID"}'
+    - name: search_reminder
+      description: Search for reminders by any combination of fields. content is fuzzy-matched
+        (threshold 50); latitude and longitude are exact-matched; timestamps are range
+        bounds. Requires at least one criterion.
+      output:
+        check: '{"result": [{"reminder_id": "newly generated reminder ID", "content":
+          "Follow up with Maya if she''s not there by 6:30 PM.", "reminder_timestamp":
+          1788269400.0, "latitude": 37.7749, "longitude": -122.4194}]}'
+  memory_agent_response_validations:
+  - check: Agent recalls that the first lunch reminder discussed earlier is the Jordan
+      Kim reminder, without asking the user to repeat the contact or reminder details.
+    trap_id: __trap_0
+  - check: 'Agent correctly restates the saved details for that earlier Jordan reminder:
+      content "Lunch with Jordan tomorrow at 12:30", reminder timestamp 1788260400.0,
+      San Francisco coordinates 37.7749 and -122.4194, and the distance result 4139.145472017721
+      km.'
+    trap_id: __trap_0
+  - check: Agent understands that "the one from the start" refers to the previously
+      created Jordan Kim lunch reminder rather than the newer Emily reminder.
+    trap_id: __trap_1
+  - check: Agent confirms that the earlier Jordan reminder still has the same matched
+      search record and reports the correct content, timestamp 1788260400.0, and San
+      Francisco location details without asking for them again.
+    trap_id: __trap_1
+  - check: Agent recalls that the earlier lunch reminder tied to the other city from
+      before is Emily Carter's reminder associated with Chicago, not the New York-based
+      reminders.
+    trap_id: __trap_2
+  - check: 'Agent correctly provides Emily''s reminder details from memory: content
+      "Leave for lunch with Emily by 12:15", reminder timestamp 1788351300.0, attached
+      coordinates 37.7749 and -122.4194, and the distance result 2992.048008848794
+      km.'
+    trap_id: __trap_2
+  - check: Agent interprets "that coffee one" as the Sofia Ramirez follow-up reminder
+      that was just created, without requiring the user to restate Sofia's name or
+      the reminder text.
+    trap_id: __trap_3
+  - check: Agent confirms the correct saved Sofia reminder record with content "Follow
+      up with Sofia if she hasn't replied about coffee by 4:30 PM today.", timestamp
+      1788276600.0, and San Francisco coordinates 37.7749 and -122.4194.
+    trap_id: __trap_3
+  - check: Agent correctly interprets "the very first reminder from earlier" as the
+      Jordan Kim lunch reminder when asked to compare it with the Sofia coffee reminder.
+    trap_id: __trap_4
+  - check: 'Agent restates the earlier Jordan reminder''s distance result and matched
+      reminder details accurately: 4139.145472017721 km, content "Lunch with Jordan
+      tomorrow at 12:30", timestamp 1788260400.0, and coordinates 37.7749 and -122.4194.'
+    trap_id: __trap_4
+  - check: Agent recalls that the apartment-cleaning reminder just before the self
+      item belongs to Daniel Ortiz, without asking the user to repeat the contact
+      name or phone number.
+    trap_id: __trap_5
+  - check: 'Agent confirms the correct Daniel reminder details from memory: content
+      "Reminder: Daniel Ortiz may arrive tomorrow around 2 PM for apartment cleaning
+      — be home and leave the entry instructions by the door.", timestamp 1788310800.0,
+      and coordinates 37.7749 and -122.4194.'
+    trap_id: __trap_5
+  - check: Agent uses the moment after the self-distance calculation to correctly
+      go back to the earliest lunch reminder rather than another later item.
+    trap_id: __trap_6
+  - check: 'Agent accurately restates the first lunch reminder''s details: Jordan
+      Kim, distance 4139.145472017721 km, content "Lunch with Jordan tomorrow at 12:30",
+      timestamp 1788260400.0, and location 37.7749, -122.4194.'
+    trap_id: __trap_6
+  - check: Agent recognizes that "your own reminder is the self one" refers to Maya
+      Bennett's self-contact reminder, while the "original lunch reminder" still refers
+      back to Jordan Kim's reminder from the beginning.
+    trap_id: __trap_7
+  - check: Agent confirms the self reminder was added for Maya Bennett with content
+      "Follow up with Maya if she's not there by 6:30 PM.", timestamp 1788269400.0,
+      and San Francisco coordinates, then also correctly restates the original Jordan
+      reminder's content, timestamp 1788260400.0, and coordinates.
+    trap_id: __trap_7
+  trap_information:
+    traps:
+    - name: __trap_0
+      position_in_full_chain: 4
+      insert_after_real_step: 3
+      recalled_entity: Jordan Kim lunch reminder
+      recalled_details:
+      - Jordan Kim
+      - Lunch with Jordan tomorrow at 12:30
+      - '1788260400.0'
+      - '37.7749'
+      - '-122.4194'
+      recalls_from_step: 1
+      callback_text: Before moving on, tell the assistant to quickly restate the details
+        for that first lunch reminder it already handled so you can make sure it still
+        has the right one in view.
+    - name: __trap_1
+      position_in_full_chain: 6
+      insert_after_real_step: 4
+      recalled_entity: Jordan Kim lunch reminder
+      recalled_details:
+      - Jordan Kim
+      - Lunch with Jordan tomorrow at 12:30
+      - '1788260400.0'
+      - '37.7749'
+      - '-122.4194'
+      recalls_from_step: 1
+      callback_text: Also, after adding the next lunch reminder, ask it to confirm
+        that the one from the start still shows the same saved details and matching
+        result.
+    - name: __trap_2
+      position_in_full_chain: 9
+      insert_after_real_step: 6
+      recalled_entity: Emily Carter lunch reminder
+      recalled_details:
+      - Emily Carter
+      - Leave for lunch with Emily by 12:15
+      - '1788351300.0'
+      - '37.7749'
+      - '-122.4194'
+      recalls_from_step: 4
+      callback_text: Once the coffee follow-up has been added, have the assistant
+        say which lunch reminder was the one tied to the other city from earlier and
+        give you its saved timestamp and location details again.
+    - name: __trap_3
+      position_in_full_chain: 11
+      insert_after_real_step: 7
+      recalled_entity: Sofia Ramirez coffee reminder
+      recalled_details:
+      - Sofia Ramirez
+      - Follow up with Sofia if she hasn't replied about coffee by 4:30 PM today.
+      - '1788276600.0'
+      - '37.7749'
+      - '-122.4194'
+      recalls_from_step: 8
+      callback_text: Right after that, ask it to identify the coffee reminder you
+        just created by referring to it only as that coffee one and confirm the exact
+        saved record it found.
+    - name: __trap_4
+      position_in_full_chain: 13
+      insert_after_real_step: 8
+      recalled_entity: Jordan Kim lunch reminder
+      recalled_details:
+      - Jordan Kim
+      - Lunch with Jordan tomorrow at 12:30
+      - '1788260400.0'
+      - '37.7749'
+      - '-122.4194'
+      recalls_from_step: 1
+      callback_text: After the search for that coffee item, ask the assistant to compare
+        it with the very first reminder from earlier and restate the earlier one’s
+        distance result and matched reminder details.
+    - name: __trap_5
+      position_in_full_chain: 20
+      insert_after_real_step: 14
+      recalled_entity: Daniel Ortiz apartment-cleaning reminder
+      recalled_details:
+      - Daniel Ortiz
+      - 'Reminder: Daniel Ortiz may arrive tomorrow around 2 PM for apartment cleaning
+        — be home and leave the entry instructions by the door.'
+      - '1788310800.0'
+      - '37.7749'
+      - '-122.4194'
+      recalls_from_step: 14
+      callback_text: Before doing your own follow-up item, ask the assistant to go
+        back to the apartment-cleaning reminder from just before and confirm exactly
+        which contact it was for, plus the saved timestamp and coordinates.
+    - name: __trap_6
+      position_in_full_chain: 22
+      insert_after_real_step: 15
+      recalled_entity: Jordan Kim lunch reminder
+      recalled_details:
+      - Jordan Kim
+      - Lunch with Jordan tomorrow at 12:30
+      - '1788260400.0'
+      - '37.7749'
+      - '-122.4194'
+      recalls_from_step: 1
+      callback_text: Then, once the self-distance has been calculated, have it also
+        restate the details of the very first lunch reminder from the beginning.
+    - name: __trap_7
+      position_in_full_chain: 24
+      insert_after_real_step: 16
+      recalled_entity: Maya Bennett self reminder and Jordan Kim lunch reminder
+      recalled_details:
+      - Maya Bennett
+      - Follow up with Maya if she's not there by 6:30 PM.
+      - '1788269400.0'
+      - Jordan Kim
+      - Lunch with Jordan tomorrow at 12:30
+      - '1788260400.0'
+      - '37.7749'
+      - '-122.4194'
+      recalls_from_step: 1
+      callback_text: After it adds your self follow-up, ask it to confirm that your
+        own reminder is the self one and then also restate the exact content and saved
+        details for the original lunch reminder before running the final search.

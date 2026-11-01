@@ -1,0 +1,271 @@
+id: tc_lh_6bbdf3a7
+description: 'You are Maya Chen (user_id: user_fa209a3f).'
+test_steps:
+- type: dynamic_conversation
+  user_agent:
+    task_summary: 'You are Maya Chen (user_id: user_fa209a3f). You are calling customer
+      service because you are trying to sort out a bunch of unrelated logistics in
+      one sitting before a busy stretch of travel and work. You want the conversation
+      to feel like a real support session where you move between personal device help,
+      airline questions, a separate travel-system booking question for a colleague,
+      some shopping help for a gift, and then one quick office scheduling task.
+
+
+      Start by saying your phone is not sending texts and you need that fixed first.
+      Ask the agent to turn cellular service on, verify whether it is actually on,
+      and then send a text to Jordan Kim at +1-646-555-0134 saying: “Running a little
+      behind today — I’ll text you after I wrap up this call.” After that, ask the
+      agent to look up Jordan in your contacts so you can confirm they used the right
+      person.
+
+
+      Then switch to your airline account and ask about your reservation EC4C1C. You
+      want the full details: route, cabin, passenger name, baggage count, insurance
+      status, payment history, and current status. After that, say you also need a
+      new one-way economy booking from SFO to LAS on 2026-09-10 for yourself, and
+      you want no extra bags and no travel insurance. Use your card ending in 9834
+      to pay. Once that is booked, ask for the full reservation details for the new
+      booking too.
+
+
+      Next, say you also need help checking a different travel booking: BK-B70889.
+      Ask for the complete itinerary, fare class, payment method, route, departure
+      time, and any cancellation-related details already on file. Then ask what the
+      flight cancellation policy is in general. After hearing that, say you want to
+      cancel that booking for change_of_plan, but you expect the agent to preview
+      the fee and refund first and then complete it only after clearly explaining
+      the terms. Once it is done, ask them to confirm the final cancellation details
+      in full.
+
+
+      After that, ask them to search for rental cars at Seattle-Tacoma International
+      Airport from 2026-09-12 to 2026-09-15, preferably something around compact class
+      if available.
+
+
+      Then move to shopping help for a gift. Ask them to look for an in-stock wireless
+      mouse, check whether the LogiTech Wireless Mouse M310 is compatible with the
+      Aurora Smart Desk Lamp Pro, add one LogiTech Wireless Mouse M310 to your cart
+      with no gift wrap, and then read back the entire cart including totals, shipping,
+      and promo code information.
+
+
+      Finally, ask them to draft a short calendar-event title for an IT follow-up
+      using the wording from the onboarding readiness theme, and then create an event
+      on priya.it.lead’s calendar for 2026-09-09 11:30:00 to 2026-09-09 12:00:00 using
+      that generated title.
+
+
+      You will only provide personal information (IDs, names, dates, reservation numbers,
+      flight numbers, etc.) once. If the agent asks you to repeat something you already
+      said, refuse and tell it to refer to the earlier conversation. Also, after every
+      action the agent takes on your behalf, ask it to confirm the full details of
+      what was done — you want complete information in every response, not just a
+      brief acknowledgement.'
+  max_turns: 60
+  skill_validations:
+    expected_skill_invocations:
+    - skill: toolsandbox-assistant
+    - skill: tau2Airline
+    - skill: state-travel
+    - skill: state-shopping
+    - skill: OfficeBench
+  agent_response_validations:
+  - check: Agent confirms cellular service was turned on, verifies the current status
+      is on, sends the text to +1-646-555-0134, and identifies the matching contact
+      as Jordan Kim with person_id 0d962e01-b007-4e86-88c1-cf6b43282b3e and relationship
+      friend.
+  - check: 'Agent gives the full details for reservation EC4C1C: user_id user_fa209a3f,
+      SFO to LAS, one_way, economy cabin, status confirmed, passenger Maya Lin Chen,
+      payment history showing cc_2402ef91 charged 0, 0 checked bags, 0 nonfree bags,
+      and insurance no.'
+  - check: Agent confirms a new one-way economy booking from SFO to LAS on flight
+      FL17A42F dated 2026-09-10 was created for Maya Chen, with no extra baggage,
+      no insurance, and payment charged to mastercard ending in 9834 (payment_id cc_2402ef91)
+      for $199, provides the newly generated reservation ID, and retrieves the full
+      details of the new reservation.
+  - check: 'Agent reports the full details for booking BK-B70889: Elena Marquez on
+      flight FL658038 from JFK to LHR departing 2026-10-15T19:00:00, business class,
+      confirmed status, price paid 1180, payment method cc_b3676891, route_type international,
+      and no paid checked bags.'
+  - check: Agent explains the applicable cancellation policy for BK-B70889 using the
+      state-travel cancel rules and correctly states that an international business
+      booking has an 8% cancellation fee, leading to a preview fee of 94.4 and refund
+      of 1085.6 for reason change_of_plan.
+  - check: 'Agent cancels BK-B70889 after preview with confirm=true, then retrieves
+      and states the final cancellation details in full: status cancelled, cancellation_fee
+      94.4, refund_amount 1085.6, and reason change_of_plan.'
+  - check: Agent finds a Seattle-Tacoma International Airport compact rental for 2026-09-12
+      to 2026-09-15 and reports the available option as Hertz car_id CAR-779F4F at
+      $54 per day, total price $162, with no insurance included.
+  - check: Agent recommends the in-stock wireless mouse options, confirms PROD-FA0948
+      LogiTech Wireless Mouse M310 is compatible with the Aurora Smart Desk Lamp Pro,
+      adds one mouse to the cart (customer_id user_be7538d5) without gift wrap, and
+      reads back the updated cart showing cart_id CART-user_be7538d5, subtotal 91,
+      discount_amount 18, shipping_option standard, shipping_cost 6, total 79, and
+      applied promo code PROMO0F1B01.
+  - check: Agent generates an IT follow-up calendar event title using the onboarding
+      readiness theme, then creates an event on priya.it.lead's calendar for 2026-09-09
+      11:30:00 to 2026-09-09 12:00:00 using the generated title.
+  capability_validations:
+    expected_capabilities:
+    - name: set_cellular_service_status
+      description: Enable or disable cellular service. Raises ValueError if already
+        in the requested state. Raises PermissionError if low-battery mode is on and
+        trying to enable.
+      output:
+        check: '{"result": "on"}'
+    - name: get_cellular_service_status
+      description: Get the current cellular service status (on/off).
+      output:
+        check: '{"result": "on"}'
+    - name: send_message_with_phone_number
+      description: Send a text message to a recipient using their phone number. Requires
+        cellular service ON (ConnectionError otherwise) and exactly one self-contact
+        (DuplicateError otherwise). Recipient need not be in contacts.
+      output:
+        check: '{"message_id": "newly generated message ID"}'
+    - name: search_contacts
+      description: Search for contacts based on provided criteria. Name and relationship
+        are fuzzy-matched (threshold 90); person_id, phone_number, and is_self are
+        exact-matched. Returns at most top 5 fuzzy matches. Requires at least one
+        criterion.
+      output:
+        check: '{"result": [{"person_id": "0d962e01-b007-4e86-88c1-cf6b43282b3e",
+          "name": "Jordan Kim", "phone_number": "+1-646-555-0134", "relationship":
+          "friend", "is_self": 0, "created_at": "2026-09-01T10:00:00"}]}'
+    - name: book_reservation
+      description: Book a new flight reservation. Validates seat availability, calculates
+        total price (flights + insurance + extra baggage), and processes payment.
+      output:
+        check: '{"reservation": "newly generated reservation ID"}'
+    - name: get_reservation_details
+      description: Fetch the full details of a reservation by its ID, including flights,
+        passengers, payment history, baggage, and insurance.
+      output:
+        check: '{"reservation_id": "EC4C1C", "user_id": "user_fa209a3f", "origin":
+          "SFO", "destination": "LAS", "flight_type": "one_way", "cabin": "economy",
+          "flights": [], "passengers": [{"first_name": "Maya", "middle_name": "Lin",
+          "last_name": "Chen", "passenger_type": "adult"}], "payment_history": [{"payment_id":
+          "cc_2402ef91", "amount": 0}], "created_at": "2026-09-01T10:00:00", "total_baggages":
+          0, "nonfree_baggages": 0, "insurance": "no", "status": "confirmed"}'
+    - name: search_car_rentals
+      description: Search for available car rentals at a location. Filter by dates,
+        car class, and daily rate.
+      output:
+        check: '{"car_rentals": [{"car_id": "CAR-779F4F", "company": "Hertz", "pickup_location":
+          "Seattle-Tacoma International Airport", "dropoff_location": "Seattle-Tacoma
+          International Airport", "car_class": "Compact", "daily_rate": 54, "total_price":
+          162, "insurance_included": 0}]}'
+    - name: search_products
+      description: Search the product catalog. Returns up to 10 ranked products. Hard
+        filters (category, price range, rating, in_stock_only) narrow the candidate
+        pool; products failing a hard filter are excluded. `query` soft-ranks survivors
+        by matching against product name, brand, subcategory, description, and spec
+        keys/values. If query matches nothing, returns no products with a note.
+      output:
+        check: '{"products": [{"product_id": "PROD-FA0948", "name": "LogiTech Wireless
+          Mouse M310", "category": "electronics", "subcategory": "computer accessories",
+          "brand": "LogiTech", "price": 29, "in_stock": 1, "stock_quantity": 120,
+          "rating": 4.9, "compatible_with_json": "[\"PROD-B98D14\",\"PROD-2DBA15\",\"PROD-7C0240\",\"PROD-73FAB4\"]",
+          "variants_json": "[]", "description": "Reliable wireless optical mouse with
+          USB receiver, suitable for home office and travel.", "specs_json": "{\"connectivity\":\"Wireless
+          2.4GHz\",\"battery_type\":\"AA\",\"dpi\":\"1000\",\"compatibility\":\"Windows/Mac\"}",
+          "shipping_days": 3, "gift_wrap_available": 1, "source_skill": "state-shopping"},
+          {"product_id": "PROD-2DBA15", "name": "Wireless Ergonomic Mouse", "category":
+          "electronics", "subcategory": "computer accessories", "brand": "Northfield
+          Tech", "price": 39, "in_stock": 1, "stock_quantity": 84, "rating": 3.2,
+          "compatible_with_json": "[\"PROD-B98D14\",\"PROD-FA0948\",\"PROD-7C0240\",\"PROD-73FAB4\"]",
+          "variants_json": "[]", "description": "A standard wireless ergonomic mouse
+          for everyday home and office use with USB receiver and adjustable DPI.",
+          "specs_json": "{\"connectivity\":\"Wireless 2.4GHz\",\"battery_type\":\"AA\",\"dpi\":\"1000\",\"compatibility\":\"Windows/Mac\"}",
+          "shipping_days": 3, "gift_wrap_available": 1, "source_skill": "state-shopping"}],
+          "total_found": 2, "note": ""}'
+    - name: check_compatibility
+      description: Check whether a product is compatible with a specific device. Device
+        names must match the canonical vocabulary exactly. If the device name is not
+        recognized, the response includes the full list of canonical device names.
+      output:
+        check: '{"compatible": true, "product_id": "PROD-FA0948", "device": "PROD-73FAB4",
+          "reason": "Product is listed as compatible with this device.", "canonical_devices":
+          []}'
+    - name: add_to_cart
+      description: Add a product to the customer's cart. Creates a new cart item or
+        increments an existing one. Enforces stock availability and the per-product
+        quantity limit (max 3). If the product has variants, a variant_id MUST be
+        supplied.
+      output:
+        check: '{"status": "added", "cart_item_id": "newly generated cart item ID",
+          "product_id": "PROD-FA0948", "product_name": "LogiTech Wireless Mouse M310",
+          "variant_id": null, "quantity": 1, "gift_wrap": false, "unit_price": 29,
+          "cart_subtotal": 91, "cart_total": 85}'
+    - name: get_cart
+      description: 'Get the customer''s current cart: items with live pricing, subtotal,
+        discount, gift-wrap fee, total, and applied promo codes. Does not compute
+        promo eligibility — use get_promotions and get_customer_account to reason
+        about which promos apply.'
+      output:
+        check: '{"cart_id": "CART-user_be7538d5", "customer_id": "user_be7538d5",
+          "items": [{"cart_item_id": "CI-0024", "product_id": "PROD-FA349F", "product_name":
+          "Northline Wool Blend Throw Blanket", "quantity": 1, "gift_wrap": 0, "variant_id":
+          null, "unit_price": 34, "line_total": 34}, {"cart_item_id": "CI-0025", "product_id":
+          "PROD-4ED2E3", "product_name": "Everyday Canvas Tote Bag", "quantity": 1,
+          "gift_wrap": 0, "variant_id": null, "unit_price": 28, "line_total": 28},
+          {"cart_item_id": "newly generated cart item ID", "product_id": "PROD-FA0948",
+          "product_name": "LogiTech Wireless Mouse M310", "quantity": 1, "gift_wrap":
+          false, "variant_id": null, "unit_price": 29, "line_total": 29}], "subtotal":
+          91, "discount_amount": 18, "gift_wrap_fee": 0, "loyalty_discount": 0, "loyalty_points_redeemed":
+          0, "shipping_option": "standard", "shipping_cost": 6, "total": 79, "applied_promo_codes":
+          ["PROMO0F1B01"]}'
+    - name: cancel_booking
+      description: 'Cancel an existing booking. Two-step process: first call without
+        confirm to preview the cancellation terms (fee, refund), then call with confirm=true
+        to execute. Skipping preview and calling with confirm=true directly still
+        executes.'
+      output:
+        check: '{"status": "preview", "booking_id": "BK-B70889", "cancellation_fee":
+          94.4, "refund_amount": 1085.6, "reason": "change_of_plan"}'
+    - name: get_booking
+      description: Retrieve the details of an existing booking by its booking ID.
+        Returns booking details plus flight route info (origin, destination, departure_time,
+        route_type).
+      output:
+        check: '{"booking_id": "BK-B70889", "user_id": "user_59b22691", "flight_id":
+          "FL658038", "status": "confirmed", "cabin_class": "business", "seat_type":
+          "", "meal_preference": "", "add_wifi": false, "add_extra_legroom": false,
+          "add_insurance": false, "price_paid": 1180, "payment_method": "cc_b3676891",
+          "points_used": 0, "cash_amount": 1180, "booked_at": "2026-09-01T10:00:00",
+          "cancellation_fee": 0, "refund_amount": 0, "change_fee": 0, "fare_difference":
+          0, "delay_compensation": "", "paid_checked_bags": 0, "origin": "JFK", "destination":
+          "LHR", "departure_time": "2026-10-15T19:00:00", "route_type": "international"}'
+    - name: get_policies
+      description: 'Look up travel policies for a specific topic. Topics: ''cancel''
+        (flight cancellation rules), ''change'' (flight change rules), ''baggage''
+        (baggage allowance by fare class and loyalty tier), ''delay_compensation''
+        (delay/cancellation compensation), ''loyalty'' (loyalty points redemption
+        rates and rules), ''upgrade'' (cabin class upgrade eligibility and pricing),
+        ''hotel_cancel'' (hotel reservation cancellation rules), ''car_rental_cancel''
+        (car rental cancellation rules).'
+      output:
+        check: '{"topic": "cancel", "rules": "Free cancellation window: full refund
+          within 24 hours (domestic) or 48 hours (international) of booking. Basic
+          economy: not cancellable after free window unless insured. Economy domestic:
+          cancellation fee = max($50, 15% of ticket price). Economy international:
+          cancellation fee = max($75, 20% of ticket price). Business domestic: cancellation
+          fee = 5% of ticket price. Business international: cancellation fee = 8%
+          of ticket price. First class: free cancellation. Travel insurance covers
+          cancellation regardless of cabin class (full refund). Airline-initiated
+          cancellation or severe delay (240+ min): full refund regardless of cabin
+          class. Fees differ by route type (domestic vs international); check flight
+          route_type."}'
+    - name: llm.complete_text
+      description: 'Send a prompt to the configured LLM (default: azure/gpt-4.1) and
+        return the completion. Uses temperature 0 and max_tokens 512.'
+      output:
+        check: '{"observation": "IT Follow-Up \u2014 laptop, VPN/email, day-one setup
+          readiness"}'
+    - name: calendar.create_event
+      description: Add a new event to a user's calendar. Creates the calendar file
+        if it does not exist. Datetime format must be 'YYYY-MM-DD HH:MM:SS'.
+      output:
+        check: '{"observation": "Event created successfully"}'

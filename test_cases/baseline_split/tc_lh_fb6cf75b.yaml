@@ -1,0 +1,262 @@
+id: tc_lh_fb6cf75b
+description: 'You are Maya Chen (user_id: user_fa209a3f).'
+test_steps:
+- type: dynamic_conversation
+  user_agent:
+    task_summary: 'You are Maya Chen (user_id: user_fa209a3f). You are calling customer
+      service because you realized you have several different trips and possible new
+      bookings to sort out all at once, and you want the agent to keep track of everything
+      without making you repeat yourself.
+
+
+      Start with your round-trip reservation C4C633. Tell the agent you want to cancel
+      it because your plans changed and you want to make sure the whole trip is eligible,
+      then have them confirm the full itinerary, both passengers, the insurance on
+      the booking, the total baggage count, the payment method used, and exactly how
+      any refund would work.
+
+
+      Next, ask the agent to pull up your overall profile so they can see your saved
+      payment methods, loyalty tier, contact details, and all active reservations
+      before you continue.
+
+
+      After that, move to your one-way SFO to LAS booking EC4C1C. First ask for the
+      full reservation details, then ask the agent to check the status of that flight
+      for the travel date. Once they have done that, ask whether that booking can
+      also be cancelled and, if it can, cancel it; if it cannot, make them clearly
+      explain why under the fare rules and still confirm the complete reservation
+      details they reviewed.
+
+
+      Then shift to your earlier LAX to SFO booking A2CBB0. Tell the agent you want
+      to see other direct flight options on the same route and compare costs before
+      changing anything. Ask them to do the math out loud on any fare difference they
+      are using. After they show you the options, have them move that reservation
+      to a different direct flight on the same route and same date, but only after
+      they summarize the exact new flight and any price impact and you explicitly
+      confirm.
+
+
+      Once that is done, ask them to check the status of the newly selected LAX to
+      SFO flight as well.
+
+
+      Then say you also want to book a completely new one-way trip from SEA to SFO
+      for yourself in economy using your credit card, and you want them to search
+      the direct options first, calculate the price before booking, and then complete
+      the reservation after your confirmation. After booking it, ask for the full
+      reservation details.
+
+
+      After that, ask them to search direct flights from JFK to MIA for a new one-way
+      economy booking for you, calculate the price, and then book it on your credit
+      card after confirming everything. Finally, before ending the call, ask them
+      to do one last direct-flight search on LAX to SFO and calculate the price of
+      one of the available economy options so you can compare it against the other
+      changes and bookings you handled today.
+
+
+      You will only provide personal information (IDs, names, dates, reservation numbers,
+      flight numbers, etc.) once. If the agent asks you to repeat something you already
+      said, refuse and tell it to refer to the earlier conversation. Also, after every
+      action the agent takes on your behalf, ask it to confirm the full details of
+      what was done — you want complete information in every response, not just a
+      brief acknowledgement.'
+  max_turns: 60
+  skill_validations:
+    expected_skill_invocations:
+    - skill: tau2Airline
+  agent_response_validations:
+  - check: Agent retrieves and confirms reservation C4C633 is a round-trip economy
+      booking for Maya Chen and Ethan Chen on flights FLE7F420 from SEA to SAN on
+      2026-10-01 and FL84B16B from SAN to SEA on 2026-10-05, notes standard insurance,
+      2 total checked bags with 2 nonfree bags, and states the cancellation was completed
+      with refund back to the original payment method cc_2402ef91 within 5-7 business
+      days.
+  - check: Agent summarizes Maya Chen's profile for user_fa209a3f, including silver
+      membership, email user_fa209a3f@example.com, Portland OR address, and saved
+      payment methods cc_2402ef91 and certificate_b70bc18 for $100, along with her
+      reservation list.
+  - check: Agent explains that reservation EC4C1C is a confirmed one-way economy trip
+      from SFO to LAS on 2026-09-16 on flight FL17A42F for passenger Maya Lin Chen,
+      paid with cc_2402ef91, with 1 total bag and 1 nonfree bag, and reports the flight
+      status for that date as available.
+  - check: Agent either clearly states whether EC4C1C can be cancelled under the policy
+      and, if cancelled, confirms the cancellation and refund to the original payment
+      method, or denies the cancellation with a policy-based explanation while still
+      restating the full booking details reviewed.
+  - check: Agent retrieves A2CBB0 details showing a one-way economy LAX to SFO booking
+      on flight FL17CF9B, then presents direct LAX to SFO alternatives on 2026-09-15
+      (nearest available date), compares the original economy fare of 149 against
+      the selected replacement flight FL927B51 at 149, shows the fare-difference calculation
+      of 149 - 149 = 0, and after confirmation states the reservation was updated
+      using cc_2402ef91 with no additional charge.
+  - check: Agent confirms the changed A2CBB0 itinerary now uses flight FL927B51 from
+      LAX to SFO on 2026-09-15 departing 09:15 and arriving 10:35 in economy for Maya
+      Chen, and reports that flight's status as available.
+  - check: Agent books a new one-way economy reservation for Maya Chen from SEA to
+      SFO on 2026-10-01 using flight FL5931BF, confirms the quoted fare of 179, no
+      insurance, no extra baggage, payment on mastercard cc_2402ef91, and then provides
+      the full details of the newly created reservation.
+  - check: Agent books another new one-way economy reservation for Maya Chen from
+      JFK to MIA on 2026-10-01 using flight FL649FE4, confirms the fare of 199 charged
+      to cc_2402ef91, and finishes by comparing available LAX to SFO economy options
+      on 2026-10-01 including a 129 fare.
+  capability_validations:
+    expected_capabilities:
+    - name: cancel_reservation
+      description: Cancel an entire reservation and reverse all payments. The API
+        does NOT enforce cancellation rules — the agent must verify eligibility before
+        calling.
+      output:
+        check: '{"reservation": "C4C633"}'
+    - name: get_user_details
+      description: Fetch a user's profile including their reservations, payment methods,
+        membership level, and personal information.
+      output:
+        check: '{"user_id": "user_fa209a3f", "name": "Maya Chen", "address": {"address1":
+          "538 Main Street", "address2": "", "city": "Portland", "state": "OR", "zip":
+          "97201", "country": "USA"}, "email": "user_fa209a3f@example.com", "dob":
+          "", "payment_methods": [{"source": "credit_card", "id": "cc_2402ef91", "brand":
+          "mastercard", "last_four": "9834"}, {"source": "certificate", "id": "certificate_b70bc18",
+          "amount": 100.0}], "saved_passengers": [], "membership": "silver", "reservations":
+          ["00C256", "C4C633", "EC4C1C", "C10BB4", "24AC00", "EC39FD", "A2CBB0"]}'
+    - name: get_reservation_details
+      description: Fetch the full details of a reservation by its ID, including flights,
+        passengers, payment history, baggage, and insurance.
+      output:
+        check: '{"reservation_id": "EC4C1C", "user_id": "user_fa209a3f", "origin":
+          "SFO", "destination": "LAS", "flight_type": "one_way", "cabin": "economy",
+          "flights": [{"flight_id": "FL17A42F", "origin": "SFO", "destination": "LAS",
+          "date": "2026-09-16", "departure_time": "11:40", "arrival_time": "13:15"}],
+          "passengers": [{"first_name": "Maya", "middle_name": "Lin", "last_name":
+          "Chen", "passenger_type": "adult"}], "payment_history": [{"payment_id":
+          "cc_2402ef91", "amount": 0}], "created_at": "2026-09-01T10:00:00", "total_baggages":
+          1, "nonfree_baggages": 1, "insurance": null, "status": "confirmed"}'
+    - name: get_flight_status
+      description: Get the status of a flight on a specific date (e.g. 'available',
+        'delayed', 'on time', 'flying', 'landed', 'cancelled').
+      output:
+        check: '{"status": "available"}'
+    - name: cancel_reservation
+      description: Cancel an entire reservation and reverse all payments. The API
+        does NOT enforce cancellation rules — the agent must verify eligibility before
+        calling.
+      output:
+        check: '{"reservation": "EC4C1C"}'
+    - name: search_direct_flight
+      description: Search for direct (non-stop) flights between two cities on a specific
+        date. Returns available flights with seat counts and prices by cabin class.
+      output:
+        check: '{"flights": []}'
+    - name: calculate
+      description: Evaluate a mathematical expression containing numbers, operators
+        (+, -, *, /), parentheses, and spaces.
+      output:
+        check: '{"result": 0}'
+    - name: update_reservation_flights
+      description: Update the flights and/or cabin class on a reservation. Pass the
+        full new list of flights (including unchanged segments). The API does NOT
+        enforce modification rules — the agent must verify eligibility before calling.
+      output:
+        check: '{"reservation": "A2CBB0"}'
+    - name: get_flight_status
+      description: Get the status of a flight on a specific date (e.g. 'available',
+        'delayed', 'on time', 'flying', 'landed', 'cancelled').
+      output:
+        check: '{"status": "available"}'
+    - name: search_direct_flight
+      description: Search for direct (non-stop) flights between two cities on a specific
+        date. Returns available flights with seat counts and prices by cabin class.
+      output:
+        check: '{"flights": [{"flight_id": "FL8229F4", "origin": "SEA", "destination":
+          "SFO", "departure_time": "14:20", "arrival_time": "16:25", "prices": {"economy":
+          189, "premium_economy": 329, "business": 579}, "available_seats": {"economy":
+          50, "business": 10, "basic_economy": 30}}, {"flight_id": "FL26251A", "origin":
+          "SEA", "destination": "SFO", "departure_time": null, "arrival_time": null,
+          "prices": {"economy": 184, "premium_economy": 294, "business": 534, "first":
+          739, "basic_economy": 138}, "available_seats": {"economy": 50, "business":
+          10, "basic_economy": 30}}, {"flight_id": "FL45D643", "origin": "SEA", "destination":
+          "SFO", "departure_time": null, "arrival_time": null, "prices": {"economy":
+          184, "premium_economy": 294, "business": 534, "first": 739, "basic_economy":
+          138}, "available_seats": {"economy": 50, "business": 10, "basic_economy":
+          30}}, {"flight_id": "FL5931BF", "origin": "SEA", "destination": "SFO", "departure_time":
+          null, "arrival_time": null, "prices": {"economy": 179, "premium_economy":
+          259, "business": 489, "first": 739}, "available_seats": {"economy": 50,
+          "business": 10, "basic_economy": 30}}]}'
+    - name: calculate
+      description: Evaluate a mathematical expression containing numbers, operators
+        (+, -, *, /), parentheses, and spaces.
+      output:
+        check: '{"result": 179}'
+    - name: book_reservation
+      description: Book a new flight reservation. Validates seat availability, calculates
+        total price (flights + insurance + extra baggage), and processes payment.
+      output:
+        check: '{"reservation": "newly generated reservation ID"}'
+    - name: get_reservation_details
+      description: Fetch the full details of a reservation by its ID, including flights,
+        passengers, payment history, baggage, and insurance.
+      output:
+        check: '{"reservation_id": "newly generated reservation ID", "user_id": "user_fa209a3f",
+          "origin": "SEA", "destination": "SFO", "flight_type": "one_way", "cabin":
+          "economy", "flights": [{"flight_id": "FL5931BF", "origin": "SEA", "destination":
+          "SFO", "date": "2026-10-01"}], "passengers": [{"first_name": "Maya", "last_name":
+          "Chen", "dob": "1991-04-18"}], "payment_history": [{"payment_id": "cc_2402ef91",
+          "amount": 179}], "created_at": "newly generated reservation ID", "total_baggages":
+          2, "nonfree_baggages": 0, "insurance": "none", "status": "confirmed"}'
+    - name: search_direct_flight
+      description: Search for direct (non-stop) flights between two cities on a specific
+        date. Returns available flights with seat counts and prices by cabin class.
+      output:
+        check: '{"flights": [{"flight_id": "FL649FE4", "origin": "JFK", "destination":
+          "MIA", "departure_time": null, "arrival_time": null, "prices": {"economy":
+          199, "business": 499, "basic_economy": 149}, "available_seats": {"economy":
+          50, "business": 10, "basic_economy": 30}}, {"flight_id": "FLC7CDBD", "origin":
+          "JFK", "destination": "MIA", "departure_time": null, "arrival_time": null,
+          "prices": {"economy": 199, "business": 499, "basic_economy": 149}, "available_seats":
+          {"economy": 50, "business": 10, "basic_economy": 30}}]}'
+    - name: calculate
+      description: Evaluate a mathematical expression containing numbers, operators
+        (+, -, *, /), parentheses, and spaces.
+      output:
+        check: '{"result": 199}'
+    - name: book_reservation
+      description: Book a new flight reservation. Validates seat availability, calculates
+        total price (flights + insurance + extra baggage), and processes payment.
+      output:
+        check: '{"reservation": "newly generated reservation ID"}'
+    - name: search_direct_flight
+      description: Search for direct (non-stop) flights between two cities on a specific
+        date. Returns available flights with seat counts and prices by cabin class.
+      output:
+        check: '{"flights": [{"flight_id": "FLD3D594", "origin": "LAX", "destination":
+          "SFO", "departure_time": "09:15", "arrival_time": "10:35", "prices": {"economy":
+          129, "business": 329}, "available_seats": {"economy": 50, "business": 10,
+          "basic_economy": 30}}, {"flight_id": "FL927B51", "origin": "LAX", "destination":
+          "SFO", "departure_time": "09:15", "arrival_time": "10:35", "prices": {"economy":
+          149, "business": 359, "premium_economy": 244, "basic_economy": 112}, "available_seats":
+          {"economy": 50, "business": 10, "basic_economy": 30}}, {"flight_id": "FL1145DC",
+          "origin": "LAX", "destination": "SFO", "departure_time": "08:30", "arrival_time":
+          "09:50", "prices": {"economy": 149, "business": 359, "premium_economy":
+          244, "basic_economy": 112}, "available_seats": {"economy": 50, "business":
+          10, "basic_economy": 30}}, {"flight_id": "FLEF25BD", "origin": "LAX", "destination":
+          "SFO", "departure_time": "13:20", "arrival_time": "14:45", "prices": {"economy":
+          129, "premium_economy": 209, "business": 389}, "available_seats": {"economy":
+          50, "business": 10, "basic_economy": 30}}, {"flight_id": "FL17CF9B", "origin":
+          "LAX", "destination": "SFO", "departure_time": "09:15", "arrival_time":
+          "10:35", "prices": {"economy": 149, "business": 359, "premium_economy":
+          244, "basic_economy": 112}, "available_seats": {"economy": 50, "business":
+          10, "basic_economy": 30}}, {"flight_id": "FLC40CEE", "origin": "LAX", "destination":
+          "SFO", "departure_time": null, "arrival_time": null, "prices": {"economy":
+          149, "business": 359, "premium_economy": 244, "basic_economy": 112}, "available_seats":
+          {"economy": 50, "business": 10, "basic_economy": 30}}, {"flight_id": "FL93F34F",
+          "origin": "LAX", "destination": "SFO", "departure_time": "09:40", "arrival_time":
+          "11:00", "prices": {"economy": 189, "premium_economy": 279}, "available_seats":
+          {"economy": 50, "business": 10, "basic_economy": 30}}]}'
+    - name: calculate
+      description: Evaluate a mathematical expression containing numbers, operators
+        (+, -, *, /), parentheses, and spaces.
+      output:
+        check: '{"result": 129}'

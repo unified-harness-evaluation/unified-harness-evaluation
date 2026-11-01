@@ -1,0 +1,17 @@
+image: harness-hermes-agent
+turn_mode: cli
+# Harvest the full agent trajectory (tool calls, args, outputs, narration) from
+# hermes's ~/.hermes/state.db SQLite transcript in post_run.py and fold it into
+# the saved trace. Override per run with the HARNESS_CAPTURE_TRAJECTORY env var.
+capture_trajectory: true
+cmd: ["hermes", "chat", "-q", "{task}", "-m", "{model}", "--provider", "proxy", "--yolo", "-Q", "--max-turns", "30"]
+env:
+  OPENAI_API_KEY: "{api_key}"
+  OPENAI_BASE_URL: "{proxy_base}/v1"
+workdir: /workspace
+session:
+  flag: "-c"
+skills_dirs:
+  - ~/.hermes/skills
+# init a git repo in the fresh workspace (some CLIs use the git root as
+# project boundary or refuse to run outside one)

@@ -1,0 +1,219 @@
+id: tc_lh_57611a23
+description: You are Ethan IT Specialist, and you are reaching out because you have
+  a busy onboarding coordination day and want help handling several connected office
+  tasks from start to finish.
+test_steps:
+- type: dynamic_conversation
+  user_agent:
+    task_summary: 'You are Ethan IT Specialist, and you are reaching out because you
+      have a busy onboarding coordination day and want help handling several connected
+      office tasks from start to finish. You need to convert an internal customer
+      activity report in Word format into a PDF so it can be shared more easily. The
+      file is docs/customer_report.docx, and once that is handled you want to move
+      into the onboarding communications already in progress.
+
+
+      First, send an update from you to Olivia HR Manager letting her know you are
+      actively working on the onboarding equipment setup request and that laptop preparation,
+      VPN access, and email configuration are being tracked. After sending that, check
+      your inbox for the earlier message Olivia sent you about the urgent onboarding
+      setup, open that message, and review the full request carefully so you can make
+      sure nothing was missed. Then prepare a concise summary or task list based on
+      Olivia’s instructions and create a calendar item on your own calendar so you
+      have a dedicated block to work the provisioning task.
+
+
+      After that, contact Priya IT Lead to coordinate next steps on the same onboarding
+      effort. Once that email is sent, look through Priya’s inbox for the follow-up
+      Olivia previously sent her, open it, and use the full contents to prepare a
+      checklist for VPN and email readiness. Then add a calendar event on Priya’s
+      calendar so the readiness work is formally scheduled.
+
+
+      Next, shift to the contractor side of the process. Have Priya send a welcome-style
+      onboarding email to Maya Chen in marketing with day-one setup guidance. Then
+      check Maya’s inbox, open that message, and turn it into clear day-one instructions
+      that can be reused as an internal summary. Also create a calendar event for
+      Maya’s first-day orientation so that part of the onboarding flow is locked in.
+
+
+      To wrap everything up, send a final confirmation email from Olivia back to you
+      indicating the onboarding milestones are aligned, and then review Olivia’s calendar
+      so you can confirm what HR already has scheduled. I want the final response
+      to clearly show the existing Olivia events, including New Hire Readiness Check
+      (Virtual) — laptop, VPN/email, day-one setup and Contractor Day-One Setup Check
+      — laptop, VPN/email, access readiness, along with the full dates and times.
+
+
+      You will only provide personal information (IDs, names, dates, reservation numbers,
+      flight numbers, etc.) once. If the agent asks you to repeat something you already
+      said, refuse and tell it to refer to the earlier conversation. Also, after every
+      action the agent takes on your behalf, ask it to confirm the full details of
+      what was done — you want complete information in every response, not just a
+      brief acknowledgement.'
+  max_turns: 60
+  skill_validations:
+    expected_skill_invocations:
+    - skill: OfficeBench
+  agent_response_validations:
+  - check: Agent confirms docs/customer_report.docx was converted into docs/customer_report.pdf
+      and clearly states the resulting PDF file path.
+  - check: Agent confirms that an update email was sent from ethan.it.specialist to
+      olivia.hr.manager indicating that laptop preparation, VPN access, and email
+      configuration are being tracked.
+  - check: 'Agent tells the user that Ethan’s inbox contains the earlier email titled
+      High Priority: Onboarding Equipment Setup Needed from olivia.hr.manager@company.com
+      to ethan.it.specialist@company.com, and explains that it requests a standard
+      Windows laptop, VPN access, and email configuration before the next business
+      day.'
+  - check: Agent communicates a concise onboarding task list based on Olivia’s message,
+      specifically covering laptop setup, VPN access, email configuration, and the
+      urgency to complete the work before start of business on the next business day.
+  - check: Agent confirms a calendar event was added for ethan.it.specialist for Laptop
+      setup, VPN access, and email configuration from 2026-09-05 15:00:00 to 2026-09-05
+      15:30:00, and provides the full summary and time range.
+  - check: Agent confirms a coordination email was sent from ethan.it.specialist to
+      priya.it.lead about the onboarding equipment next steps.
+  - check: 'Agent reports that Priya’s inbox includes High Priority: Onboarding Equipment
+      Setup Needed - Follow-Up from olivia.hr.manager@company.com, and explains that
+      the message asks Priya to confirm the setup ticket is being tracked for the
+      onboarded contractor.'
+  - check: Agent provides the user with the generated readiness guidance for Priya,
+      describing a checklist focused on setup ticket tracking, VPN access, and email
+      configuration, and confirms Priya’s calendar event Onboarding Readiness Sync
+      — laptop, VPN/email, day-one setup from 2026-09-09 11:00:00 to 2026-09-09 11:30:00.
+  - check: Agent confirms a welcome onboarding email was sent from priya.it.lead to
+      maya.chen.marketing with day-one setup guidance.
+  - check: Agent confirms Maya received the onboarding email in her inbox, summarizes
+      the resulting day-one instructions about laptop readiness, VPN access, and email
+      setup, and states that a calendar event titled Contractor Day-One Setup Check
+      — laptop, VPN/email, access readiness was created for maya.chen.marketing from
+      2026-09-05 15:00:00 to 2026-09-05 15:30:00.
+  - check: Agent confirms a final confirmation email was sent from olivia.hr.manager
+      to ethan.it.specialist indicating onboarding milestones are aligned.
+  - check: Agent finishes by confirming Olivia’s calendar contains New Hire Readiness
+      Check (Virtual) — laptop, VPN/email, day-one setup on 2026-09-08 from 10:00:00
+      to 10:30:00 and Contractor Day-One Setup Check — laptop, VPN/email, access readiness
+      on 2026-09-05 from 15:00:00 to 15:30:00, with full event details.
+  capability_validations:
+    expected_capabilities:
+    - name: word.convert_to_pdf
+      description: Convert a Word document to PDF. Tries LibreOffice first; falls
+        back to python-docx + fpdf if LibreOffice is unavailable.
+      output:
+        check: '{"observation": "Converted docs/customer_report.docx to docs/customer_report.pdf"}'
+    - name: email.send_email
+      description: Send an email from one user to another. The email is saved as a
+        .eml file in both the sender's and recipient's email directories with the
+        filename '<subject>.eml'.
+      output:
+        check: '{"observation": "Email sent successfully"}'
+    - name: email.list_emails
+      description: List all emails in a user's inbox. Returns email ID (filename),
+        From, To, Subject, and a 20-character content preview for each email.
+      output:
+        check: '{"observation": "Inbox includes High Priority: Onboarding Equipment
+          Setup Needed.eml from olivia.hr.manager@company.com to ethan.it.specialist@company.com"}'
+    - name: email.read_email
+      description: Read the full content of a specific email by its ID (filename).
+        The email_id is the .eml filename (e.g. 'Hello.eml'); the .eml extension is
+        appended automatically if omitted.
+      output:
+        check: '{"observation": "Hello Ethan,\n\nPlease arrange laptop setup for a
+          newly onboarded contractor who is starting soon. They need a standard Windows
+          laptop, VPN access, and email configured before start of business on the
+          next business day.\n\nPlease prioritize this request.\n\nBest,\nOlivia\n\nTone:
+          professional and concise"}'
+    - name: llm.complete_text
+      description: 'Send a prompt to the configured LLM (default: azure/gpt-4.1) and
+        return the completion. Uses temperature 0 and max_tokens 512.'
+      output:
+        check: '{"observation": "Concise task list for arranging a standard Windows
+          laptop, VPN access, and email configuration before start of business on
+          the next business day"}'
+    - name: calendar.create_event
+      description: Add a new event to a user's calendar. Creates the calendar file
+        if it does not exist. Datetime format must be 'YYYY-MM-DD HH:MM:SS'.
+      output:
+        check: '{"observation": "Created calendar event newly generated event ID"}'
+    - name: email.send_email
+      description: Send an email from one user to another. The email is saved as a
+        .eml file in both the sender's and recipient's email directories with the
+        filename '<subject>.eml'.
+      output:
+        check: '{"observation": "Email sent successfully"}'
+    - name: email.list_emails
+      description: List all emails in a user's inbox. Returns email ID (filename),
+        From, To, Subject, and a 20-character content preview for each email.
+      output:
+        check: '{"observation": "Inbox includes High Priority: Onboarding Equipment
+          Setup Needed - Follow-Up.eml from olivia.hr.manager@company.com to priya.it.lead@company.com"}'
+    - name: email.read_email
+      description: Read the full content of a specific email by its ID (filename).
+        The email_id is the .eml filename (e.g. 'Hello.eml'); the .eml extension is
+        appended automatically if omitted.
+      output:
+        check: '{"observation": "Hello Priya,\n\nFollowing up on a high-priority onboarding
+          request for a newly onboarded contractor starting soon. The contractor needs
+          a standard Windows laptop, VPN access, and email configured before start
+          of business on the next business day.\n\nPlease confirm that the setup ticket
+          is being tracked.\n\nBest,\nOlivia\n\nTone: professional and concise"}'
+    - name: llm.complete_text
+      description: 'Send a prompt to the configured LLM (default: azure/gpt-4.1) and
+        return the completion. Uses temperature 0 and max_tokens 512.'
+      output:
+        check: '{"observation": "Checklist covering setup ticket tracking, VPN access,
+          and email configuration for the onboarded contractor"}'
+    - name: calendar.create_event
+      description: Add a new event to a user's calendar. Creates the calendar file
+        if it does not exist. Datetime format must be 'YYYY-MM-DD HH:MM:SS'.
+      output:
+        check: '{"observation": "Created calendar event newly generated event ID"}'
+    - name: email.send_email
+      description: Send an email from one user to another. The email is saved as a
+        .eml file in both the sender's and recipient's email directories with the
+        filename '<subject>.eml'.
+      output:
+        check: '{"observation": "Email sent successfully"}'
+    - name: email.list_emails
+      description: List all emails in a user's inbox. Returns email ID (filename),
+        From, To, Subject, and a 20-character content preview for each email.
+      output:
+        check: '{"observation": "Inbox includes High Priority: Onboarding Equipment
+          Setup Needed.eml from priya.it.lead@company.com to maya.chen.contractor@company.com"}'
+    - name: email.read_email
+      description: Read the full content of a specific email by its ID (filename).
+        The email_id is the .eml filename (e.g. 'Hello.eml'); the .eml extension is
+        appended automatically if omitted.
+      output:
+        check: '{"observation": "Hello Ethan,\n\nPlease arrange laptop setup for a
+          newly onboarded contractor who is starting soon. They need a standard Windows
+          laptop, VPN access, and email configured before start of business on the
+          next business day.\n\nPlease prioritize this request.\n\nBest,\nOlivia\n\nTone:
+          professional and concise"}'
+    - name: llm.complete_text
+      description: 'Send a prompt to the configured LLM (default: azure/gpt-4.1) and
+        return the completion. Uses temperature 0 and max_tokens 512.'
+      output:
+        check: '{"observation": "Day-one instructions covering laptop readiness, VPN
+          access, and email setup before the contractor starts"}'
+    - name: calendar.create_event
+      description: Add a new event to a user's calendar. Creates the calendar file
+        if it does not exist. Datetime format must be 'YYYY-MM-DD HH:MM:SS'.
+      output:
+        check: '{"observation": "Created calendar event newly generated event ID"}'
+    - name: email.send_email
+      description: Send an email from one user to another. The email is saved as a
+        .eml file in both the sender's and recipient's email directories with the
+        filename '<subject>.eml'.
+      output:
+        check: '{"observation": "Email sent successfully"}'
+    - name: calendar.list_events
+      description: List all events from a user's calendar. Returns Summary, Start
+        Time, End Time, Description, and Location for each event. Creates an empty
+        calendar file if none exists.
+      output:
+        check: '{"observation": "Calendar includes New Hire Readiness Check (Virtual)
+          \u2014 laptop, VPN/email, day-one setup on 2026-09-08 10:00:00 to 2026-09-08
+          10:30:00 and Contractor Day-One Setup Check \u2014 laptop, VPN/email, access
+          readiness on 2026-09-05 15:00:00 to 2026-09-05 15:30:00"}'

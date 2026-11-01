@@ -1,4 +1,4 @@
-# Harness Evaluation — Paper Artifacts
+# Benchmarking Agent Harnesses Memory Mechanism on Long-Horizon Enterprise Workflows
 
 Reproducibility bundle for the paper: evaluation harness code, test cases,
 skills, environment, and the full run logs.
@@ -82,6 +82,6 @@ logs/
 ```
 
 Which `<agent-harness>` directories are present varies by model — `claude-opus-4.6`
-was run across the full harness set (~19 harnesses); the other models cover a
+was run across the full harness set (18 harnesses); the other models cover a
 subset. The aggregated scores in [`results/`](results/) are derived from these logs.
 

@@ -11,8 +11,35 @@ skills, environment, and the full run logs.
 | `test_cases/`  | Eval inputs — one YAML per case, split into `baseline_split/`, `scenario_1_normal/`, `scenario_2_contradict/`, `scenario_3_policy/`. |
 | `skills/`      | Agent skills used in the experiments: `OfficeBench`, `state-shopping`, `state-travel`, `state-customer-support`, `tau2Airline`, `tau2Retail`, `toolsandbox-assistant`. |
 | `env/`         | Unified environment for the harness runner: `workspace/` + `testbed/` templates and the `world.db` (SQLite) world database. |
-| `results/`     | Aggregated metrics, tables, and figures derived from the logs (per-model `harness_scores_*`). |
+| `results/`     | Aggregated metrics, tables, and figures derived from the logs (per-model `harness_scores_*`), plus the interactive [behavior-analysis site](results/behavior_analysis_by_cc/) (see below). |
 | `logs/`        | Full raw run logs (traces, conversations, usage, per-trial eval results). **Not stored in git** — download from the [GitHub Release](../../releases/tag/logs-v1) (see below). |
+
+## Behavior-analysis site
+
+An interactive, browsable report of agent memory-behavior analysis is published
+via GitHub Pages:
+
+**🔗 https://unified-harness-evaluation.github.io/unified-harness-evaluation/**
+
+It covers **4 harnesses** (`goose`, `grok-build`, `kilocode`, `mistral-vibe`)
+× **4 scenarios** (`baseline`, `normal`, `contradict`, `policy`), with one
+per-test-case report page each, plus an aggregate overview (tag distributions,
+recall modes, memory-credit, and figures).
+
+The source lives in [`results/behavior_analysis_by_cc/`](results/behavior_analysis_by_cc/)
+and can also be opened locally by opening `index.html` in a browser:
+
+| Path | What it is |
+|------|------------|
+| `index.html` | Entry point — links to every report and the aggregate section. |
+| `<harness>/<scenario>/<case>.html` | Per-test-case behavior report (with a `.skeleton.json` data sidecar). |
+| `_aggregate/OVERVIEW.md` | Written summary of the cross-harness findings. |
+| `_aggregate/*.csv` | Aggregated tables (tags by group, components by kind, recall modes, memory credit). |
+| `_aggregate/figures/` | Publication figures (PNG + PDF). |
+
+> The site is served from the `gh-pages` branch (published automatically from
+> `results/behavior_analysis_by_cc/`). Links in the pages are relative, so it
+> works both on GitHub Pages and when opened as local files.
 
 ## Conditions
 

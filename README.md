@@ -55,7 +55,6 @@ and can also be opened locally by opening `index.html` in a browser:
 | `<harness>/<scenario>/<case>.html` | Per-test-case behavior report (with a `.skeleton.json` data sidecar). |
 | `_aggregate/OVERVIEW.md` | Written summary of the cross-harness findings. |
 | `_aggregate/*.csv` | Aggregated tables (tags by group, components by kind, recall modes, memory credit). |
-| `_aggregate/figures/` | Publication figures (PNG + PDF). |
 
 
 ### Run logs

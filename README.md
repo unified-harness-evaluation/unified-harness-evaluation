@@ -12,9 +12,29 @@ skills, environment, and the full run logs.
 | `skills/`      | Agent skills used in the experiments: `OfficeBench`, `state-shopping`, `state-travel`, `state-customer-support`, `tau2Airline`, `tau2Retail`, `toolsandbox-assistant`. |
 | `env/`         | Unified environment for the harness runner: `workspace/` + `testbed/` templates and the `world.db` (SQLite) world database. |
 | `results/`     | Aggregated metrics, tables, and figures derived from the logs (per-model `harness_scores_*`), plus the interactive [behavior-analysis site](results/behavior_analysis_by_cc/) (see below). |
-| `logs/`        | Full raw run logs (traces, conversations, usage, per-trial eval results). **Not stored in git** — download from the [GitHub Release](../../releases/tag/logs-v1) (see below). |
+| `logs/`        | Full raw run logs (traces, conversations, usage, per-trial eval results). **Not stored in git** — download from the [GitHub Release](../../releases/tag/logs-v1) (see the Artifacts section). |
 
-## Behavior-analysis site
+## Conditions
+
+All conditions share the same underlying long tasks. The **baseline** test cases
+are long tasks with **no memory traps**. We use the capability chain of these
+baseline test cases to build the three scenarios, inserting memory traps into
+the chain:
+
+| Condition               | Description |
+|-------------------------|-------------|
+| baseline                | Long task, no memory traps. Defines the capability chain the scenarios build on. |
+| scenario_1_normal       | Normal/relevant memory traps inserted into the capability chain. |
+| scenario_2_contradict   | Contradicted memory traps inserted into the capability chain. |
+| scenario_3_policy       | Policy-related memory traps inserted into the capability chain. |
+
+## Artifacts
+
+Two artifacts are hosted outside the git tree because of their size: the
+interactive behavior-analysis site (served via GitHub Pages) and the full raw
+run logs (attached to a GitHub Release).
+
+### Behavior-analysis site
 
 An interactive, browsable report of agent memory-behavior analysis is published
 via GitHub Pages:
@@ -37,25 +57,11 @@ and can also be opened locally by opening `index.html` in a browser:
 | `_aggregate/*.csv` | Aggregated tables (tags by group, components by kind, recall modes, memory credit). |
 | `_aggregate/figures/` | Publication figures (PNG + PDF). |
 
-> The site is served from the `gh-pages` branch (published automatically from
+> The site is served from the `gh-pages` branch (published from
 > `results/behavior_analysis_by_cc/`). Links in the pages are relative, so it
 > works both on GitHub Pages and when opened as local files.
 
-## Conditions
-
-All conditions share the same underlying long tasks. The **baseline** test cases
-are long tasks with **no memory traps**. We use the capability chain of these
-baseline test cases to build the three scenarios, inserting memory traps into
-the chain:
-
-| Condition               | Description |
-|-------------------------|-------------|
-| baseline                | Long task, no memory traps. Defines the capability chain the scenarios build on. |
-| scenario_1_normal       | Normal/relevant memory traps inserted into the capability chain. |
-| scenario_2_contradict   | Contradicted memory traps inserted into the capability chain. |
-| scenario_3_policy       | Policy-related memory traps inserted into the capability chain. |
-
-## Run logs
+### Run logs
 
 The full raw run logs are **~5.9 GB uncompressed** and are therefore distributed
 as a compressed archive attached to a GitHub Release rather than committed to the
@@ -64,7 +70,7 @@ repository.
 - **Download:** [`logs.tar.gz`](../../releases/download/logs-v1/logs.tar.gz) (~976 MB) from the [`logs-v1` release](../../releases/tag/logs-v1).
 - **Extract:** `tar -xzf logs.tar.gz` — this recreates the `logs/` directory at the repo root.
 
-### Layout
+Layout:
 
 ```
 logs/

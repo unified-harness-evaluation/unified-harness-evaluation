@@ -57,9 +57,6 @@ and can also be opened locally by opening `index.html` in a browser:
 | `_aggregate/*.csv` | Aggregated tables (tags by group, components by kind, recall modes, memory credit). |
 | `_aggregate/figures/` | Publication figures (PNG + PDF). |
 
-> The site is served from the `gh-pages` branch (published from
-> `results/behavior_analysis_by_cc/`). Links in the pages are relative, so it
-> works both on GitHub Pages and when opened as local files.
 
 ### Run logs
 

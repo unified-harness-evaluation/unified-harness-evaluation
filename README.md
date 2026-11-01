@@ -70,7 +70,7 @@ repository.
 logs/
 └── <model>/                         # DeepSeek-V4-Flash, claude-opus-4.6, gpt-5.6-sol, grok-4.6, kimi-k2.6
     └── <condition>/                 # baseline, scenario_1_normal, scenario_2_contradict, scenario_3_policy
-        └── <agent-harness>/         # e.g. claude-code, codex, goose, grok-build, hermes-agent, pi, qwen-code, …
+        └── <agent-harness>/         # e.g. deepseek harness, codex, goose, grok-build, hermes-agent, pi, qwen-code, …
             └── <tc_lh_XXXXXXXX>/     # one directory per test case (scenario cases carry a suffix, e.g. _memory, _contradict, _policy)
                 └── trial_N/          # one per repeated trial
                     ├── conversation.json          # full agent conversation
